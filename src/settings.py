@@ -38,9 +38,6 @@ def init():
 	global fade  # a black surface
 	global fade_pos  # position of the black surface
 	global fake_size  # the ratio of screenx_current and the size of the background
-	global background  # background surf
-	global background_pos  # position of background image
-	global stars  # list of all stars
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
@@ -63,19 +60,19 @@ def init():
 	global volume  # volume
 	global musics  # the list of music titles assoziated wih the music files
 	global saves  # all savegames
-	global targets  # list of targets
 	global psycomode  # if psycomode is turned on
 	global timeplay  # time how long the player has been playing
 	global current_game  # the current savegame and default when no game is saved
 	global explosions  # list of surfs of explosions
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
-	global amount_targets  # amount of targets
+	global dtargets  # amount of targets
 	global include_music
 	global morevents
 	global infinitevents
 	global musicend
 	global border1
+	global world
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -104,7 +101,6 @@ def init():
 	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
 	border1 = pygame.image.load("./assets/sprites/bar1.tif")
 
-	background_pos = background.get_rect()
 	player_pos = player.get_rect()
 	fade_pos = fade.get_rect()  # lint:ok
 
@@ -141,9 +137,10 @@ def init():
 	timeplay = 0
 	current_game = "default"
 	run = True
-	amount_targets = 15
+	dtargets = 15
 	include_music = False
 	morevents = []
+	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
 	musicend = USEREVENT + 100
 
@@ -191,18 +188,9 @@ def init():
 		0, 32)
 		print screen.get_flags()
 
-	from . import objects
-	stars = []
-	bullets = []
-	targets = []
-
-	for num in range(dstars):
-		num += num
-		tmpstar = objects.stars()
-		stars.append(tmpstar)
-
-	for tmp in range(amount_targets):
-		targets.append(objects.target())
+	from . import worlds
+	world = worlds.world()
+	world.generate(background, dstars, dtargets)
 
 	upd("adjust_screen")
 
@@ -227,11 +215,12 @@ def reset():
 	global debugscreen
 	global color
 	global timeplay
+	global dstars
+	global dtargets
 
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
-	background_pos = background.get_rect()
 	player_pos = player.get_rect()
 	fade_pos = fade.get_rect()  # lint:ok
 
@@ -250,11 +239,7 @@ def reset():
 	if debugscreen:
 		fullscreen = False  # lint:ok
 
-	if len(targets) == 0:
-		timeplay = 0
-		from . import objects
-		for tmp in range(amount_targets):
-			targets.append(objects.target())
+	world.generate(world.background, dstars, dtargets)
 
 
 def upd(level):
@@ -291,34 +276,10 @@ def upd(level):
 		draw.adjustscreen()
 		upd("screenvalues+vol")
 
-		tmpx = screenx_current * fake_size
-		tmpy = screeny_current * fake_size
-		screen_current = (int(tmpx), int(tmpy))
-		background = pygame.image.load("./assets/sprites/Background2.tif").convert()
-		background = pygame.transform.smoothscale(background, screen_current)
-		background_pos = background.get_rect()
-
-		tmp = -(pos_x * (screenx_current * (fake_size - 1)))
-		background_pos.left = int(tmp)
-		tmp = -(pos_y * (screeny_current * (fake_size - 1)))
-		background_pos.top = tmp
-
-		draw.no16to9 = False
-		if aspect_ratio != 16.0 / 9:
-			draw.no16to9 = True
-			delta_screeny = screeny - screeny_current
-			draw.correcture = pygame.Surface((screenx, delta_screeny))
-			draw.correcture_pos = draw.correcture.fill((0, 0, 0))
-			draw.correcture_pos.bottomleft = (0, screeny)
-
 		konstspeed = 0.0025
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
-		for star in stars:
-			star.resize(screenx_current / 1920.0)
-
-		for target in targets:
-			target.update()
+		world.adjust_to_screen()
 
 		return
 	print("Something went wrong here")

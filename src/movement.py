@@ -17,7 +17,7 @@ def init():
 	global update
 	global draw
 	player_pos = settings.player_pos
-	background_pos = settings.background_pos
+	background_pos = settings.world.background_pos
 	background_pos.left = -(player_pos.left / 7.0) - 1
 	background_pos.top = -(player_pos.top / 7.0) - 1
 	rotation = 0
@@ -47,11 +47,8 @@ def handle():
 	pos_x = settings.pos_x
 	pos_y = settings.pos_y
 	konstspeed = settings.konstspeed
-	stars = settings.stars
-	bullets = settings.bullets
 	windowwidth = settings.screenx_current
 	windowheight = settings.screeny_current
-	fake_size = settings.fake_size
 	move = False
 
 	#this part sets the direction depending of input
@@ -127,42 +124,16 @@ def handle():
 
 		player_pos.top = int(pos_y * windowheight)
 		player_pos.left = int(pos_x * windowwidth)
-		tmp = -(pos_x * (windowwidth * (fake_size - 1)))
-		background_pos.left = int(tmp)
-		tmp = -(pos_y * (windowheight * (fake_size - 1)))
-		background_pos.top = tmp
 
 	player_pos.top = int(pos_y * windowheight)
 	player_pos.left = int(pos_x * windowwidth)
 
 	#the following routines just handle moving everything thats generated
-	for star in stars:
-		star.move(player_pos.left, player_pos.top)
 
 	settings.move = move
 	settings.player_pos = player_pos
 	settings.pos_x = pos_x
 	settings.pos_y = pos_y
-
-	for bullet in bullets:
-		bullet.move(player_pos)
-		if not bullet.inscreen:
-			settings.bullets.remove(bullet)
-
-	for explosion in settings.explosions_disp:
-		if explosion.kill_entity:
-			settings.explosions_disp.remove(explosion)
-		else:
-			explosion.move(player_pos.left, player_pos.top)
-
-	for target in settings.targets:
-		target.move(player_pos.left, player_pos.top)
-		for bullet in bullets:
-			target.test_ishit(bullet.pos)
-		if target.gothit:
-			settings.targets.remove(target)
-			settings.explosions_disp.append(target)
-			settings.explosions_disp = list(set(settings.explosions_disp))
 
 	#updates player image if neccesary
 	draw.playerpicturehandler()
