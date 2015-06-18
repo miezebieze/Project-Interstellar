@@ -1,0 +1,6 @@
+-use … more often
+-add pep-8 convention (names and comments)
+-settings must be activly changing its properies or everybody else has to passivly change them
+-change everything to a "scene"
+
+PYTHONS MATH IS REALLY BAD , NEVER EVER USE TRIGONOMETRIC FUNCTIONS AGAIN!!!!

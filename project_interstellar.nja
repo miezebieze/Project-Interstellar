@@ -1,0 +1,27 @@
+{
+  "mainFile": "Run.py", 
+  "use-tabs": true, 
+  "venv": "", 
+  "relatedProjects": [], 
+  "name": "Project_interstellar", 
+  "license": "", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "additional_builtins": [], 
+  "programParams": "", 
+  "indentation": 12, 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".py", 
+    ".jpg", 
+    ".png", 
+    ".ini", 
+    ".tif", 
+    ".ogg", 
+    ".txt"
+  ], 
+  "project-type": "", 
+  "postExecScript": "", 
+  "description": ""
+}

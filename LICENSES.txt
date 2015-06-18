@@ -1,0 +1,17 @@
+Licenses: (Thank you to all who make such things public avalible ;) Be sure to check them out, they are amazing)
+
+
+The pyhton pygame library "Pyganim" in ./libs/pyganim is made by Al Sweigart and released under a "Simplified BSD" license. [ al@inventwithpython.com http://inventwithpython.com/pyganim ]
+The (slightly modified)library "Tygamusic" in ./libs/tygamusic is made by me and released under a Creative Commons Attribution 3.0 license. Visit http://creativecommons.org/licenses/by/3.0/ for detailed info.
+
+"Free Ambient Loop" by Sweetwaveaudio is licensed under a Creative Commons Licence. [ www.sweetwaveaudio.co.uk , http://creativecommons.org/licenses/by/3.0/ ]
+"Chibi Ninja" by Eric Skiff is licensed under a Creative Commons Attribution License. [ http://freemusicarchive.org/music/Eric_Skiff/ , http://creativecommons.org/licenses/by/3.0/ ]
+"Straw Fields" by Rolemusic is licensed under a Creative Commons Attribution License. [ http://freemusicarchive.org/music/Rolemusic/Straw_Fields/03_rolemusic_-_straw_fields , http://creativecommons.org/licenses/by/3.0/ ]
+"The Elevator Bossa Nova" by Bensound is licensed under a Creative Commons Attribution No Derivates License. [ http://www.bensound.com/royalty-free-music/track/the-elevator-bossa-nova , http://creativecommons.org/licenses/by-nd/3.0/ ]
+
+The testsound.mp3 (NOT .ogg!) was generated with http://www.fromtexttospeech.com/. Check them out, they are great!
+
+The artworks in ./assets/sprites/explosions are made by Chabull and are released under a Creative Commons Attribution License [ http://opengameart.org/users/chabull , http://creativecommons.org/licenses/by/3.0/ ]
+
+!!!THIS PROJECT IS COPYRIGHTED BUT WILL BE CREATIVE COMMONS IN THE NEXT VERSION (0.4)!!!
+!!!HOWEVER, FEEL FREE TO ASK FOR PERSMISSION VIA EMAIL FOR VERSIONS BELOW 0.4!!!
