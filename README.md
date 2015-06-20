@@ -1,23 +1,34 @@
 ![main_picture](https://lh3.googleusercontent.com/-ZjA1FSivXNw/VSaOqy8nSRI/AAAAAAAAAB4/_nW122LgHr0/s701-no/all.tiff)
 
-NOT EVEN ALPHA
-
-(Licences of used music and art and libs at end of file or in LICENSES.txt)
+<h2>Project Interstellar is a 2d space-adventure game</h2>
+<h4>developed  in and with : Python, Pygame, subversion and Ninja-IDE. Currently pre-alpha status.</h4>
 
 Version 0.3.x
 
-wasd or arrowkeys for movement
-f12 for screenshot
-f6 to change music
-esc to exit
-f or space to shoot
-y to move faster
-c when power bar is filled up will shoot in 8 directions
-many hidden features
+How to play
+-----------
+To play, simply run the "Run.py" file located in the base directory
 
+Features
+--------
+<ul>
+<li>wasd or arrowkeys for movement</li>
+<li>f12 for screenshot</li>
+<li>f6 to change music</li>
+<li>esc to exit</li>
+<li>f or space to shoot</li>
+<li>y to move faster</li>
+<li>c when power bar is filled up will shoot in 8 directions</li>
+<li>many hidden features</li>
+</ul>
+
+Custom music
+------------
 Simply paste your music into the music folder to be included in the game.
 "_" will be replaced with spaces (" "). For best support use .ogg but .mp3 will work too.
 
+File / Code information
+-----------------------
 (Codelines ver:0.3.2.7)
 File: Code,Commented or whitespace,total
 Run.py       39 ,14, 53
@@ -51,6 +62,12 @@ Top3 Total:
 	menu.py     355
 	objects.py  341
 
+Contact Information
+-------------------
 You can contact me on the homepage: http://www.pygame.org/project-Project+Interstellar-2943-.html
 or via email: max12354678910@gmail.com
 		(subject: Project_interstellar)
+
+Licences
+--------
+(Licences of used music and art and libs in LICENSES.txt)
