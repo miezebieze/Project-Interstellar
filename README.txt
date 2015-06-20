@@ -1,4 +1,4 @@
-https://lh3.googleusercontent.com/-ZjA1FSivXNw/VSaOqy8nSRI/AAAAAAAAAB4/_nW122LgHr0/s701-no/all.tiff
+![main_picture](https://lh3.googleusercontent.com/-ZjA1FSivXNw/VSaOqy8nSRI/AAAAAAAAAB4/_nW122LgHr0/s701-no/all.tiff)
 
 NOT EVEN ALPHA
 
