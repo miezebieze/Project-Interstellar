@@ -30,37 +30,41 @@ Simply paste your music into the music folder to be included in the game.
 File / Code information
 -----------------------
 (Codelines ver:0.3.2.7)
-File: Code,Commented or whitespace,total
-Run.py       39 ,14, 53
-tygamusic.py 218,80,298
-chat.py        4, 5,  9
-draw.py      222,55,277
-interface.py  93,17,110
-main.py       44,34, 78
-menu.py      287,68,355
-midi_in.py    57,13, 70
-missions.py   52,19, 71
-movement.py  139,29,168
-namings.py    57,16, 73
-objects.py   287,54,341
-settings.py  381,78,459
-sounds.py      7, 4, 11
-specials      70,15, 85
 
-Total: 2220,501,2721
+| File | Code | Non-code | Total |
+| ---: | :--: | :---------------------: | :---: |
+| Run.py | 39 | 14 | 53 |
+| tygamusic.py | 218 | 80 | 298 |
+| chat.py | 4 | 5 | 9 |
+| draw.py | 222 | 55 | 277 |
+| interface.py | 93 | 17 | 110 |
+| main.py | 44 | 34 | 78 |
+| menu.py | 287 | 68 | 355 |
+| midi_in.py | 57 | 13 | 70 |
+| missions.py | 52 | 19 | 71 |
+| movement.py | 139 | 29 | 168 |
+| namings.py | 57 | 16 | 73 |
+| objects.py | 287 | 54 | 341 |
+| settings.py | 381 | 78 | 459 |
+| sounds.py | 7 | 4 | 11 |
+| specials | 70 | 15 | 85 |
+| | | | 
+| <strong>Total</strong> | <strong>2220</strong> | <strong>501</strong> | <strong>2721</strong> |
 
-Top3 code only:
-	settings.py 381
-	menu.py     287, 68
-	objects.py  287, 54
-Top3  Commented or empty lines:
-	tygamusic   80
-	settings.py 78
-	menu.py     68
-Top3 Total:
-	settings.py 459
-	menu.py     355
-	objects.py  341
+<strong>Top3 code only:</strong><ul>
+<li>settings.py 381</li>
+<li>menu.py     287, 68</li>
+<li>objects.py  287, 54</li></ul>
+
+<strong>Top3  Commented or empty lines:</strong><ul>
+<li>tygamusic   80</li>
+<li>settings.py 78</li>
+<li>menu.py     68</li></ul>
+
+<strong>Top3 Total:</strong><ul>
+<li>settings.py 459</li>
+<li>menu.py     355</li>
+<li>objects.py  341</li></ul>
 
 Contact Information
 -------------------
