@@ -1,7 +1,7 @@
 Licenses: (Thank you to all who make such things public avalible ;) Be sure to check them out, they are amazing)
 
 
-The pyhton pygame library "Pyganim" in ./libs/pyganim is made by Al Sweigart and released under a "Simplified BSD" license. [ al@inventwithpython.com http://inventwithpython.com/pyganim ]
+The python pygame library "Pyganim" in ./libs/pyganim is made by Al Sweigart and released under a "Simplified BSD" license. [ al@inventwithpython.com http://inventwithpython.com/pyganim ]
 The (slightly modified)library "Tygamusic" in ./libs/tygamusic is made by me and released under a Creative Commons Attribution 3.0 license. Visit http://creativecommons.org/licenses/by/3.0/ for detailed info.
 
 "Free Ambient Loop" by Sweetwaveaudio is licensed under a Creative Commons Licence. [ www.sweetwaveaudio.co.uk , http://creativecommons.org/licenses/by/3.0/ ]
