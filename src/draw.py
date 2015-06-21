@@ -22,6 +22,7 @@ def init():
 	global show
 	alpha = 0
 	create_images("Player")
+	print "Created"
 	player = playerup
 	settings.fullscreenold = settings.fullscreen
 	no16to9 = False
@@ -44,12 +45,9 @@ def ingame():
 
 	screen = settings.screen
 	screenx = settings.screenx_current
-	stars = settings.stars
-	background = settings.background
-	background_pos = movement.background_pos
 	player_pos = movement.player_pos
 
-	texttargets = str(len(settings.targets)) + " / " + str(settings.amount_targets)
+	texttargets = str(len(settings.world.targets)) + " / " + str(settings.dtargets)
 	textsurf = settings.stdfont.render(texttargets, 1, settings.color)
 	textrect = textsurf.get_rect()
 	textrect.right = screenx
@@ -57,21 +55,9 @@ def ingame():
 
 	adjustscreen()
 
-	screen.blit(background, background_pos)
+	settings.world.blit()
 
 	status()
-
-	for star in stars:
-		star.blitstar()
-
-	for bullet in settings.bullets:
-		bullet.blit()
-
-	for target in settings.targets:
-		target.blit()
-
-	for explosion in settings.explosions_disp:
-		explosion.blit()
 
 	screen.blit(player, player_pos)  # lint:ok
 	debug()
@@ -90,10 +76,10 @@ def debug():
 	from . import movement
 
 	debugscreen = settings.debugscreen
-	rot_dest = movement.rot_dest
-	rotation = movement.rotation
+	rot_dest = settings.rot_dest
+	rotation = settings.rotation
 	font = settings.stdfont
-	player_pos = movement.player_pos
+	player_pos = settings.player_pos
 	screen = settings.screen
 	speed = settings.speed
 	move = settings.move
@@ -192,7 +178,6 @@ def adjustscreen():
 
 def playerpicturehandler():
 	"""changes the playerimage corresponding to the movement direction"""
-	from . import movement
 	global player
 	global update
 	global rotation
@@ -203,8 +188,8 @@ def playerpicturehandler():
 	global playerdo
 	global playerdori
 	global playerupri
-	rotation = movement.rotation
-	update = movement.update
+	rotation = settings.rotation
+	update = settings.update
 
 	if update:
 		settings.update = False

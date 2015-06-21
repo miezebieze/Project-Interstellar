@@ -16,6 +16,7 @@ def init():
 	global right  # player should move right
 	global player  # player surf
 	global player_pos  # player rect
+	global rotation  # current rotation of player
 	global rot_dest  # destination in which to rotate
 	global move  # determines if player should move at all
 	global move_x  # movement in x direction in pixels
@@ -38,9 +39,6 @@ def init():
 	global fade  # a black surface
 	global fade_pos  # position of the black surface
 	global fake_size  # the ratio of screenx_current and the size of the background
-	global background  # background surf
-	global background_pos  # position of background image
-	global stars  # list of all stars
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
@@ -63,19 +61,20 @@ def init():
 	global volume  # volume
 	global musics  # the list of music titles assoziated wih the music files
 	global saves  # all savegames
-	global targets  # list of targets
 	global psycomode  # if psycomode is turned on
 	global timeplay  # time how long the player has been playing
 	global current_game  # the current savegame and default when no game is saved
 	global explosions  # list of surfs of explosions
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
-	global amount_targets  # amount of targets
+	global dtargets  # amount of targets
+	global update  # determines whether new image needs to be loaded
 	global include_music
 	global morevents
 	global infinitevents
 	global musicend
 	global border1
+	global world
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -104,7 +103,6 @@ def init():
 	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
 	border1 = pygame.image.load("./assets/sprites/bar1.tif")
 
-	background_pos = background.get_rect()
 	player_pos = player.get_rect()
 	fade_pos = fade.get_rect()  # lint:ok
 
@@ -119,6 +117,7 @@ def init():
 	left = False
 	right = False
 	rot_dest = 0
+	update = True
 	konstspeed = 0.0025
 	speed = 15
 	move = False
@@ -127,7 +126,7 @@ def init():
 	pos_x = 0
 	pos_y = 0
 	fullscreen = False
-	debugscreen = False
+	debugscreen = True
 	dstars = 5000
 	isnear = "False"
 	code = ""
@@ -141,17 +140,20 @@ def init():
 	timeplay = 0
 	current_game = "default"
 	run = True
-	amount_targets = 15
+	dtargets = 15
 	include_music = False
 	morevents = []
+	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
 	musicend = USEREVENT + 100
+	rotation = 0
 
 	pygame.display.set_caption("Project Interstellar " + version)
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
 	#more complex default settings like creation of stars and targets and so on
 	if debugscreen:
+		volume = 0.0
 		fullscreen = False
 
 	def get_anim_source(num, quantity):
@@ -191,18 +193,9 @@ def init():
 		0, 32)
 		print screen.get_flags()
 
-	from . import objects
-	stars = []
-	bullets = []
-	targets = []
-
-	for num in range(dstars):
-		num += num
-		tmpstar = objects.stars()
-		stars.append(tmpstar)
-
-	for tmp in range(amount_targets):
-		targets.append(objects.target())
+	from . import worlds
+	world = worlds.world()
+	world.generate(background, dstars, dtargets)
 
 	upd("adjust_screen")
 
@@ -227,11 +220,12 @@ def reset():
 	global debugscreen
 	global color
 	global timeplay
+	global dstars
+	global dtargets
 
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
-	background_pos = background.get_rect()
 	player_pos = player.get_rect()
 	fade_pos = fade.get_rect()  # lint:ok
 
@@ -250,11 +244,7 @@ def reset():
 	if debugscreen:
 		fullscreen = False  # lint:ok
 
-	if len(targets) == 0:
-		timeplay = 0
-		from . import objects
-		for tmp in range(amount_targets):
-			targets.append(objects.target())
+	world.generate(world.background, dstars, dtargets)
 
 
 def upd(level):
@@ -291,34 +281,10 @@ def upd(level):
 		draw.adjustscreen()
 		upd("screenvalues+vol")
 
-		tmpx = screenx_current * fake_size
-		tmpy = screeny_current * fake_size
-		screen_current = (int(tmpx), int(tmpy))
-		background = pygame.image.load("./assets/sprites/Background2.tif").convert()
-		background = pygame.transform.smoothscale(background, screen_current)
-		background_pos = background.get_rect()
-
-		tmp = -(pos_x * (screenx_current * (fake_size - 1)))
-		background_pos.left = int(tmp)
-		tmp = -(pos_y * (screeny_current * (fake_size - 1)))
-		background_pos.top = tmp
-
-		draw.no16to9 = False
-		if aspect_ratio != 16.0 / 9:
-			draw.no16to9 = True
-			delta_screeny = screeny - screeny_current
-			draw.correcture = pygame.Surface((screenx, delta_screeny))
-			draw.correcture_pos = draw.correcture.fill((0, 0, 0))
-			draw.correcture_pos.bottomleft = (0, screeny)
-
 		konstspeed = 0.0025
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
-		for star in stars:
-			star.resize(screenx_current / 1920.0)
-
-		for target in targets:
-			target.update()
+		world.adjust_to_screen()
 
 		return
 	print("Something went wrong here")

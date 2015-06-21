@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import objects
 from . import settings
-from . import movement
 
 
 def init():
@@ -40,7 +39,7 @@ def update():
 
 	#shoots in 8 direction and the one youre looking constantly
 	if settings.psycomode:
-		tmp = objects.bullet(tmpx, tmpy, movement.rotation, settings.player_pos)
+		tmp = objects.bullet(tmpx, tmpy, settings.rotation, settings.player_pos)
 		settings.bullets.append(tmp)
 		for tmpangle in range(8):
 			tmpangle *= 45
@@ -67,7 +66,7 @@ def update():
 			settings.morevents.remove(event)
 
 	if settings.infinitevents["fire1"]:
-		tmp = objects.bullet(tmpx, tmpy, movement.rotation, settings.player_pos)
+		tmp = objects.bullet(tmpx, tmpy, settings.rotation, settings.player_pos)
 		settings.bullets.append(tmp)
 
 	if settings.infinitevents["roundfire"]:

@@ -6,7 +6,6 @@ from . import settings
 from . import menu
 from . import sounds
 from . import objects
-from . import movement
 from . import midi_in
 from . import specials
 from pygame.locals import *
@@ -80,7 +79,7 @@ def handle():
 			if key == "f" or key == "space":
 				tmpx = settings.pos_x * screen_x
 				tmpy = settings.pos_y * screen_y
-				tmp = objects.bullet(tmpx, tmpy, movement.rotation, settings.player_pos)
+				tmp = objects.bullet(tmpx, tmpy, settings.rotation, settings.player_pos)
 				settings.bullets.append(tmp)
 			if key == "o":
 				if pygame.key.get_mods() == 4416:
@@ -92,7 +91,50 @@ def handle():
 				#settings.targets = []
 				pass
 
+		select_angle(settings.up, settings.down, settings.left, settings.right)
+
 		specials.update()
+
+
+def select_angle(up, down, left, right):
+
+	rot_dest = settings.rot_dest
+	move = False
+	#sets the direction depending of input
+	if not (up == down and left == right):
+		#diagonal moves
+		if up and left and not down and not right:
+			move = True
+			rot_dest = 315
+		if up and right and not left and not down:
+			move = True
+			rot_dest = 45
+		if down and left and not up and not right:
+			move = True
+			rot_dest = 225
+		if down and right and not up and not left:
+			move = True
+			rot_dest = 135
+		#moving in y != x
+		if up and not down:
+			if left == right:
+				move = True
+				rot_dest = 0
+		if left and not right:
+			if down == up:
+				move = True
+				rot_dest = 270
+		if down and not up:
+			if left == right:
+				move = True
+				rot_dest = 180
+		if right and not left:
+			if up == down:
+				move = True
+				rot_dest = 90
+
+	settings.move = move
+	settings.rot_dest = rot_dest
 
 
 def getall(allkeys):

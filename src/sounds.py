@@ -8,4 +8,4 @@ def init():
 
 	music = tygamusic.CreateQueue("./assets/music/", "$not$", settings.musicend)
 	music.update(False, False)
-	music.volume = 0.5
+	music.volume = 0

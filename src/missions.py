@@ -25,7 +25,7 @@ def handle(usage):
 
 	settings.timeplay = timeplay
 
-	if len(settings.targets) == 0:
+	if len(settings.world.targets) == 0:
 		from . import draw
 		from . import movement
 

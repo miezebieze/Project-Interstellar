@@ -266,8 +266,8 @@ class target():
 		self.pos = self.image.get_rect()
 		self.pos_xper = random.randint(0, 10000) / 10000.0
 		self.pos_yper = random.randint(0, 10000) / 10000.0
-		self.pos_x = self.pos_xper * settings.background_pos.w - 20 - self.pos.w
-		self.pos_y = self.pos_yper * settings.background_pos.h - 20 - self.pos.h
+		self.pos_x = self.pos_xper * settings.world.background_pos.w - 20 - self.pos.w
+		self.pos_y = self.pos_yper * settings.world.background_pos.h - 20 - self.pos.h
 		if self.pos_x < 20:
 			self.pos_x += 40 + 2 * self.pos.w
 		if self.pos_y < 20:
