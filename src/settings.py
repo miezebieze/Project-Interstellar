@@ -87,6 +87,12 @@ def init():
 	screenx_current = screenx
 	screeny_current = int(screenx_current * 9.0 / 16.0)
 
+	#create empty folders if needed
+	if not os.path.exists("./assets/sprites/player/"):
+		os.makedirs("./assets/sprites/player/")
+	if not os.path.exists("./screenshots/"):
+		os.makedirs("./screenshots/")
+
 	#load images
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
