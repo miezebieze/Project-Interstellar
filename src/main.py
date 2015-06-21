@@ -20,10 +20,10 @@ pygame.time.set_timer(USEREVENT + 1, 25)
 
 #initialize all variables for the modules
 settings.init()
+draw.init()
 movement.init()
 sounds.init()
 movement.handle()
-draw.init()
 specials.init()
 
 

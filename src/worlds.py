@@ -3,7 +3,6 @@ from . import objects
 from . import draw
 import pygame
 """An abstact level for handeling multiple worlds."""
-#TODO:implement into actual game
 
 
 class world():

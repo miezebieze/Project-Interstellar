@@ -22,6 +22,7 @@ def init():
 	global show
 	alpha = 0
 	create_images("Player")
+	print "Created"
 	player = playerup
 	settings.fullscreenold = settings.fullscreen
 	no16to9 = False
@@ -75,10 +76,10 @@ def debug():
 	from . import movement
 
 	debugscreen = settings.debugscreen
-	rot_dest = movement.rot_dest
-	rotation = movement.rotation
+	rot_dest = settings.rot_dest
+	rotation = settings.rotation
 	font = settings.stdfont
-	player_pos = movement.player_pos
+	player_pos = settings.player_pos
 	screen = settings.screen
 	speed = settings.speed
 	move = settings.move
@@ -177,7 +178,6 @@ def adjustscreen():
 
 def playerpicturehandler():
 	"""changes the playerimage corresponding to the movement direction"""
-	from . import movement
 	global player
 	global update
 	global rotation
@@ -188,8 +188,8 @@ def playerpicturehandler():
 	global playerdo
 	global playerdori
 	global playerupri
-	rotation = movement.rotation
-	update = movement.update
+	rotation = settings.rotation
+	update = settings.update
 
 	if update:
 		settings.update = False

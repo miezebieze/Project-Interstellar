@@ -16,6 +16,7 @@ def init():
 	global right  # player should move right
 	global player  # player surf
 	global player_pos  # player rect
+	global rotation  # current rotation of player
 	global rot_dest  # destination in which to rotate
 	global move  # determines if player should move at all
 	global move_x  # movement in x direction in pixels
@@ -67,6 +68,7 @@ def init():
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
 	global dtargets  # amount of targets
+	global update  # determines whether new image needs to be loaded
 	global include_music
 	global morevents
 	global infinitevents
@@ -115,6 +117,7 @@ def init():
 	left = False
 	right = False
 	rot_dest = 0
+	update = True
 	konstspeed = 0.0025
 	speed = 15
 	move = False
@@ -123,7 +126,7 @@ def init():
 	pos_x = 0
 	pos_y = 0
 	fullscreen = False
-	debugscreen = False
+	debugscreen = True
 	dstars = 5000
 	isnear = "False"
 	code = ""
@@ -143,12 +146,14 @@ def init():
 	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
 	musicend = USEREVENT + 100
+	rotation = 0
 
 	pygame.display.set_caption("Project Interstellar " + version)
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
 	#more complex default settings like creation of stars and targets and so on
 	if debugscreen:
+		volume = 0.0
 		fullscreen = False
 
 	def get_anim_source(num, quantity):
