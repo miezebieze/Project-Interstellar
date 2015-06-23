@@ -7,3 +7,7 @@
 
 #custom pattern to make ignored files without addig new rule
 **IGNORE*.*
+
+#empty folders
+screenshots/*
+assets/sprites/player/*
