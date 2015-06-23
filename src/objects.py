@@ -12,30 +12,39 @@ class stars():
 
 	def __init__(self):
 		"""creates a new star"""
-		#I have absolutly no idea whats happening here
-		#but it works somehow
+
 		screenx = settings.screenx_current
 		screeny = settings.screeny_current
-		self._depth = random.randint(3, 20) / 2.0
-		size = random.randint(40, 70)
 
-		self.size = int(((1.0 / self._depth) * size) + ((screenx + 20000) / screenx))
 		self.image = pygame.image.load("./assets/sprites/star1.tif")
-		self.image = pygame.transform.smoothscale(self.image, (self.size, self.size))
+		imgsize = self.image.get_width()
+
+		#random size between 0 and 100 %
+		self.size = random.randint(0, 100) / 100.0
+		minimum = 0.15
+		maximum = 0.70
+		#determing the depth of the star
+		self.depth = (self.size * (maximum - minimum)
+				) + minimum  # value mapped between .15 and .70
+		self.image = pygame.transform.smoothscale(self.image,
+						(int(imgsize * self.depth), int(imgsize * self.depth)))
+
 		self.pos = self.image.get_rect()
-		tmp = int(screenx + (screenx / 2 * self._depth))
-		self.pointx = random.randint(-tmp, tmp)
-		tmp = int(screeny + (screeny / 2 * self._depth))
-		self.pointy = random.randint(-tmp, tmp)
-		self.screenx = settings.screenx - self.size
-		self.screeny = settings.screeny - self.size
+		self.screenx = screenx - self.pos.w
+		self.screeny = screeny - self.pos.h
+		#gives a percentage where star is located
+		relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
+		relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
+		#calculates pixel position
+		self.pointx = relative_x * self.screenx
+		self.pointy = relative_y * self.screeny
 
 	def move(self, x, y):
 		"""Moves the star according to player position"""
 		#note: x and y are the player position
 		#and that screenx and screeny are not actual screen width and height
-		self.pos.left = self.screenx - ((x / self._depth) - self.pointx)
-		self.pos.top = self.screeny - ((y / self._depth) - self.pointy)
+		self.pos.left = ((self.screenx - x) * self.depth) - self.pointx
+		self.pos.top = ((self.screeny - y) * self.depth) - self.pointy
 
 	def blitstar(self):
 		"""blits the star"""

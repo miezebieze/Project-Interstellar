@@ -133,7 +133,7 @@ def init():
 	pos_y = 0
 	fullscreen = False
 	debugscreen = True
-	dstars = 5000
+	dstars = 500
 	isnear = "False"
 	code = ""
 	events = []
