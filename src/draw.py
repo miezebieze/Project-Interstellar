@@ -22,7 +22,6 @@ def init():
 	global show
 	alpha = 0
 	create_images("Player")
-	print "Created"
 	player = playerup
 	settings.fullscreenold = settings.fullscreen
 	no16to9 = False
@@ -88,6 +87,7 @@ def debug():
 	pos_x = settings.pos_x
 	pos_y = settings.pos_y
 	clock = settings.clock
+	objects_on_screen = settings.objects_on_screen
 	color = settings.color
 
 	if settings.pos_x >= 0.9 and settings.pos_y >= 0.9:
@@ -102,6 +102,7 @@ def debug():
 		fps = str(math.floor(clock.get_fps()))
 		time = "time scince start: " + str(settings.timeplay)
 		pixpos = "(" + str(player_pos.left) + ", " + str(player_pos.top) + ")"
+		entitys = "Entitys: " + str(objects_on_screen)
 
 		texttime = font.render(time, True, color)
 		textfps = font.render("fps: " + fps, True, color)
@@ -111,6 +112,7 @@ def debug():
 		textspeed = font.render("(speedx, speedy): " + speed, True, color)
 		isnear = font.render("Inzone: " + isnear, True, color)
 		textdoesmove = font.render("move?: " + str(move), True, color)
+		textentitys = font.render(entitys, True, color)
 
 		screen.blit(textfps, (0, 0))
 		screen.blit(textxy, (0, 20))
@@ -120,6 +122,7 @@ def debug():
 		screen.blit(isnear, (0, 100))
 		screen.blit(textdoesmove, (0, 120))
 		screen.blit(texttime, (0, 140))
+		screen.blit(textentitys, (0, 160))
 
 
 def drawsongname():

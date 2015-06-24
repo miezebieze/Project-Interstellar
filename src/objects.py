@@ -53,6 +53,8 @@ class stars():
 
 		if 0 < self.pos.top < screeny and 0 < self.pos.left < screenx:
 			settings.screen.blit(self.image, self.pos)
+			return True
+		return False
 
 	def resize(self, ratio):
 		"""Resizes star fitting to resolution"""
@@ -263,7 +265,13 @@ class bullet():
 
 	def blit(self):
 		"""Blits the bullet"""
-		settings.screen.blit(self.image, self.pos)
+		screeny = settings.screeny_current
+		screenx = settings.screenx_current
+
+		if 0 < self.pos.top < screeny and 0 < self.pos.left < screenx:
+			settings.screen.blit(self.image, self.pos)
+			return True
+		return False
 
 
 class target():

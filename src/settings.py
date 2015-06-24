@@ -74,7 +74,8 @@ def init():
 	global infinitevents
 	global musicend
 	global border1
-	global world
+	global world  # a placeholder for the world class
+	global objects_on_screen  # entitys currently blitted to screen
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -197,7 +198,6 @@ def init():
 		screeny_current = int(screeny_current / 2.0)
 		screen = pygame.display.set_mode((screenx_current, screeny_current),
 		0, 32)
-		print screen.get_flags()
 
 	from . import worlds
 	world = worlds.world()

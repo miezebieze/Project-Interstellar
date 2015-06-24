@@ -72,10 +72,15 @@ class world():
 		settings.screen.blit(self.background, self.background_pos)
 
 		#Blit all objects
+		settings.objects_on_screen = 0
 		for star in self.stars:
-			star.blitstar()
+			isdisplayed = star.blitstar()
+			if isdisplayed:
+				settings.objects_on_screen += 1
 		for bullet in settings.bullets:
-			bullet.blit()
+			isdisplayed = bullet.blit()
+			if isdisplayed:
+				settings.objects_on_screen += 1
 		for target in self.targets:
 			target.blit()
 		for explosion in settings.explosions_disp:
