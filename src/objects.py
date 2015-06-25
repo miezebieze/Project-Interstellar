@@ -51,7 +51,8 @@ class stars():
 		screeny = settings.screeny_current
 		screenx = settings.screenx_current
 
-		if 0 < self.pos.top < screeny and 0 < self.pos.left < screenx:
+		if (-self.pos.h < self.pos.top < screeny + self.pos.h and
+			-self.pos.w < self.pos.left < screenx + self.pos.w):
 			settings.screen.blit(self.image, self.pos)
 			return True
 		return False
@@ -334,12 +335,18 @@ class target():
 	def blit(self):
 		"""Blits target and explosion"""
 		if self.gothit:
-			anfin = self.explosion.state == "stopped" or self.explosion.state == "paused"
-			if self.explosion.isFinished() or anfin:
+			#blit explosion
+			has_finished = self.explosion.state in ["stopped", "paused"]
+			if self.explosion.isFinished() or has_finished:
+				#signal to kill entity
 				self.kill_entity = True
 			elif not self.kill_entity:
+				#otherwise show explosion
 				self.explosion.blit(settings.screen, self.pos)
-
+				return True
 		else:
+			#show target if inscreen
 			if self.inscreen:
 				settings.screen.blit(self.image, self.pos)
+				return True
+			return False

@@ -7,7 +7,7 @@
   "license": "", 
   "url": "", 
   "pythonPath": "python", 
-  "preExecScript": "", 
+  "preExecScript": "Run.sh", 
   "additional_builtins": [], 
   "programParams": "", 
   "indentation": 12, 

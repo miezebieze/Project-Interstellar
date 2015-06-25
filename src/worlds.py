@@ -47,7 +47,7 @@ class world():
 
 		for bullet in settings.bullets:
 			bullet.move(player_pos)
-			if not bullet.inscreen:
+			if not bullet.pos.colliderect(self.background_pos):
 				settings.bullets.remove(bullet)
 
 		for target in self.targets:
@@ -82,7 +82,9 @@ class world():
 			if isdisplayed:
 				settings.objects_on_screen += 1
 		for target in self.targets:
-			target.blit()
+			isdisplayed = target.blit()
+			if isdisplayed:
+				settings.objects_on_screen += 1
 		for explosion in settings.explosions_disp:
 			explosion.blit()
 
