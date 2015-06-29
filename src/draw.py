@@ -13,16 +13,14 @@ def init():
 	"""Some variable initializing"""
 	#nothing to explain here
 	global fullscreenold
-	global player
 	global playerup
 	global alpha
 	global no16to9
 	global correcture
 	global correcture_pos
 	global show
+
 	alpha = 0
-	create_images("Player")
-	player = playerup
 	settings.fullscreenold = settings.fullscreen
 	no16to9 = False
 	show = 0
@@ -39,12 +37,9 @@ def init():
 def ingame():
 	"""Draws everything while game runs"""
 	#nothing to explain here i guess
-	from . import movement
-	global player
 
 	screen = settings.screen
 	screenx = settings.screenx_current
-	player_pos = movement.player_pos
 
 	texttargets = str(len(settings.world.targets)) + " / " + str(settings.dtargets)
 	textsurf = settings.stdfont.render(texttargets, 1, settings.color)
@@ -58,7 +53,7 @@ def ingame():
 
 	status()
 
-	screen.blit(player, player_pos)  # lint:ok
+	settings.player.blit(screen)
 	debug()
 	drawsongname()
 	screen.blit(textsurf, textrect)
@@ -72,25 +67,24 @@ def ingame():
 def debug():
 	"""shows debug info on screen"""
 	#nothing to explain here too?
-	from . import movement
 
 	debugscreen = settings.debugscreen
-	rot_dest = settings.rot_dest
-	rotation = settings.rotation
+	rot_dest = settings.player.rot_dest
+	rotation = settings.player.rotation
 	font = settings.stdfont
-	player_pos = settings.player_pos
+	player_pos = settings.player.pos
 	screen = settings.screen
-	speed = settings.speed
-	move = settings.move
-	move_x = movement.move_x * speed
-	move_y = movement.move_y * speed
-	pos_x = settings.pos_x
-	pos_y = settings.pos_y
+	speed = settings.player.speed
+	move = settings.player.should_move
+	move_x = settings.player.move_x * speed
+	move_y = settings.player.move_y * speed
+	pos_x = settings.player.pos.x
+	pos_y = settings.player.pos.y
 	clock = settings.clock
 	objects_on_screen = settings.objects_on_screen
 	color = settings.color
 
-	if settings.pos_x >= 0.9 and settings.pos_y >= 0.9:
+	if pos_x >= 0.9 and pos_y >= 0.9:
 		isnear = "True"
 	else:
 		isnear = "False"
@@ -100,7 +94,7 @@ def debug():
 		speed = "(" + str(round(move_x, 3)) + ", " + str(round(move_y, 3)) + ")"
 		pos = ("(" + str(pos_x) + ", " + str(pos_y) + ")")
 		fps = str(math.floor(clock.get_fps()))
-		time = "time scince start: " + str(settings.timeplay)
+		time = "time scince start: " + str(settings.player.timeplay)
 		pixpos = "(" + str(player_pos.left) + ", " + str(player_pos.top) + ")"
 		entitys = "Entitys: " + str(objects_on_screen)
 
@@ -177,76 +171,6 @@ def adjustscreen():
 		if not fullscreen:
 			pygame.display.set_mode((screenx / 2, screeny / 2))
 		settings.fullscreenold = fullscreen
-
-
-def playerpicturehandler():
-	"""changes the playerimage corresponding to the movement direction"""
-	global player
-	global update
-	global rotation
-	global playerup
-	global playeruple
-	global playerle
-	global playerdole
-	global playerdo
-	global playerdori
-	global playerupri
-	rotation = settings.rotation
-	update = settings.update
-
-	if update:
-		settings.update = False
-		if rotation == 0 or rotation == 360:
-			player = playerup
-		if rotation == 45:
-			player = playerupri
-		if rotation == 90:
-			player = playerri
-		if rotation == 135:
-			player = playerdori
-		if rotation == 180:
-			player = playerdo
-		if rotation == 225:
-			player = playerdole
-		if rotation == 270:
-			player = playerle
-		if rotation == 315:
-			player = playeruple
-
-
-def create_images(name):
-	"""creates new images from one image for the player"""
-	global playerup
-	global playeruple
-	global playerle
-	global playerdole
-	global playerdo
-	global playerdori
-	global playerri
-	global playerupri
-
-	folder = "./assets/sprites/player/"
-
-	names = [
-		name + "_upri", name + "_ri", name + "_dori", name + "_do",
-		name + "_dole", name + "_le", name + "_uple"]
-
-	#generates new images in ./assets/sprites/player
-	for nameoffile in names:
-		playerup = pygame.image.load("./assets/sprites/" + name + "_up.tif")
-		angle = (names.index(nameoffile) + 1) * -45
-		nameoffile = folder + nameoffile + ".png"
-		pygame.image.save(pygame.transform.rotate(playerup, angle), nameoffile)
-
-	#loads images into ram
-	playerup = pygame.image.load("./assets/sprites/" + name + "_up.tif")
-	playerupri = pygame.image.load(folder + name + "_upri.png")
-	playerri = pygame.image.load(folder + name + "_ri.png")
-	playerdori = pygame.image.load(folder + name + "_dori.png")
-	playerdo = pygame.image.load(folder + name + "_do.png")
-	playerdole = pygame.image.load(folder + name + "_dole.png")
-	playerle = pygame.image.load(folder + name + "_le.png")
-	playeruple = pygame.image.load(folder + name + "_uple.png")
 
 
 def status():

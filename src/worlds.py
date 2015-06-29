@@ -17,9 +17,9 @@ class world():
 		self.background = background
 		self.background_pos = self.background.get_rect()
 		#set background position
-		self.background_pos.left = int(-(settings.pos_x * (
+		self.background_pos.left = int(-(settings.player.pos.x * (
 			settings.screenx_current * (settings.fake_size - 1))))
-		self.background_pos.top = int(-(settings.pos_y * (
+		self.background_pos.top = int(-(settings.player.pos.y * (
 			settings.screeny_current * (settings.fake_size - 1))))
 
 		#create targets and stars
@@ -35,11 +35,11 @@ class world():
 
 	def move(self):
 		"""Move everything in the world."""
-		player_pos = settings.player_pos
+		player_pos = settings.player.pos
 
-		self.background_pos.left = int(-(settings.pos_x * (
+		self.background_pos.left = int(-(settings.player.rel_x * (
 			settings.screenx_current * (settings.fake_size - 1))))
-		self.background_pos.top = int(-(settings.pos_y * (
+		self.background_pos.top = int(-(settings.player.rel_y * (
 			settings.screeny_current * (settings.fake_size - 1))))
 
 		for star in self.stars:
@@ -97,10 +97,10 @@ class world():
 		self.background = pygame.transform.smoothscale(background, screen_current)
 		self.background_pos = background.get_rect()
 
-		tmp = -(settings.pos_x * (settings.screenx_current *
+		tmp = -(settings.player.pos.x * (settings.screenx_current *
 					(settings.fake_size - 1)))
 		self.background_pos.left = int(tmp)
-		tmp = -(settings.pos_y * (settings.screeny_current *
+		tmp = -(settings.player.pos.y * (settings.screeny_current *
 					(settings.fake_size - 1)))
 		self.background_pos.top = tmp
 

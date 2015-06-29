@@ -13,17 +13,13 @@ def handle(usage):
 
 	global newtime
 
-	timeplay = settings.timeplay
-
 	if usage == "ingame":
 		oldtime = newtime
 		newtime = pygame.time.get_ticks()
-		timeplay += newtime - oldtime
+		settings.player.timeplay += newtime - oldtime
 	if usage == "pause":
 		oldtime = pygame.time.get_ticks()
 		newtime = pygame.time.get_ticks()
-
-	settings.timeplay = timeplay
 
 	if len(settings.world.targets) == 0:
 		from . import draw
@@ -42,7 +38,7 @@ def handle(usage):
 
 		font = pygame.font.SysFont(settings.typeface, 50)
 
-		points = settings.timeplay
+		points = settings.player.timeplay
 		color = settings.color
 		texttime = font.render("Your time: " + str(points) + "ms", 1, color)
 		tmp = str(points / 15.0)[:6]

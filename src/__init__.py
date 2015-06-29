@@ -4,8 +4,8 @@ from draw import ingame
 from draw import debug
 from draw import drawsongname
 from draw import adjustscreen
-from draw import playerpicturehandler
-from draw import create_images
+from draw import status
+from interface import init
 from interface import handle
 from interface import getall
 from main import main
@@ -18,6 +18,7 @@ from midi_in import init
 from midi_in import get_device
 from midi_in import get_input
 from midi_in import quit
+from midi_in import do
 from missions import init
 from missions import handle
 from movement import init
@@ -29,8 +30,7 @@ from objects import inputfield
 from objects import sliders
 from objects import bullet
 from objects import target
-from old_sounds import init
-from old_sounds import music_class
+from player import player
 from settings import init
 from settings import reset
 from settings import upd
@@ -43,3 +43,4 @@ from settings import quit
 from sounds import init
 from specials import init
 from specials import update
+from worlds import world

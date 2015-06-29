@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pygame
 import pygame.midi
 from pygame.locals import *
@@ -10,8 +11,15 @@ pygame.fastevent.init()
 
 def init():
 	global device
+	global connected
 	get_device()
 	device = pygame.midi.Input(device_id)
+	try:
+		get_input()
+		connected = True
+	except NameError:
+		connected = False
+		print("No valid keyboard connected!")
 
 
 def get_device():
@@ -70,17 +78,12 @@ def quit():
 	try:
 		del device
 	except:
-		#I know, no device connected....
+		#I know, no device connected…
 		pass
 
 
 def do():
 
-	if settings.debugscreen:
-		try:
-			if not "device" in globals():
-				init()
-			else:
-				get_input()
-		except NameError:
-			print "No valid keyboard connected!"
+	global connected
+	if settings.debugscreen and connected:
+		get_input()

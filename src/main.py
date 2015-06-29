@@ -20,6 +20,7 @@ pygame.time.set_timer(USEREVENT + 1, 25)
 
 #initialize all variables for the modules
 settings.init()
+interface.init()
 draw.init()
 movement.init()
 sounds.init()
@@ -54,7 +55,6 @@ def main():
 		for event in settings.events:
 			if event.type == USEREVENT + 1:
 				movement.handle()
-				settings.world.move()
 
 		#makes a clock tick (pygame internal stuff)
 		clock.tick()

@@ -244,14 +244,14 @@ class bullet():
 		self.pos_top = half_img - int(self.pos.h / 2.0)
 		self.pos = self.pos.move(x, y)
 		self.__angle = angle
-		self.__add_speedx = (settings.speed / 40) + 1
-		self.__add_speedy = (settings.speed / 40) + 1
+		self.__add_speedx = (settings.player.speed / 40) + 1
+		self.__add_speedy = (settings.player.speed / 40) + 1
 		self.__move_x = 0.15 * math.degrees(math.sin((math.radians(self.__angle))))
 		self.__move_y = -0.15 * math.degrees(math.cos((math.radians(self.__angle))))
 		self.__move_x *= self.__add_speedx + 0.1
 		self.__move_y *= self.__add_speedy + 0.1
 		self.inscreen = True
-		self.move(settings.player_pos)
+		self.move(settings.player.pos)
 
 	def move(self, player_pos):
 		"""Moves the bullet"""
@@ -298,7 +298,7 @@ class target():
 		self.movey = int(self.explosion.getRect().h / 2.0) - 5
 		self.kill_entity = False
 		self.inscreen = True
-		self.move(settings.player_pos.x, settings.player_pos.y)
+		self.move(settings.player.pos.x, settings.player.pos.y)
 
 	def update(self):
 		"""Adjusts position according to screen size"""
