@@ -17,9 +17,9 @@ class world():
 		self.background = background
 		self.background_pos = self.background.get_rect()
 		#set background position
-		self.background_pos.left = int(-(settings.player.pos.x * (
+		self.background_pos.left = int(-(settings.player.rel_x * (
 			settings.screenx_current * (settings.fake_size - 1))))
-		self.background_pos.top = int(-(settings.player.pos.y * (
+		self.background_pos.top = int(-(settings.player.rel_y * (
 			settings.screeny_current * (settings.fake_size - 1))))
 
 		#create targets and stars

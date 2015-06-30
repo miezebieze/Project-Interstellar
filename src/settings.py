@@ -359,8 +359,8 @@ class save():
 		self.config.set("main", "screeny_current", str(screeny_current))
 		self.config.set("main", "debug", str(debugscreen))
 		self.config.set("main", "skip", "True")
-		self.config.set("main", "posx", str(pos_x))
-		self.config.set("main", "posy", str(pos_y))
+		self.config.set("main", "posx", str(player.pos.x))
+		self.config.set("main", "posy", str(player.pos.y))
 		self.config.set("main", "volume", str(volume))
 		#and writes them
 		with open("./saves/" + name + ".ini", "w") as tmp:
@@ -391,7 +391,7 @@ def load(name):
 
 		#tries to load and returns values in terminal that couldnt be loaded
 		try:
-			from ConfigParser import *
+			#from ConfigParser import *
 			from . import sounds
 			#lint:disable
 			fullscreen = config.getboolean("main", "fullscreen")

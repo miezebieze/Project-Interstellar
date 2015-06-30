@@ -250,6 +250,9 @@ class bullet():
 		self.__move_y = -0.15 * math.degrees(math.cos((math.radians(self.__angle))))
 		self.__move_x *= self.__add_speedx + 0.1
 		self.__move_y *= self.__add_speedy + 0.1
+		if settings.player.should_move:
+			self.__move_x += settings.player.move_x * settings.player.speed
+			self.__move_y += settings.player.move_y * settings.player.speed
 		self.inscreen = True
 		self.move(settings.player.pos)
 

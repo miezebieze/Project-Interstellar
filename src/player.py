@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pygame
 import math
+from ConfigParser import SafeConfigParser
 
 
 class player():
@@ -8,13 +9,14 @@ class player():
 	def __init__(self):
 		global settings
 		from . import settings  # lint:ok
-		self.img = pygame.image.load(
-			"./assets/sprites/ships/Player1_up.tif").convert_alpha()
-			# The player image
-		self.pos = self.img.get_rect()  # Absolute player position
+		self.img = pygame.surface.Surface  # Ship image (redunant
+					#see self.new_ship()
+		self.speed = 15  # Speed of player (redunant see self.new_ship())
+
 		self.rotation = 0  # Current player rotation
+		self.new_ship("Player1")
+		self.pos = self.img.get_rect()  # Absolute player position
 		self.rot_dest = 0  # Where the player should turn
-		self.speed = 15  # Speed of player
 		self.should_move = False  # Determines wether player should move
 		self.move_x = 0  # Delta pixel per tick (x)
 		self.move_y = 0  # Delta pixel per tick (x)
@@ -22,8 +24,6 @@ class player():
 		self.rel_y = 0  # relative y position
 		self.timeplay = 0  # Time player has played
 		self.update = True  # If yes new image gets loaded
-
-		self.create_images("Player1")
 
 	def create_images(self, name):
 		"""creates new images from one image for the player"""
@@ -121,6 +121,14 @@ class player():
 			self.pos.top = int(self.rel_y * windowheight)
 			self.pos.left = int(self.rel_x * windowwidth)
 
+#lint:disable
+			#Somehow a double check is needed…
+			if self.pos.bottom >= settings.screeny_current:
+				self.pos.bottom += settings.screeny_current - self.pos.bottom
+			if self.pos.right >= settings.screenx_current:
+				self.pos.right += settings.screenx_current - self.pos.right
+#lint:enable
+
 		#updates player image if neccesary
 		if self.update:
 			self.update = False
@@ -161,6 +169,14 @@ class player():
 				if up == down:
 					self.should_move = True
 					self.rot_dest = 90
+
+	def new_ship(self, name):
+		config = SafeConfigParser()
+		config.read("./assets/sprites/ships/" + name + ".ini")
+		self.speed = config.getfloat("main", "speed")
+		self.create_images(name)
+		self.img = self.playerup
+		self.select_picture()
 
 	def blit(self, screen):
 		screen.blit(self.img, self.pos)

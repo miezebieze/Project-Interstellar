@@ -30,7 +30,8 @@ def handle():
 		if event.type == KEYUP:
 			key = pygame.key.name(event.key)
 			if key == "x" or key == "y":
-				settings.player.speed = 15
+				pass
+				#settings.player.speed = 15
 			if key == "w" or key == "up":
 				settings.up = False
 			if key == "s" or key == "down":
@@ -52,9 +53,11 @@ def handle():
 			if key == "f6":
 				sounds.music.play("next")
 			if key == "x":
-				settings.player.speed = 5
+				pass
+				#settings.player.speed = 5
 			if key == "y":
-				settings.player.speed = 40
+				pass
+				#settings.player.speed = 40
 			if key == "w" or key == "up":
 				settings.up = True
 			if key == "s" or key == "down":
@@ -83,6 +86,7 @@ def handle():
 			if key == "q":
 				settings.volume = 0
 			if key == "t":
+				settings.player.new_ship("Player3")
 				#settings.targets = []
 				pass
 
