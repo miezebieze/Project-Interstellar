@@ -243,24 +243,20 @@ class bullet():
 		self.pos_left = half_img - int(self.pos.w / 2.0)
 		self.pos_top = half_img - int(self.pos.h / 2.0)
 		self.pos = self.pos.move(x, y)
-		self.__angle = angle
-		self.__add_speedx = (settings.player.speed / 40) + 1
-		self.__add_speedy = (settings.player.speed / 40) + 1
-		self.__move_x = 0.15 * math.degrees(math.sin((math.radians(self.__angle))))
-		self.__move_y = -0.15 * math.degrees(math.cos((math.radians(self.__angle))))
-		self.__move_x *= self.__add_speedx + 0.1
-		self.__move_y *= self.__add_speedy + 0.1
+		self.angle = angle
+		self.move_x = 0.22125 * math.degrees(math.sin((math.radians(self.angle))))
+		self.move_y = -0.22125 * math.degrees(math.cos((math.radians(self.angle))))
 		if settings.player.should_move:
-			self.__move_x += settings.player.move_x * settings.player.speed
-			self.__move_y += settings.player.move_y * settings.player.speed
+			self.move_x += settings.player.move_x * settings.player.speed
+			self.move_y += settings.player.move_y * settings.player.speed
 		self.inscreen = True
 		self.move(settings.player.pos)
 
 	def move(self, player_pos):
 		"""Moves the bullet"""
 		self.pos.topleft = (0, 0)
-		self.pos_left += self.__move_x
-		self.pos_top += self.__move_y
+		self.pos_left += self.move_x
+		self.pos_top += self.move_y
 		tmpx = self.start[0] + self.pos_left + (self.start[0] - player_pos[0])
 		tmpy = self.start[1] + self.pos_top + (self.start[1] - player_pos[1])
 		self.pos = self.pos.move(tmpx, tmpy)
