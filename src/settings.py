@@ -4,6 +4,7 @@ from pygame.locals import *
 from ConfigParser import SafeConfigParser
 from libs.pyganim import pyganim
 import os
+import shutil
 import sys
 import traceback
 
@@ -77,6 +78,7 @@ def init():
 	global world  # a placeholder for the world class
 	global objects_on_screen  # entitys currently blitted to screen
 	global player  # abstract player class
+	global localmap  # A dict of the local worlds
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -194,8 +196,11 @@ def init():
 		0, 32)
 
 	from . import worlds
-	world = worlds.world()
-	world.generate(background, dstars, dtargets)
+	localmap = {}
+	for a in range(9):
+		world = worlds.world()
+		world.generate(background, dstars, dtargets)
+		localmap["[" + str(a + 1) + "]"] = world
 
 	upd("adjust_screen")
 
@@ -414,10 +419,9 @@ def load(name):
 
 
 def quit():
+	"""Routine for exiting"""
 	from . import midi_in
 	midi_in.quit()
 	pygame.quit()
-	"""Routine for exiting"""
-	for files in os.listdir("./assets/sprites/player/"):
-		os.remove("./assets/sprites/player/" + files)
+	shutil.rmtree('./assets/sprites/player')
 	sys.exit()

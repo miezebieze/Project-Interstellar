@@ -19,7 +19,8 @@
     ".ini", 
     ".tif", 
     ".ogg", 
-    ".txt"
+    ".txt", 
+    ".sh"
   ], 
   "project-type": "", 
   "postExecScript": "", 

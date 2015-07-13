@@ -102,6 +102,7 @@ def main():
 					escape.move(screenx, screeny + 120)
 				if credit.klicked:
 					namings.run()
+					alpha = 0
 				if escape.klicked:
 					settings.quit()
 	pygame.mouse.set_visible(False)

@@ -89,6 +89,9 @@ def handle():
 				settings.player.new_ship("Player3")
 				#settings.targets = []
 				pass
+			if len(key) == 3 and settings.debugscreen:
+				if key[0] == "[" and key[2] == "]":
+					settings.world = settings.localmap[key]
 
 		settings.player.select_angle(settings.up, settings.down,
 				settings.left, settings.right)
