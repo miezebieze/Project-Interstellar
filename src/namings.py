@@ -45,7 +45,8 @@ def run():
 				line, True, color,
 				screen.get_rect().size, 0)
 			line_pos = line.get_rect()
-			line_pos.top = (80 * itera) + settings.screeny_current
+			#Distance from line to line is 5 pixel more than height
+			line_pos.top = ((line_pos.h + 5) * itera) + settings.screeny_current
 			line_pos.left = (settings.screenx_current / 2) - (line_pos.w / 2.0)
 			lines.append(line)
 			lines_pos.append(line_pos)
@@ -58,7 +59,7 @@ def run():
 				settings.quit()
 			if event.type == KEYDOWN:
 				if pygame.key.name(event.key) == "escape":
-					lines_pos[len(lines_pos) - 1].top = -50
+					lines_pos[len(lines_pos) - 1].top = -90
 			if event.type == USEREVENT + 1:
 
 				screen.blit(fade, fade_pos)
