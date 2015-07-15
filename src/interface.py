@@ -71,10 +71,7 @@ def handle():
 				specials.fire = True
 
 			if key == "f" or key == "space":
-				tmpx = settings.player.pos.x
-				tmpy = settings.player.pos.y
-				tmp = objects.bullet(tmpx, tmpy,
-					settings.player.rotation, settings.player.pos)
+				tmp = objects.bullet(settings.player.rotation, settings.player.pos)
 				settings.bullets.append(tmp)
 			if key == "o":
 				if pygame.key.get_mods() == 4416:
@@ -83,7 +80,7 @@ def handle():
 			if key == "q":
 				settings.volume = 0
 			if key == "t":
-				settings.player.new_ship("Player3")
+				settings.player.new_ship("ship_2")
 				#settings.targets = []
 				pass
 			if len(key) == 3 and settings.debugscreen:

@@ -78,8 +78,8 @@ def debug():
 	move = settings.player.should_move
 	move_x = settings.player.move_x * speed
 	move_y = settings.player.move_y * speed
-	pos_x = settings.player.pos.x
-	pos_y = settings.player.pos.y
+	pos_x = settings.player.rel_x
+	pos_y = settings.player.rel_y
 	clock = settings.clock
 	objects_on_screen = settings.objects_on_screen
 	color = settings.color

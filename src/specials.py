@@ -23,9 +23,6 @@ def update():
 	global fire
 	global energy
 
-	tmpx = settings.player.pos.x
-	tmpy = settings.player.pos.y
-
 	#lint:disable
 	if energy < 100:
 		energy += 1
@@ -34,23 +31,23 @@ def update():
 		fire = False
 		for tmpangle in range(8):
 			tmpangle *= 45
-			tmp = objects.bullet(tmpx, tmpy, tmpangle, settings.player.pos)
+			tmp = objects.bullet(tmpangle, settings.player.pos)
 			settings.bullets.append(tmp)
 
 	#shoots in 8 direction and the one youre looking constantly
 	if settings.psycomode:
-		tmp = objects.bullet(tmpx, tmpy, settings.rotation, settings.player.pos)
+		tmp = objects.bullet(settings.rotation, settings.player.pos)
 		settings.bullets.append(tmp)
 		for tmpangle in range(8):
 			tmpangle *= 45
-			tmp = objects.bullet(tmpx, tmpy, tmpangle, settings.player.pos)
+			tmp = objects.bullet(tmpangle, settings.player.pos)
 			settings.bullets.append(tmp)
 
 	if len(settings.morevents) > 0:
 		for event in settings.morevents:
 			if event == "Circle":
 				for tmpangle in range(359):
-					tmp = objects.bullet(tmpx, tmpy, tmpangle, settings.player.pos)
+					tmp = objects.bullet(tmpangle, settings.player.pos)
 					settings.bullets.append(tmp)
 			if event == "Add":
 				#lint:disable
@@ -66,7 +63,7 @@ def update():
 			settings.morevents.remove(event)
 
 	if settings.infinitevents["fire1"]:
-		tm = objects.bullet(tmpx, tmpy, settings.player.rotation, settings.player.pos)
+		tm = objects.bullet(settings.player.rotation, settings.player.pos)
 		settings.bullets.append(tm)
 
 	if settings.infinitevents["roundfire"]:
@@ -79,6 +76,6 @@ def update():
 				tmpan = angle
 				if direction != "Clock":
 					tmpan = 360 - tmpan
-				tmp = objects.bullet(tmpx, tmpy, a * diffangle + tmpan, settings.player.pos)
+				tmp = objects.bullet(a * diffangle + tmpan, settings.player.pos)
 				#lint:enable
 				settings.bullets.append(tmp)

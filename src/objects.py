@@ -234,15 +234,12 @@ class sliders():
 
 class bullet():
 
-	def __init__(self, x, y, angle, refrence):
+	def __init__(self, angle, reference):
 		"""Creates new bullet"""
-		self.start = (x, y)
+		self.start = (reference.centerx, reference.centery)
 		self.image = settings.bullet_img
 		self.pos = self.image.get_rect()
-		half_img = int(refrence.w / 2.0)
-		self.pos_left = half_img - int(self.pos.w / 2.0)
-		self.pos_top = half_img - int(self.pos.h / 2.0)
-		self.pos = self.pos.move(x, y)
+		self.pos.center = self.start
 		self.angle = angle
 		self.move_x = 0.22125 * math.degrees(math.sin((math.radians(self.angle))))
 		self.move_y = -0.22125 * math.degrees(math.cos((math.radians(self.angle))))
@@ -250,16 +247,21 @@ class bullet():
 			self.move_x += settings.player.move_x * settings.player.speed
 			self.move_y += settings.player.move_y * settings.player.speed
 		self.inscreen = True
+		self.distance = [0, 0]
 		self.move(settings.player.pos)
 
 	def move(self, player_pos):
 		"""Moves the bullet"""
-		self.pos.topleft = (0, 0)
-		self.pos_left += self.move_x
-		self.pos_top += self.move_y
-		tmpx = self.start[0] + self.pos_left + (self.start[0] - player_pos[0])
-		tmpy = self.start[1] + self.pos_top + (self.start[1] - player_pos[1])
-		self.pos = self.pos.move(tmpx, tmpy)
+		#movement to adjust to player position
+		tmpx = self.start[0] + (self.start[0] - player_pos[0]) - (self.pos.w / 2.0)
+		tmpy = self.start[1] + (self.start[1] - player_pos[1]) - (self.pos.h / 2.0)
+		#movement by acceleration
+		self.distance[0] += self.move_x
+		self.distance[1] += self.move_y
+		#overall position
+		self.pos.center = (self.distance[0] + tmpx, self.distance[1] + tmpy)
+
+		#inscreen detection
 		if not self.pos.colliderect(settings.screen.get_rect()):
 			self.inscreen = False
 

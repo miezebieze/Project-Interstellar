@@ -32,14 +32,14 @@ class player():
 		folder = "./assets/sprites/player/"
 
 		names = [
-			name + "_upri", name + "_ri", name + "_dori", name + "_do",
-			name + "_dole", name + "_le", name + "_uple"]
+			name + "_up", name + "_upri", name + "_ri", name + "_dori",
+			name + "_do", name + "_dole", name + "_le", name + "_uple"]
 
 		#generates new images in ./assets/sprites/player
 		for nameoffile in names:
 			self.playerup = pygame.image.load("./assets/sprites/ships/" +
-			name + "_up.tif")
-			angle = (names.index(nameoffile) + 1) * -45
+			name + ".tif")
+			angle = names.index(nameoffile) * -45
 			nameoffile = folder + nameoffile + ".png"
 			pygame.image.save(pygame.transform.rotate(self.playerup, angle), nameoffile)
 
