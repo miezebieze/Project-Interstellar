@@ -30,8 +30,7 @@ def handle():
 		if event.type == KEYUP:
 			key = pygame.key.name(event.key)
 			if key == "x" or key == "y":
-				pass
-				#settings.player.speed = 15
+				settings.player.speedboost = 1
 			if key == "w" or key == "up":
 				settings.up = False
 			if key == "s" or key == "down":
@@ -53,11 +52,9 @@ def handle():
 			if key == "f6":
 				sounds.music.play("next")
 			if key == "x":
-				pass
-				#settings.player.speed = 5
+				settings.player.speedboost = 0.3
 			if key == "y":
-				pass
-				#settings.player.speed = 40
+				settings.player.speedboost = 1.7
 			if key == "w" or key == "up":
 				settings.up = True
 			if key == "s" or key == "down":

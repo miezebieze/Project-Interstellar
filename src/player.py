@@ -24,6 +24,7 @@ class player():
 		self.rel_y = 0  # relative y position
 		self.timeplay = 0  # Time player has played
 		self.update = True  # If yes new image gets loaded
+		self.speedboost = 1
 
 	def create_images(self, name):
 		"""creates new images from one image for the player"""
@@ -99,9 +100,9 @@ class player():
 
 		#this part is responsible for the movement of the player
 		#this calculates speed in y and x direction
-		self.move_x = konstspeed * math.degrees(math.sin(
+		self.move_x = self.speedboost * konstspeed * math.degrees(math.sin(
 			(math.radians(self.rotation))))
-		self.move_y = -konstspeed * math.degrees(math.cos(
+		self.move_y = self.speedboost * -konstspeed * math.degrees(math.cos(
 			(math.radians(self.rotation))))
 
 		#this actually moves the rect and ensures that you stay in screen
@@ -185,4 +186,5 @@ class player():
 		self.should_move = False
 		self.rot_dest = 0
 		self.rotation = 0
+		self.speedboost = 1
 		self.pos = self.img.get_rect()
