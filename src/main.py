@@ -13,10 +13,10 @@ from . import menu
 from . import missions
 from . import specials
 from . import sounds
-from pygame.locals import *
+#from pygame.locals import * <-- bad
 
 #Starts timer/clock for the movement, so it stays constant
-pygame.time.set_timer(USEREVENT + 1, 25)
+pygame.time.set_timer(pygame.USEREVENT + 1, 25)
 
 #initialize all variables for the modules
 settings.init()
@@ -27,13 +27,15 @@ sounds.init()
 movement.handle()
 specials.init()
 
-
-print(("Loading time: " + str(pygame.time.get_ticks() / 1000.0)))
+print "Loading time: " + str(pygame.time.get_ticks() / 1000.0)
 
 if not settings.skip:
-	menu.main()
+    menu.main()
 
 #start clock for checking time how long has been played
+#TODO: variables that are not insides functions or classes should be all caps
+#       but I can't change that because I don't know where all uses of this
+#       variable are. See issue #2
 global clock
 clock = settings.clock
 
@@ -42,33 +44,38 @@ missions.init()
 
 
 def main():
-	while settings.run:
+    """The main loop of the program.
 
-		#get events/user-input
-		settings.upd("get_events")
-		sounds.music.update(settings.events)
+    Personally I think this should be in the Run.py file - Jarvis
+    """
 
-		#handle the user input
-		interface.handle()
+    while settings.run:
 
-		#handles the movement every 25 milliseconds
-		for event in settings.events:
-			if event.type == USEREVENT + 1:
-				movement.handle()
+        #get events/user-input
+        settings.upd("get_events")
+        sounds.music.update(settings.events)
 
-		#makes a clock tick (pygame internal stuff)
-		clock.tick()
+        #handle the user input
+        interface.handle()
 
-		#display everything
-		draw.ingame()
+        #handles the movement every 25 milliseconds
+        #TODO: Why every 25?
+        for event in settings.events:
+            if event.type == pygame.USEREVENT + 1:
+                movement.handle()
 
-		#check if missions have been fulfilled
-		missions.handle("ingame")
+        #makes a clock tick (pygame internal stuff)
+        clock.tick()
 
+        #display everything
+        draw.ingame()
+
+        #check if missions have been fulfilled
+        missions.handle("ingame")
 
 while True:
-	#basic cycle: Start game, when won show main menu
-	main()
-	settings.run = True
-	settings.reset()
-	menu.main()
+    #basic cycle: Start game, when won show main menu
+    main()
+    settings.run = True
+    settings.reset()
+    menu.main()
