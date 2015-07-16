@@ -35,23 +35,23 @@ except ImportError as message:
         raise SystemExit("Pygame not installed")
     else:
         #unknown import error
-        print "ERROR IMPORTING MODULES: %s" % message
+        print (("ERROR IMPORTING MODULES: %s" % message))
         raise SystemExit(traceback.format_exc())
 
 except AttributeError as message:
     #excuted if font module is not installed
     MESSAGE = str(message)
-    print MESSAGE
+    print (MESSAGE)
     if MESSAGE[len(MESSAGE) - 5:][:4] == "font":  # the name of the module
         raise SystemExit("Font module not installed (SDL_ttf)!")
         #TODO: Would it be possible for this module not to be installed?
     else:
-        print "Unexpected error:", sys.exc_info()[0]
-        print ""
+        print (("Unexpected error:", sys.exc_info()[0]))
+        print ("")
         raise SystemExit(traceback.format_exc())
 
 except Exception as detail:
     #general errors
-    print "Unexpected error:", sys.exc_info()[0]
-    print ""
+    print (("Unexpected error:", sys.exc_info()[0]))
+    print ("")
     raise SystemExit(traceback.format_exc())
