@@ -25,7 +25,9 @@ try:
 
     #Run the game
     from src import main
-    #main.void() Not sure why this is here, main has no void member
+    main.void()  # Not sure why this is here, main has no void member
+        # Because the PEP-8 checking tool says "'main' imported but unused"
+        # I know its a workaround…
 
 #Handeling errors
 except ImportError as message:
@@ -40,7 +42,7 @@ except AttributeError as message:
     #excuted if font module is not installed
     MESSAGE = str(message)
     print MESSAGE
-    if MESSAGE[len(MESSAGE) - 5:][:4] == "font":  #the name of the module
+    if MESSAGE[len(MESSAGE) - 5:][:4] == "font":  # the name of the module
         raise SystemExit("Font module not installed (SDL_ttf)!")
         #TODO: Would it be possible for this module not to be installed?
     else:
