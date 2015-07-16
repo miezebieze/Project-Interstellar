@@ -13,8 +13,8 @@ def init():
 	global device
 	global connected
 	get_device()
-	device = pygame.midi.Input(device_id)
 	try:
+		device = pygame.midi.Input(device_id)
 		get_input()
 		connected = True
 	except NameError:
