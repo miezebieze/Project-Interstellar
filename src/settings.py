@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+
+"""The class that stores all of the settings and variables"""
+
 import pygame
-from pygame.locals import *
+#from pygame.locals import *
 from ConfigParser import SafeConfigParser
 from libs.pyganim import pyganim
 import os
@@ -9,82 +12,18 @@ import sys
 import traceback
 
 
-def init():
+class Settings: 
+        
+    def __init__(self):
 
-	global up  # player should move up
-	global down  # player should move down
-	global left  # player should move left
-	global right  # player should move right
-#		global player  # player surf
-#		global player_pos  # player rect
-#		global rotation  # current rotation of player
-#		global rot_dest  # destination in which to rotate
-#		global move  # determines if player should move at all
-#		global move_x  # movement in x direction in pixels
-#		global move_y  # movement in y direction in pixels
-#		global pos_x  # percentage position of screen
-#		global pos_y  # percentage position of screen
-#		global speed  # speed of player
-	global konstspeed  # some konstant for speed
-	global clock  # clock object of pygame
-	global stdfont  # global font defenition
-	global typeface  # the typeface...
-	global fullscreen  # determines current state if fullscreen or not
-	global fullscreenold  # used to check if fullscreen has changes
-	global screen  # the screen
-	global screenx  # maximum x pixels
-	global screeny  # maximum y pixels
-	global aspect_ratio  # aspect ratio
-	global screenx_current  # current x pixels
-	global screeny_current  # current y pixels
-	global fade  # a black surface
-	global fade_pos  # position of the black surface
-	global fake_size  # the ratio of screenx_current and the size of the background
-	global bullets  # list of all bullets
-	global dstars  # amount of stars
-	global debugscreen  # determines wether to show debug info
-	global isnear  # easteregg
-	global button  # image for the button
-	global buttonover  # = when hovered over
-	global buttonclick  # = when clicked
-	global field  # image for the inputfield
-	global field1  # other image for inputfield
-	global knob  # knob image
-	global box  # button image
-	global bullet_img  # image for the bullet
-	global targeton_img  # surf for target whenlight turned on
-	global targetoff_img  # surf for target when turned off
-	global code  # used for custom user events
-	global events  # events
-	global music  # the music playlist object
-	global color  # global color defenition
-	global skip  # unsused (currently)
-	global volume  # volume
-	global musics  # the list of music titles assoziated wih the music files
-	global saves  # all savegames
-	global psycomode  # if psycomode is turned on
-#		global timeplay  # time how long the player has been playing
-	global current_game  # the current savegame and default when no game is saved
-	global explosions  # list of surfs of explosions
-	global explosions_disp  # list of showing explosions
-	global run  # boolean for main loop
-	global dtargets  # amount of targets
-#		global update  # determines whether new image needs to be loaded
-	global include_music
-	global morevents
-	global infinitevents
-	global musicend
-	global border1
-	global world  # a placeholder for the world class
-	global objects_on_screen  # entitys currently blitted to screen
-	global player  # abstract player class
-	global localmap  # A dict of the local worlds
 
 	#set up screen
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
-	pygame.display.set_mode()
+	pygame.display.set_mode() #Not sure why this is needed here, you can use
+                                  #pygame.display.list_modes()[-1], that way you
+                                  #won't have a fullscreen flash
 	screenx = pygame.display.Info().current_w
 	screeny = pygame.display.Info().current_h
 	aspect_ratio = screenx / float(screeny)
@@ -98,66 +37,66 @@ def init():
 		os.makedirs("./screenshots/")
 
 	#load images
-	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
-	fade = pygame.Surface((screenx, screeny))
-	button = pygame.image.load("./assets/sprites/Button1.tif")
-	buttonover = pygame.image.load("./assets/sprites/Button2.tif")
-	buttonclick = pygame.image.load("./assets/sprites/Button3.tif")
-	field = pygame.image.load("./assets/sprites/inputbox1.tif")
-	field1 = pygame.image.load("./assets/sprites/inputbox2.tif")
-	knob = pygame.image.load("./assets/sprites/knob1.tif")
-	box = pygame.image.load("./assets/sprites/Button1.tif")
-	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif")
-	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif")
-	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
-	border1 = pygame.image.load("./assets/sprites/bar1.tif")
+	self.background = pygame.image.load("./assets/sprites/Background2.tif").convert()
+	self.fade = pygame.Surface((screenx, screeny))
+	self.button = pygame.image.load("./assets/sprites/Button1.tif")
+	self.buttonover = pygame.image.load("./assets/sprites/Button2.tif")
+	self.buttonclick = pygame.image.load("./assets/sprites/Button3.tif")
+	self.field = pygame.image.load("./assets/sprites/inputbox1.tif")
+	self.field1 = pygame.image.load("./assets/sprites/inputbox2.tif")
+	self.knob = pygame.image.load("./assets/sprites/knob1.tif")
+	self.box = pygame.image.load("./assets/sprites/Button1.tif")
+	self.bullet_img = pygame.image.load("./assets/sprites/Bullet.tif")
+	self.targeton_img = pygame.image.load("./assets/sprites/mine_on.tif")
+	self.targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
+	self.border1 = pygame.image.load("./assets/sprites/bar1.tif")
 
-	fade_pos = fade.get_rect()  # lint:ok
+	self.fade_pos = fade.get_rect()  # lint:ok
 
 	#define some konstants or default values
-	clock = pygame.time.Clock()
-	typeface = "monospace"
-	stdfont = pygame.font.SysFont(typeface, 15)
+	self.clock = pygame.time.Clock()
+	self.typeface = "monospace"
+	self.stdfont = pygame.font.SysFont(self.typeface, 15)
 
-	version = "0.3.2.8 dev"
-	up = False
-	down = False
-	left = False
-	right = False
-	konstspeed = 0.0025
+	self.version = "0.3.2.8 dev"
+	self.up = False
+	self.down = False
+	self.left = False
+	self.right = False
+	self.konstspeed = 0.0025
 
-	fullscreen = False
-	debugscreen = True
-	dstars = 500
-	isnear = "False"
-	code = ""
-	events = []
-	color = (255, 255, 10)
-	skip = False
-	volume = 0.5
-	fullscreenold = False
-	fake_size = 8 / 7.0
-	psycomode = False
-	current_game = "default"
-	run = True
-	dtargets = 15
-	include_music = False
-	morevents = []
-	bullets = []
-	infinitevents = {"fire1": False, "roundfire": False}
-	musicend = USEREVENT + 100
-	events = []
+	self.fullscreen = False
+	self.debugscreen = True
+	self.dstars = 500
+	self.isnear = "False"
+	self.code = ""
+	self.events = []
+	self.color = (255, 255, 10)
+	self.skip = False
+	self.volume = 0.5
+	self.fullscreenold = False
+	self.fake_size = 8 / 7.0
+	self.psycomode = False
+	self.current_game = "default"
+	self.run = True
+	self.dtargets = 15
+	self.include_music = False
+	self.morevents = []
+	self.bullets = []
+	self.infinitevents = {"fire1": False, "roundfire": False}
+	self.musicend = USEREVENT + 100
+	self.events = []
 
 	from .player import player as player
-	player = player()
+	self.player = player()
 
 	pygame.display.set_caption("Project Interstellar " + version)
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
 	#more complex default settings like creation of stars and targets and so on
-	if debugscreen:
-		volume = 0.0
-		fullscreen = False
+	if self.debugscreen:
+		self.volume = 0.0
+		self.fullscreen = False
 
 	def get_anim_source(num, quantity):
 		animationsourcetmp = []
@@ -173,135 +112,114 @@ def init():
 			animationsourcetmp.append(tmp)
 		return animationsourcetmp
 
-	explosion9 = pyganim.PygAnimation(get_anim_source(9, 32), loop=False)
-	explosion10 = pyganim.PygAnimation(get_anim_source(10, 32), loop=False)
-	explosion11 = pyganim.PygAnimation(get_anim_source(11, 24), loop=False)
-	explosions = [explosion9, explosion10, explosion11]
-	explosions_disp = []
+	self.explosion9 = pyganim.PygAnimation(get_anim_source(9, 32), loop=False)
+	self.explosion10 = pyganim.PygAnimation(get_anim_source(10, 32), loop=False)
+	self.explosion11 = pyganim.PygAnimation(get_anim_source(11, 24), loop=False)
+	self.explosions = [explosion9, explosion10, explosion11]
+	self.explosions_disp = []
 
-	saves = []
+	self.saves = []
 	for filename in os.listdir("./saves"):
 		if filename.endswith(".ini"):
 			filename = filename[:-4]
-			saves.append(filename)
+			self.saves.append(filename)
 
-	if fullscreen:
-		screen = pygame.display.set_mode(
-			(screenx_current, screeny_current),
-			pygame.FULLSCREEN, 32)
-	if not fullscreen:
-		screenx_current = int(screenx_current / 2.0)
-		screeny_current = int(screeny_current / 2.0)
-		screen = pygame.display.set_mode((screenx_current, screeny_current),
-		0, 32)
+	if self.fullscreen:
+            #This should really be handled in the main file
+	    screen = pygame.display.set_mode(
+                    (screenx_current, screeny_current),
+		    pygame.FULLSCREEN, 32)
+	if not self.fullscreen:
+            screenx_current = int(screenx_current / 2.0)
+            screeny_current = int(screeny_current / 2.0)
+            screen = pygame.display.set_mode((screenx_current, screeny_current),
+                    0, 32)
 
 	from . import worlds
-	localmap = {}
+	self.localmap = {}
 	for a in range(9):
-		world = worlds.world()
-		world.generate(background, dstars, dtargets)
-		localmap["[" + str(a + 1) + "]"] = world
+		self.world = worlds.world()
+		self.world.generate(background, dstars, dtargets)
+		self.localmap["[" + str(a + 1) + "]"] = world
 
-	upd("adjust_screen")
+	self.upd("adjust_screen")
 
 
-def reset():
+    def reset(self):
 
 	"""resets some settings"""
-	global up
-	global down
-	global left
-	global right
-	global player
-	global player_pos
-	global fade_pos
-	global background_pos
-	global rot_dest
-	global move
-	global move_x
-	global move_y
-	global speed
-	global konstspeed
-	global debugscreen
-	global color
-	global timeplay
-	global dstars
-	global dtargets
-
-	pygame.event.set_grab(False)
-	pygame.mouse.set_visible(False)
-
-	player.reset()
-	fade_pos = fade.get_rect()  # lint:ok
-
-	konstspeed = 0.0025
-	color = (255, 255, 10)
+        pygame.event.set_grab(False)
+        pygame.mouse.set_visible(False)
+        
+        self.player.reset()
+        self.fade_pos = fade.get_rect()  # lint:ok
+        
+        self.konstspeed = 0.0025
+        self.color = (255, 255, 10)
 
 	from . import missions
 	missions.handle("pause")
 
-	if debugscreen:
-		fullscreen = False  # lint:ok
+	if self.debugscreen:
+		self.fullscreen = False  # lint:ok
 
-	world.generate(world.background, dstars, dtargets)
+	self.world.generate(world.background, dstars, dtargets)
 
 
-def upd(level):
+    def upd(self, level):
 
 	"""updates various variables"""
 	if level == "get_events":
-		global events
-		events = pygame.fastevent.get()
-		return
+            events = pygame.fastevent.get()
+            return
+
 	if level == "screenvalues+vol":  # So 1 counts too
-		global screenx_current
-		global screeny_current
-		global volume
-		screenx_current = pygame.display.Info().current_w
-		screeny_current = int(screenx_current * 9.0 / 16.0)
-		volume = pygame.mixer.music.get_volume()
-		return
+            screenx_current = pygame.display.Info().current_w
+            screeny_current = int(screenx_current * 9.0 / 16.0)
+            volume = pygame.mixer.music.get_volume()
+            return
+
 	if level == "get_saves":
-		global saves
-		saves = []
-		for filename in os.listdir("./saves"):
-			if filename.endswith(".ini"):
-				filename = filename[:-4]
-				if not filename in ("default"):
-					saves.append(filename)
-		return
+            self.saves = []
+            for filename in os.listdir("./saves"):
+                if filename.endswith(".ini"):
+                    filename = filename[:-4]
+                    if not filename in ("default"):
+                        self.saves.append(filename)
+            return
+
 	if level == "adjust_screen":
-		from . import draw
-		global background
-		global background_pos
-		global konstspeed
-		global no16to9
+            from . import draw
+            draw.adjustscreen()
+	
+            self.upd("screenvalues+vol")
+            
+            self.konstspeed = 0.0025
+            self.konstspeed = konstspeed * (screenx_current / 1920.0)
+            
+            self.world.adjust_to_screen()
+            return
 
-		draw.adjustscreen()
-		upd("screenvalues+vol")
-
-		konstspeed = 0.0025
-		konstspeed = konstspeed * (screenx_current / 1920.0)
-
-		world.adjust_to_screen()
-
-		return
 	print("Something went wrong here")
-	int("test")  # Used to crash the game to see where no option is selected
 
+        raise "No acceptable input recieved"
+	"""int("test")  # Used to crash the game to see where no option is selected
+                     #why? why not just raise 
+        """
 
-def toggle(var, option1, option2):
+    #These next few don't NEED to be part of the class, but I'm too lazy to completely do this file.
+    def toggle(self, var, option1, option2):
 	#toggles between option1 and 2 and retunr var, saves some space
 	if var == option1:
-		var = "yep"
-	if var == option2:
-		var = option1
-	if var == "yep":
 		var = option2
+	elif var == option2:
+		var = option1
+        else:
+            print "var does not equal either option!"
 	return var
 
 
-def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
+    def modrender(self, typeface, size, text, antialias, color, maxsize, borderoff):
 	#local typeface!
 	nofit = True
 	while nofit:
@@ -315,7 +233,7 @@ def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
 	return tmpfont.render(text, antialias, color)
 
 
-def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
+    def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 	#local typeface!
 	nofit = True
 	while nofit:
@@ -329,12 +247,10 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 	return size
 
 
-class save():
+    class save():
 
 	def __init__(self, name):
 		"""create a new savegame"""
-		global saves
-		global current_game
 
 		name = name.encode("utf-8")
 		self.name = name
@@ -371,28 +287,24 @@ class save():
 		with open("./saves/" + name + ".ini", "w") as tmp:
 			self.config.write(tmp)
 
+    """You get my point. Much less globals, and all stored here in this class.
+       It would take a lot of work to get all all of the files up to standards
+       and to remove all the globals, but I think in the end it would be worth
+       it. I feel like if you don't do this now, eventually you may get so fed
+       up with how clunky and hard to manage the project becomes that you may
+       give it up.
+    """
 
-def load(name):
+    def load(self, name):
 	"""Load savegame"""
-	global fullscreen
-	global screenx_current
-	global screeny_current
-	global debugscreen
-	global config
-	global skip
-	global pos_x
-	global pos_y
-	global volume
-	global saves
-	global screen
 
-	upd("get_saves")
+	self.upd("get_saves")
 
 	config = SafeConfigParser()
-	for a in saves:
+	for a in self.saves:
 		if a == name.encode("utf-8"):
 			config.read("./saves/" + a + ".ini")
-	if not (saves == []):
+	if not (self.saves == []):
 
 		#tries to load and returns values in terminal that couldnt be loaded
 		try:
