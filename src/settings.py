@@ -84,9 +84,9 @@ def init():
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
-	pygame.display.set_mode()
 	screenx = pygame.display.Info().current_w
 	screeny = pygame.display.Info().current_h
+	pygame.display.set_mode((1, 1))
 	aspect_ratio = screenx / float(screeny)
 	screenx_current = screenx
 	screeny_current = int(screenx_current * 9.0 / 16.0)
