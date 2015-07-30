@@ -3,6 +3,17 @@ import pygame
 import disp_elem
 
 
+def convert2list(string):
+	num_of_elem = string.count(",") + 1
+	elements = []
+	string = string[1:]
+	for a in range(num_of_elem - 1):
+		elements.append(string[:string.index(",")])
+		string = string[string.index(",") + 1:]
+	elements.append(string[:-1])
+	return elements
+
+
 class create_menu():
 
 	def __init__(self, filename, ref):
@@ -17,18 +28,16 @@ class create_menu():
 				if line[0] == "<":
 					var = line[1:line.index(" ")]
 					elem = line[line.index("=") + 2:]
-					if var[0] == "#":
-						#self.vars[var[1:]] = pygame.image.load(elem)
+					if var[0] == "\"":
 						self.vars[var[1:]] = elem
 					if var[0] == "~":
 						self.vars[var[1:]] = float(elem)
-					if var[0] == "\"":
-						self.vars[var[1:]] = elem
+					if var[0] == "#":
+						self.vars[var[1:]] = convert2list(elem)
 					if var[0] == "*":
-						self.vars[var[1:]] = (int(elem[:elem.index(",")]),
-								int(elem[elem.index(",") + 1:]
-									[:(elem[elem.index(",") + 1:]).index(",")]),
-								int(elem[5:][elem[5:].index(",") + 1:]))
+						self.vars[var[1:]] = []
+						for numelem in convert2list(elem):
+							self.vars[var[1:]].append(int(numelem))
 					if var[0] == "%":
 						self.vars[var[1:]] = float(elem) / 100.0
 				if line[0] == "@":
@@ -40,9 +49,12 @@ class create_menu():
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
-						size = self.vars[line[1: line.index("|")]]
+						pass
+						#size = self.vars[line[1: line.index("|")]]
 					else:
-						size = float(line[1: line.index("|")])
+						pass
+						#Needs implementation
+						#size = float(line[1: line.index("|")])
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
@@ -54,16 +66,17 @@ class create_menu():
 					if line[0] == "$":
 						color = self.vars[line[1: line.index("|")]]
 					else:
-						color = (int(line[:line.index(",")]),
-								int(line[line.index(",") + 1:]
-									[:(line[line.index(",") + 1:]).index(",")]),
-								int(line[5:][line[5:].index(",") + 1: line[5:].index("|")]))
+						color = []
+						for elem in convert2list(line[:line.index("|")]):
+							color.append[int(elem)]
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
 						img = self.vars[line[1: line.index("|")]]
 					else:
-						img = line[1: line.index("|")].rstrip()
+						print("Error: Outline only accepts only variables")
+						print(("In line " + str(conf_file.index(line))))
+						quit()
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
@@ -83,23 +96,43 @@ class create_menu():
 						else:
 							rel_y = int(line[0: line.index("|")])
 
+					self.elem.append(disp_elem.button(rel_x, rel_y, ref,
+							text, typeface, color, img))
+
 		if "background" in self.vars:
-			self.elem = [pygame.transform.smoothscale(
-					pygame.image.load(self.vars["background"]),
-					ref.size)]
-		self.elem.append(disp_elem.button(rel_x, rel_y, ref,
-				text, typeface, color, img))
+			self.elem.append(pygame.transform.smoothscale(
+					pygame.image.load(self.vars["background"][0]),
+					ref.size))
+		self.elem = self.elem[::-1]
+
+	def get_klicked(self):
+		klicked = []
+		for elem in self.elem:
+			if isinstance(elem, disp_elem.button):
+				if elem.klicked:
+					klicked.append(elem)
+		return klicked
 
 
 pygame.init()
+pygame.fastevent.init()
 screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
 
 men = create_menu("./test1.menu", screen.get_rect())
-print men.vars
+print((men.vars))
+print((men.elem))
 while True:
+	events = pygame.fastevent.get()
 	for elem in men.elem:
 		if type(elem) == pygame.Surface:
 			screen.blit(elem, elem.get_rect())
-		else:
-			elem.blit(screen)
-		pygame.display.flip()
+		elif isinstance(elem, disp_elem.button):
+			elem.blit(screen, events)
+
+	for event in events:
+		if event.type == pygame.locals.USEREVENT and event.code == "MENU":
+			for elem in men.get_klicked():
+				if elem.text == "Exit":
+					quit()
+
+	pygame.display.flip()

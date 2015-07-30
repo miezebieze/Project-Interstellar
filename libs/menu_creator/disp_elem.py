@@ -34,64 +34,64 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	def __init__(self, x, y, ref, text, typeface, color, button_file):
+	def __init__(self, x, y, ref, text, typeface, color, buttons_files):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
 		#going to be simplified next refactoring
-		self.button = pygame.image.load(button_file)
-		self.pos = self.button.get_rect()
+		self.buttons = (pygame.image.load(buttons_files[0]),
+				pygame.image.load(buttons_files[1]),
+				pygame.image.load(buttons_files[2]))
+		self.pos = self.buttons[0].get_rect()
 		self.x = x
 		self.y = y
 		self.typeface = typeface
-		self.text = modrender(typeface, 30,
+		self.text = text
+		self.text_img = modrender(typeface, 30,
 			text, True, color,
 			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
+		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 		self.klicked = False
 		self.move(self.x, self.y, ref)
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
-		self.text = modrender(self.typeface, 30,
+		self.text_img = modrender(self.typeface, 30,
 			text, True, color,
 			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
+		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 
 	def move(self, x, y, ref):
 		"""Moves the button so that x and y are the center"""
-		self.pos = self.button.get_rect()
+		self.pos = self.buttons[0].get_rect()
 		if type(x) == float and x < 1:
 			x *= float(ref.w)
 		if type(y) == float and y < 1:
 			y *= float(ref.h)
-			print True
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.textpos = self.text.get_rect()
+		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 
-	def blit(self, screen):
+	def blit(self, screen, events):
 		"""Blits the button"""
 		#blitts the button and changes image when hovered over or being clicked
 		#also posts a menu event to show that a button has been clicked
 		#to increase performance should be easy to understand
-		self.klicked = False
-		if self.pos.collidepoint(pygame.mouse.get_pos()):
-			#self.button = settings.buttonover
-			screen.blit(self.button, self.pos)
-			#for event in settings.events:
-			#	if event.type == MOUSEBUTTONDOWN and event.button == 1:
-			#		self.button = settings.buttonclick
-			#		screen.blit(self.button, self.pos)
-			#		menue = pygame.event.Event(USEREVENT, code="MENU")
-			#		pygame.fastevent.post(menue)
-			#		self.klicked = True
+		if self.pos.collidepoint(pygame.mouse.get_pos()) and not self.klicked:
+			screen.blit(self.buttons[1], self.pos)
+			for event in events:
+				if event.type == MOUSEBUTTONDOWN and event.button == 1:
+					menue = pygame.event.Event(USEREVENT, code="MENU")
+					pygame.fastevent.post(menue)
+					self.klicked = True
+					screen.blit(self.buttons[2], self.pos)
+		elif not self.klicked:
+			screen.blit(self.buttons[0], self.pos)
 		else:
-			self.button = self.button
-			screen.blit(self.button, self.pos)
+			screen.blit(self.buttons[2], self.pos)
 
-		screen.blit(self.text, self.textpos)
+		screen.blit(self.text_img, self.textpos)
 
 
 class inputfield():
