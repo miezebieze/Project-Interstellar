@@ -33,7 +33,25 @@ class create_menu():
 					if var[0] == "~":
 						self.vars[var[1:]] = float(elem)
 					if var[0] == "#":
-						self.vars[var[1:]] = convert2list(elem)
+						elems = convert2list(elem)
+						try:
+							elems[len(elems) - 1] = int(elems[len(elems) - 1])
+							if len(elems) == 2:
+								elems.insert(0, elems[0])
+								elems.insert(0, elems[0])
+							if len(elems) == 3:
+								elems.insert(2, elems[1])
+						except:
+							if len(elems) == 1:
+								elems.append(elems[0])
+								elems.append(elems[0])
+								elems.append(0)
+							if len(elems) == 2:
+								elems.append(elems[1])
+								elems.append(0)
+							if len(elems) == 3:
+								elems.append(0)
+						self.vars[var[1:]] = elems
 					if var[0] == "*":
 						self.vars[var[1:]] = []
 						for numelem in convert2list(elem):
@@ -49,12 +67,9 @@ class create_menu():
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
-						pass
-						#size = self.vars[line[1: line.index("|")]]
+						maxsize = self.vars[line[1: line.index("|")]]
 					else:
-						pass
-						#Needs implementation
-						#size = float(line[1: line.index("|")])
+						maxsize = float(line[1: line.index("|")])
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
@@ -97,12 +112,12 @@ class create_menu():
 							rel_y = int(line[0: line.index("|")])
 
 					self.elem.append(disp_elem.button(rel_x, rel_y, ref,
-							text, typeface, color, img))
+							text, typeface, maxsize, color, img[:3], int(img[3])))
 
 		if "background" in self.vars:
 			self.elem.append(pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
-					ref.size))
+					ref.maxsize))
 		self.elem = self.elem[::-1]
 
 	def get_klicked(self):

@@ -34,7 +34,8 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	def __init__(self, x, y, ref, text, typeface, color, buttons_files):
+	def __init__(self, x, y, ref, text, typeface, size,
+			color, buttons_files, borderoff):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
 		#going to be simplified next refactoring
@@ -48,7 +49,7 @@ class button():
 		self.text = text
 		self.text_img = modrender(typeface, 30,
 			text, True, color,
-			self.pos.size, 6)
+			self.pos.size, borderoff)
 		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 		self.klicked = False

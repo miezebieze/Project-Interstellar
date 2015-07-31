@@ -1,4 +1,4 @@
-<#box1 = (./Button1.tif,./Button2.tif,./Button3.tif)
+<#box1 = (./Button1.tif,./Button2.tif,./Button3.tif, 6)
 <~size = 13
 <"typeface = monospace
 <*color = (255,255,10)
