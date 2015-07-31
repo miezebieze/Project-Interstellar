@@ -1,5 +1,6 @@
+	# lint:ok
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
+
 import pygame
 from pygame.locals import *
 
@@ -149,19 +150,32 @@ class inputfield():
 
 class sliders():
 
-	def __init__(self, value, x, y):
+	def __init__(self, name, size, typeface, color, box,
+		x, y, ref, options_list=False):
+		print (name, size, typeface, color, box,
+		x, y, ref, options_list)
 		"""Creates a new slider"""
-		self.value = value
-		self.box = settings.box
-		self.knob = settings.knob
-		self.pos = self.box.get_rect()
+		self.value = 0.0
+		self.box = pygame.image.load(box[0])
+		self.knob = pygame.image.load(box[0])
 		self.knob_pos = self.knob.get_rect()
-		self.pos.top = y - (self.pos.h / 2.0)
-		self.pos.left = x - (self.pos.w / 2.0)
-		self.knob_pos.top = self.pos.top
-		self.knob_pos.left = self.pos.left + (self.pos.w * value)
-		self.scale = 1.0 / self.pos.w
 		self.dragged = False
+		self.typeface = typeface
+		self.color = color
+		self.options_list = options_list
+		self.name = name
+		self.size = size
+		self.borderoff = box[3]
+
+		self.pos = self.box.get_rect()
+		if type(x) == float and x < 1:
+			x *= float(ref.w)
+		if type(y) == float and y < 1:
+			y *= float(ref.h)
+		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
+		self.knob_pos.top = self.pos.top
+		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)
+		self.scale = 1.0 / self.pos.w
 
 	def modify(self, events):
 		"""Modifies the slider (e.g. pos)"""
@@ -184,21 +198,33 @@ class sliders():
 		if self.value <= 0.01:
 			self.value = 0.0
 		if self.value >= 0.995:
-			self.value = 1.0
+			self.value = 1.0000000001
 		tmp = (self.value * (self.pos.w - self.knob_pos.w))
 		self.knob_pos.left = self.pos.left + tmp
 
-	def blit(self, name):
+	def blit(self, screen, events):
+		#( name, options_list=False):
 		"""Blits the slider"""
-		screen = settings.screen
-		tmp = name + "{0:.2f}".format(self.value) + "%"
-		tmp = tmp.replace("0.0", "").replace("0.", "").replace(".", "")
-		self.render_text = settings.modrender(settings.typeface, 30,
-			tmp, True, settings.color,
-			self.pos.size, 6)
+		self.modify(events)
+		if type(self.options_list) == bool:
+			tmp = self.name + ": " + str(self.value)[:4] + "%"
+			tmp = tmp.replace("0.0", "0").replace("0.", "").replace(".", "")
+			self.render_text = modrender(self.typeface, self.size,
+				tmp, True, self.color,
+				self.pos.size, self.borderoff)
+		else:
+			steps = 1.0 / len(self.options_list)
+			for area in range(len(self.options_list)):
+				area += 1
+				if self.value <= steps * area and self.value >= steps * (area - 1):
+					item = self.options_list[area - 1]
+					break
+			text = self.name + ": " + item
+			self.render_text = modrender(self.typeface, 30,
+				text, True, self.color,
+				self.pos.size, 6)
 		self.textpos = self.render_text.get_rect()
 		self.textpos.center = self.pos.center
-
 		screen.blit(self.box, self.pos)
 		screen.blit(self.knob, self.knob_pos)
 		screen.blit(self.render_text, self.textpos)

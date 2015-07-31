@@ -23,7 +23,7 @@ class create_menu():
 		with open(filename) as conf_file:
 			for line in conf_file:
 				line = line.rstrip("\n")
-				if len(line) < 1:
+				if len(line) < 1 or line[0] == "/":
 					continue
 				if line[0] == "<":
 					var = line[1:line.index(" ")]
@@ -58,24 +58,27 @@ class create_menu():
 							self.vars[var[1:]].append(int(numelem))
 					if var[0] == "%":
 						self.vars[var[1:]] = float(elem) / 100.0
+					if var[0] == "[":
+						self.vars[var[1:]] = convert2list(elem)
+
 				if line[0] == "@":
 					line = line[2:]
 
-					text = (line[:line.index("|")]).rstrip()
+					text = (line[:line.index("|")]).strip()
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
 					line = line[line.index("|") + 1:]
-					if line[0] == "$":
-						maxsize = self.vars[line[1: line.index("|")]]
+					if line.strip()[0] == "$":
+						maxsize = self.vars[line.strip()[1: line.strip().index("|")]]
 					else:
-						maxsize = float(line[1: line.index("|")])
+						maxsize = float(line[1: line.index("|")].strip())
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
-						typeface = self.vars[line[1: line.index("|")]].rstrip()
+						typeface = self.vars[line[1: line.index("|")]].strip()
 					else:
-						typeface = line[1: line.index("|")].rstrip()
+						typeface = line[1: line.index("|")].strip()
 
 					line = line[line.index("|") + 1:]
 					if line[0] == "$":
@@ -114,10 +117,76 @@ class create_menu():
 					self.elem.append(disp_elem.button(rel_x, rel_y, ref,
 							text, typeface, maxsize, color, img[:3], int(img[3])))
 
+				if line[0] == "-":
+					line = line[2:]
+
+					text = (line[:line.index("|")]).strip()
+					if text[0] == "$":
+						text = self.vars[text[1:]]
+
+					if line.count("|") == 8:
+						line = line[line.index("|") + 1:]
+						if line[0] == "$":
+							options = self.vars[line[1: line.index("|")]]
+						else:
+							options = line[1: line.index("|")].strip()
+					else:
+						options = False
+
+					line = line[line.index("|") + 1:]
+					if line.strip()[0] == "$":
+						maxsize = int(self.vars[line.strip()[1: line.strip().index("|")]])
+					else:
+						maxsize = int(line[1: line.index("|")].strip())
+
+					line = line[line.index("|") + 1:]
+					if line[0] == "$":
+						typeface = self.vars[line[1: line.index("|")]]
+					else:
+						typeface = line[1: line.index("|")].strip()
+
+					line = line[line.index("|") + 1:]
+					if line[0] == "$":
+						color = self.vars[line[1: line.index("|")]]
+					else:
+						color = []
+						for elem in convert2list(line[:line.index("|")]):
+							color.append[int(elem)]
+
+					line = line[line.index("|") + 1:]
+					if line[0] == "$":
+						img = self.vars[line[1: line.index("|")]]
+					else:
+						print("Error: Outline only accepts only variables")
+						print(("In line " + str(conf_file.index(line))))
+						quit()
+
+					line = line[line.index("|") + 1:]
+					if line[0] == "$":
+						rel_x = self.vars[line[1: line.index("|")]]
+					else:
+						if line[1] == "%":
+							rel_x = float(line[3:line.index("|") - 1]) / 100
+						else:
+							rel_x = int(line[0: line.index("|")])
+
+					line = line[line.index("|") + 1:]
+					if line[0] == "$":
+						rel_y = self.vars[line[1: line.index("|")]]
+					else:
+						if line[1] == "%":
+							rel_y = float(line[3:line.index("|") - 1]) / 100
+						else:
+							rel_y = int(line[0: line.index("|")])
+
+					self.elem.append(disp_elem.sliders(text, maxsize, typeface,
+							color, img, rel_x, rel_y, ref,
+							options))
+
 		if "background" in self.vars:
 			self.elem.append(pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
-					ref.maxsize))
+					ref.size))
 		self.elem = self.elem[::-1]
 
 	def get_klicked(self):
@@ -141,7 +210,7 @@ while True:
 	for elem in men.elem:
 		if type(elem) == pygame.Surface:
 			screen.blit(elem, elem.get_rect())
-		elif isinstance(elem, disp_elem.button):
+		elif isinstance(elem, (disp_elem.button, disp_elem.sliders)):
 			elem.blit(screen, events)
 
 	for event in events:
