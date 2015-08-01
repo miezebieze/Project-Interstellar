@@ -68,51 +68,50 @@ class create_menu():
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line.strip()[0] == "$":
-						maxsize = self.vars[line.strip()[1: line.strip().index("|")]]
+						maxsize = self.vars[line[1: line.index("|")].strip()]
 					else:
-						maxsize = float(line[1: line.index("|")].strip())
+						maxsize = float(line[: line.index("|")].strip())
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						typeface = self.vars[line[1: line.index("|")]].strip()
+						typeface = self.vars[line[1: line.index("|")].strip()]
 					else:
-						typeface = line[1: line.index("|")].strip()
+						typeface = line[: line.index("|")].strip()
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						color = self.vars[line[1: line.index("|")]]
+						color = self.vars[line[1: line.index("|")].strip()]
 					else:
 						color = []
-						for elem in convert2list(line[:line.index("|")]):
-							color.append[int(elem)]
+						for elem in convert2list(line[:line.index("|")].rstrip()):
+							color.append(int(elem))
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						img = self.vars[line[1: line.index("|")]]
+						img = self.vars[line[1: line.index("|")].strip()]
 					else:
 						print("Error: Outline only accepts only variables")
-						print(("In line " + str(conf_file.index(line))))
 						quit()
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						rel_x = self.vars[line[1: line.index("|")]]
+						rel_x = self.vars[line[1: line.index("|")].strip()]
 					else:
-						if line[1] == "%":
-							rel_x = float(line[3:line.index("|") - 1]) / 100
+						if line[0] == "%":
+							rel_x = float(line[1:line.index("|")]) / 100
 						else:
-							rel_x = int(line[0: line.index("|")])
+							rel_x = int(line[: line.index("|")])
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						rel_y = self.vars[line[1: line.index("|")]]
+						rel_y = self.vars[line[1: line.index("|")].strip()]
 					else:
 						if line[1] == "%":
-							rel_y = float(line[3:line.index("|") - 1]) / 100
+							rel_y = float(line[1:line.index("|")]) / 100
 						else:
-							rel_y = int(line[0: line.index("|")])
+							rel_y = int(line[: line.index("|")])
 
 					self.elem.append(disp_elem.button(rel_x, rel_y, ref,
 							text, typeface, maxsize, color, img[:3], int(img[3])))
@@ -125,59 +124,58 @@ class create_menu():
 						text = self.vars[text[1:]]
 
 					if line.count("|") == 8:
-						line = line[line.index("|") + 1:]
+						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
-							options = self.vars[line[1: line.index("|")]]
+							options = self.vars[line[1: line.index("|")].strip()]
 						else:
-							options = line[1: line.index("|")].strip()
+							options = line[: line.index("|")].strip()
 					else:
 						options = False
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line.strip()[0] == "$":
-						maxsize = int(self.vars[line.strip()[1: line.strip().index("|")]])
+						maxsize = int(self.vars[line[1: line.index("|")].strip()])
 					else:
-						maxsize = int(line[1: line.index("|")].strip())
+						maxsize = int(line[: line.index("|")].strip())
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						typeface = self.vars[line[1: line.index("|")]]
+						typeface = self.vars[line[1: line.index("|")].strip()]
 					else:
-						typeface = line[1: line.index("|")].strip()
+						typeface = line[: line.index("|")].strip()
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						color = self.vars[line[1: line.index("|")]]
+						color = self.vars[line[1: line.index("|")].strip()]
 					else:
 						color = []
 						for elem in convert2list(line[:line.index("|")]):
-							color.append[int(elem)]
+							color.append(int(elem))
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						img = self.vars[line[1: line.index("|")]]
+						img = self.vars[line[1: line.index("|")].strip()]
 					else:
 						print("Error: Outline only accepts only variables")
-						print(("In line " + str(conf_file.index(line))))
 						quit()
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						rel_x = self.vars[line[1: line.index("|")]]
+						rel_x = self.vars[line[1: line.index("|")].strip()]
 					else:
-						if line[1] == "%":
-							rel_x = float(line[3:line.index("|") - 1]) / 100
+						if line[0] == "%":
+							rel_x = float(line[1:line.index("|")]) / 100
 						else:
 							rel_x = int(line[0: line.index("|")])
 
-					line = line[line.index("|") + 1:]
+					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
-						rel_y = self.vars[line[1: line.index("|")]]
+						rel_y = self.vars[line[1: line.index("|")].strip()]
 					else:
-						if line[1] == "%":
-							rel_y = float(line[3:line.index("|") - 1]) / 100
+						if line[0] == "%":
+							rel_y = float(line[1:line.index("|")]) / 100
 						else:
-							rel_y = int(line[0: line.index("|")])
+							rel_y = int(line[: line.index("|")])
 
 					self.elem.append(disp_elem.sliders(text, maxsize, typeface,
 							color, img, rel_x, rel_y, ref,

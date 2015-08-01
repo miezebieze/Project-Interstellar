@@ -152,12 +152,10 @@ class sliders():
 
 	def __init__(self, name, size, typeface, color, box,
 		x, y, ref, options_list=False):
-		print (name, size, typeface, color, box,
-		x, y, ref, options_list)
 		"""Creates a new slider"""
 		self.value = 0.0
 		self.box = pygame.image.load(box[0])
-		self.knob = pygame.image.load(box[0])
+		self.knob = pygame.image.load(box[1])
 		self.knob_pos = self.knob.get_rect()
 		self.dragged = False
 		self.typeface = typeface
