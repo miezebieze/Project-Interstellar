@@ -48,6 +48,7 @@ class button():
 		self.y = y
 		self.typeface = typeface
 		self.text = text
+		self.name = text
 		self.text_img = modrender(typeface, 30,
 			text, True, color,
 			self.pos.size, borderoff)

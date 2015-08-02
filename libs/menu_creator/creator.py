@@ -18,13 +18,14 @@ class create_menu():
 
 	def __init__(self, filename, ref):
 		self.vars = {}
-		self.elem = []
+		self.elems = []
 
 		with open(filename) as conf_file:
 			for line in conf_file:
 				line = line.rstrip("\n")
 				if len(line) < 1 or line[0] == "/":
 					continue
+
 				if line[0] == "<":
 					var = line[1:line.index(" ")]
 					elem = line[line.index("=") + 2:]
@@ -113,7 +114,7 @@ class create_menu():
 						else:
 							rel_y = int(line[: line.index("|")])
 
-					self.elem.append(disp_elem.button(rel_x, rel_y, ref,
+					self.elems.append(disp_elem.button(rel_x, rel_y, ref,
 							text, typeface, maxsize, color, img[:3], int(img[3])))
 
 				if line[0] == "-":
@@ -177,44 +178,26 @@ class create_menu():
 						else:
 							rel_y = int(line[: line.index("|")])
 
-					self.elem.append(disp_elem.sliders(text, maxsize, typeface,
+					self.elems.append(disp_elem.sliders(text, maxsize, typeface,
 							color, img, rel_x, rel_y, ref,
 							options))
 
 		if "background" in self.vars:
-			self.elem.append(pygame.transform.smoothscale(
+			self.elems.append(pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
 					ref.size))
-		self.elem = self.elem[::-1]
+		self.elems = self.elems[::-1]
 
 	def get_klicked(self):
 		klicked = []
-		for elem in self.elem:
+		for elem in self.elems:
 			if isinstance(elem, disp_elem.button):
 				if elem.klicked:
 					klicked.append(elem)
 		return klicked
 
-
-pygame.init()
-pygame.fastevent.init()
-screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
-
-men = create_menu("./test1.menu", screen.get_rect())
-print((men.vars))
-print((men.elem))
-while True:
-	events = pygame.fastevent.get()
-	for elem in men.elem:
-		if type(elem) == pygame.Surface:
-			screen.blit(elem, elem.get_rect())
-		elif isinstance(elem, (disp_elem.button, disp_elem.sliders)):
-			elem.blit(screen, events)
-
-	for event in events:
-		if event.type == pygame.locals.USEREVENT and event.code == "MENU":
-			for elem in men.get_klicked():
-				if elem.text == "Exit":
-					quit()
-
-	pygame.display.flip()
+	def get_elem(self, name):
+		for elem in self.elems:
+			if type(elem) != pygame.Surface:
+				if elem.name == name:
+					return elem
