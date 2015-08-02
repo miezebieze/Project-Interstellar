@@ -35,7 +35,8 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	def __init__(self, x, y, ref, text, typeface, size,
+	#TODO: Add rel x + y
+	def __init__(self, x, rel_x, y, rel_y, ref, text, typeface, size,
 			color, buttons_files, borderoff):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear

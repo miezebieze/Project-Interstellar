@@ -4,13 +4,14 @@
 <"typeface = monospace
 <*color = (255,255,10)
 <%half = 50
+<%4rth = 25
 <#background = (./Background1.tif)
 <[options = (test1, test2)
 
-@|Start   | $size| $typeface| $color| $box1| $half| 100|
-@|Settings| $size| $typeface| $color| $box1| $half| 140|
-@|Exit    | $size| $typeface| $color| $box1| $half| 180|
--|Volume  | $size| $typeface| $color| $box2| $half| 220|
+@|Start   | $size| $typeface| $color| $box1| $half|    %25 + 40|
+@|Settings| $size| $typeface| $color| $box1| $half|  $4rth + 80|
+@|Exit    | $size| $typeface| $color| $box1| $half|   120 + %25|
+-|Volume  | $size| $typeface| $color| $box2| $half|         160|
 /Rules::
 /A slash is a comment
 /Lines beginning with < are variable defenitions

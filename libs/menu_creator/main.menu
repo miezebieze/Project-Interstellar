@@ -1,0 +1,11 @@
+<#box1 = (./Button1.tif,./Button2.tif,./Button3.tif, 6)
+<~size = 13
+<"typeface = monospace
+<*color = (255,255,10)
+<%half = 50
+<#background = (./Background1.tif)
+
+@|Start   |$size|$typeface|$color|$box1|$half|100|
+@|Settings|$size|$typeface|$color|$box1|$half|140|
+@|Credits |$size|$typeface|$color|$box1|$half|180|
+@|Exit    |$size|$typeface|$color|$box1|$half|220|

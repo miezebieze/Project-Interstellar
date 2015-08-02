@@ -20,7 +20,8 @@
     ".tif", 
     ".ogg", 
     ".txt", 
-    ".sh"
+    ".sh", 
+    ".menu"
   ], 
   "project-type": "", 
   "postExecScript": "", 
