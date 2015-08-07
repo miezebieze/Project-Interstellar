@@ -168,6 +168,7 @@ class sliders():
 		self.name = name
 		self.size = size
 		self.borderoff = box[3]
+		self.state = 1
 
 		self.pos = self.box.get_rect()
 		rel_x *= float(ref.w)
@@ -219,9 +220,9 @@ class sliders():
 			for area in range(len(self.options_list)):
 				area += 1
 				if self.value <= steps * area and self.value >= steps * (area - 1):
-					item = self.options_list[area - 1]
 					break
-			text = self.name + ": " + item
+			text = self.name + ": " + self.options_list[area - 1]
+			self.state = area
 			self.render_text = modrender(self.typeface, 30,
 				text, True, self.color,
 				self.pos.size, 6)

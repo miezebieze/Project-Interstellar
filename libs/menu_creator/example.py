@@ -8,7 +8,7 @@ pygame.fastevent.init()
 screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
 
 #read menu config file and print vars and elemens
-men = creator.create_menu("./main.menu", screen.get_rect())
+men = creator.create_menu("./settings.menu", {}, screen.get_rect())
 print((men.vars))
 print((men.elems))
 #General loop
@@ -21,15 +21,6 @@ while True:
 			screen.blit(elem, elem.get_rect())
 		elif isinstance(elem, (disp_elem.button, disp_elem.sliders)):
 			elem.blit(screen, events)
-
-	#Prints The value of the slider when Start button has been clicked
-	if men.get_elem("Start").klicked:
-		value = str((men.get_elem("Volume").value * 100))
-		value = value[:value.index(".")]
-		print value
-		#events havent updated yet so manual reset
-		pygame.time.delay(100)
-		elem.klicked = False
 
 	#Checks for interaction with elements
 	for event in events:

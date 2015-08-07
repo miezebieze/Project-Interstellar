@@ -43,8 +43,8 @@ def analyse_num(string, variables):
 
 class create_menu():
 
-	def __init__(self, filename, ref):
-		self.vars = {}
+	def __init__(self, filename, variables, ref):
+		self.vars = variables
 		self.elems = []
 
 		with open(filename) as conf_file:

@@ -3,9 +3,10 @@
 <"typeface = monospace
 <*color = (255,255,10)
 <%half = 50
+<%qrt = 25
 <#background = (../../assets/sprites/Background1.tif)
 
-@|Start   |$size|$typeface|$color|$box1|$half + 0|100 + %0|
-@|Settings|$size|$typeface|$color|$box1|$half + 0|140 + %0|
-@|Credits |$size|$typeface|$color|$box1|$half + 0|180 + %0|
-@|Exit    |$size|$typeface|$color|$box1|$half + 0|220 + %0|
+@|Start   |$size|$typeface|$color|$box1|$half + 0|%qrt  +   0|
+@|Settings|$size|$typeface|$color|$box1|$half + 0|%qrt  +  40|
+@|Credits |$size|$typeface|$color|$box1|$half + 0|%qrt  +  80|
+@|Exit    |$size|$typeface|$color|$box1|$half + 0|%qrt  + 120|
