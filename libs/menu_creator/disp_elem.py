@@ -36,7 +36,7 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 class button():
 
 	#TODO: Add rel x + y
-	def __init__(self, x, rel_x, y, rel_y, ref, text, typeface, size,
+	def __init__(self, rel_x, x, rel_y, y, ref, text, typeface, size,
 			color, buttons_files, borderoff):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
@@ -47,6 +47,8 @@ class button():
 		self.pos = self.buttons[0].get_rect()
 		self.x = x
 		self.y = y
+		self.rel_x = rel_x
+		self.rel_y = rel_y
 		self.typeface = typeface
 		self.text = text
 		self.name = text
@@ -56,7 +58,7 @@ class button():
 		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 		self.klicked = False
-		self.move(self.x, self.y, ref)
+		self.move(self.x, self.rel_x, self.y, self.rel_y, ref)
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
@@ -66,13 +68,13 @@ class button():
 		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 
-	def move(self, x, y, ref):
+	def move(self, x, rel_x, y, rel_y, ref):
 		"""Moves the button so that x and y are the center"""
 		self.pos = self.buttons[0].get_rect()
-		if type(x) == float and x < 1:
-			x *= float(ref.w)
-		if type(y) == float and y < 1:
-			y *= float(ref.h)
+		rel_x *= float(ref.w)
+		rel_y *= float(ref.h)
+		x += rel_x
+		y += rel_y
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
 		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
@@ -153,7 +155,7 @@ class inputfield():
 class sliders():
 
 	def __init__(self, name, size, typeface, color, box,
-		x, y, ref, options_list=False):
+		rel_x, x, rel_y, y, ref, options_list=False):
 		"""Creates a new slider"""
 		self.value = 0.0
 		self.box = pygame.image.load(box[0])
@@ -168,10 +170,10 @@ class sliders():
 		self.borderoff = box[3]
 
 		self.pos = self.box.get_rect()
-		if type(x) == float and x < 1:
-			x *= float(ref.w)
-		if type(y) == float and y < 1:
-			y *= float(ref.h)
+		rel_x *= float(ref.w)
+		rel_y *= float(ref.h)
+		x += rel_x
+		y += rel_y
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
 		self.knob_pos.top = self.pos.top
 		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)

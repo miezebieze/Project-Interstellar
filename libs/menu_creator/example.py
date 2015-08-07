@@ -8,10 +8,9 @@ pygame.fastevent.init()
 screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
 
 #read menu config file and print vars and elemens
-men = creator.create_menu("./test1.menu", screen.get_rect())
+men = creator.create_menu("./main.menu", screen.get_rect())
 print((men.vars))
 print((men.elems))
-
 #General loop
 while True:
 

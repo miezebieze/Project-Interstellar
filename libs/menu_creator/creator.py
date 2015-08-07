@@ -19,7 +19,7 @@ def analyse_num(string, variables):
 	lstring = string[:string.index("+")].rstrip()
 	rstring = string[string.index("+") + 1:].lstrip()
 	if lstring[0] == "%":
-		rel = int(lstring[1:])
+		rel = int(lstring[1:]) / 100.0
 	elif lstring[0] == "$":
 		if variables[lstring[1:]] < 1.0001 and type(variables[lstring[1:]]) == float:
 			rel = variables[lstring[1:]]
@@ -29,7 +29,7 @@ def analyse_num(string, variables):
 		absol = int(lstring)
 
 	if rstring[0] == "%":
-		rel = int(rstring[1:])
+		rel = int(rstring[1:]) / 100.0
 	elif rstring[0] == "$":
 		if variables[rstring[1:]] < 1.0001 and type(variables[rstring[1:]]) == float:
 			rel = variables[rstring[1:]]
@@ -37,6 +37,7 @@ def analyse_num(string, variables):
 			absol = variables[rstring[1:]]
 	else:
 		absol = int(rstring)
+
 	return rel, absol
 
 
@@ -122,15 +123,13 @@ class create_menu():
 						print("Error: Outline only accepts only variables")
 						quit()
 
-					line = line[line.index("|") + 1:-1].lstrip()
-					print line
-					rel_x, abs_x = analyse_num(line, self.vars)
+					line = line[line.index("|") + 1:].lstrip()
+					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
 
 					line = line[line.index("|") + 1:-1].lstrip()
-					print line
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems.append(disp_elem.button(rel_x, abs_y, rel_y, abs_y, ref,
+					self.elems.append(disp_elem.button(rel_x, abs_x, rel_y, abs_y, ref,
 							text, typeface, maxsize, color, img[:3], int(img[3])))
 
 				if line[0] == "-":
@@ -177,25 +176,13 @@ class create_menu():
 						quit()
 
 					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
-						rel_x = self.vars[line[1: line.index("|")].strip()]
-					else:
-						if line[0] == "%":
-							rel_x = float(line[1:line.index("|")]) / 100
-						else:
-							rel_x = int(line[0: line.index("|")])
+					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
 
-					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
-						rel_y = self.vars[line[1: line.index("|")].strip()]
-					else:
-						if line[0] == "%":
-							rel_y = float(line[1:line.index("|")]) / 100
-						else:
-							rel_y = int(line[: line.index("|")])
+					line = line[line.index("|") + 1:-1].lstrip()
+					rel_y, abs_y = analyse_num(line, self.vars)
 
 					self.elems.append(disp_elem.sliders(text, maxsize, typeface,
-							color, img, rel_x, rel_y, ref,
+							color, img, rel_x, abs_x, rel_y, abs_y, ref,
 							options))
 
 		if "background" in self.vars:
