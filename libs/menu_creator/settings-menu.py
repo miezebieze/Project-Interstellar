@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import creator
 import pygame
 from creator import disp_elem
@@ -8,7 +9,7 @@ pygame.fastevent.init()
 screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
 
 #read menu config file and print vars and elemens
-men = creator.create_menu("./settings.menu", {"volume": 0.3}, screen.get_rect())
+men = creator.create_menu("./settings.menu", {"half": 0.2}, screen.get_rect())
 print((men.vars))
 print((men.elems))
 #General loop

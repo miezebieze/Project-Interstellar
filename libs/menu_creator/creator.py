@@ -8,8 +8,8 @@ def convert2list(string):
 	elements = []
 	string = string[1:]
 	for a in range(num_of_elem - 1):
-		elements.append(string[:string.index(",")])
-		string = string[string.index(",") + 1:]
+		elements.append(string[:string.index(",")].strip())
+		string = string[string.index(",") + 1:].strip()
 	elements.append(string[:-1])
 	return elements
 
@@ -139,14 +139,33 @@ class create_menu():
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					if line.count("|") == 8:
+					if line.count("|") == 9:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							options = self.vars[line[1: line.index("|")].strip()]
 						else:
-							options = line[: line.index("|")].strip()
+							print("The options argument for sliders only accepts variables.")
+							quit()
+
+						line = line[line.index("|") + 1:].lstrip()
+						if line.strip()[0] == "$":
+							default_value = float(self.vars[line[1: line.index("|")].strip()])
+						else:
+							if (float(line[: line.index("|")].strip())
+								== int(line[: line.index("|")].strip())):
+									selected = float(line[: line.index("|")].strip()) - 1
+									default_value = float(selected) / len(options)
+									#placing the slider in the middle of the area
+									default_value += 1.0 / (2 * len(options))
+									print(default_value)
+
 					else:
 						options = False
+						line = line[line.index("|") + 1:].lstrip()
+						if line.strip()[0] == "$":
+							default_value = float(self.vars[line[1: line.index("|")].strip()])
+						else:
+							default_value = float(line[: line.index("|")].strip())
 
 					line = line[line.index("|") + 1:].lstrip()
 					if line.strip()[0] == "$":
@@ -181,7 +200,7 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems.append(disp_elem.sliders(text, maxsize, typeface,
+					self.elems.append(disp_elem.sliders(text, default_value, maxsize, typeface,
 							color, img, rel_x, abs_x, rel_y, abs_y, ref,
 							options))
 

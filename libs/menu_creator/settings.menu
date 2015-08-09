@@ -6,7 +6,8 @@
 <%half = 50
 <%qrt = 25
 <[yesno = (OFF, ON)
+<#background = (../../assets/sprites/Background1.tif)
 
--|Volume            |$size|$typeface|$color|$box2|$half + 0|$qrt +  0|
--|Fullscreen |$yesno|$size|$typeface|$color|$box2|$half + 0|$qrt + 40|
-@|Exit              |$size|$typeface|$color|$box1|$half + 0|$qrt + 80|
+-|Volume           |$volume    |$size|$typeface|$color|$box2|$half + 0|$qrt +  0|
+-|Fullscreen|$yesno|$fullscreen|$size|$typeface|$color|$box2|$half + 0|$qrt + 40|
+@|Exit                         |$size|$typeface|$color|$box1|$half + 0|$qrt + 80|

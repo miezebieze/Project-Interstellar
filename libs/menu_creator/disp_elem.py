@@ -154,10 +154,10 @@ class inputfield():
 
 class sliders():
 
-	def __init__(self, name, size, typeface, color, box,
+	def __init__(self, name, default_value, size, typeface, color, box,
 		rel_x, x, rel_y, y, ref, options_list=False):
 		"""Creates a new slider"""
-		self.value = 0.0
+		self.value = default_value
 		self.box = pygame.image.load(box[0])
 		self.knob = pygame.image.load(box[1])
 		self.knob_pos = self.knob.get_rect()
@@ -210,8 +210,8 @@ class sliders():
 		"""Blits the slider"""
 		self.modify(events)
 		if type(self.options_list) == bool:
-			tmp = self.name + ": " + str(self.value)[:4] + "%"
-			tmp = tmp.replace("0.0", "0").replace("0.", "").replace(".", "")
+			tmp = self.name + ": " + str(self.value * 100)[:3] + "%"
+			tmp = tmp.replace("0.0", "0").replace(".", "")
 			self.render_text = modrender(self.typeface, self.size,
 				tmp, True, self.color,
 				self.pos.size, self.borderoff)
