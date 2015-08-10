@@ -138,8 +138,8 @@ def pause():
 	"""pausing menu"""
 	#should be easy to understand too
 	screen = settings.screen
-	screenx = settings.screenx_current
-	screeny = settings.screeny_current
+	screenx = settings.screenx_current / 2.0
+	screeny = settings.screeny_current / 4.0
 	fade = settings.fade
 	fade_pos = settings.fade_pos
 	color = settings.color
