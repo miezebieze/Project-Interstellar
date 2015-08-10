@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import pygame
 import disp_elem
+from disp_elem import button
+from disp_elem import sliders
+#button and sliders would be unsued
+button
+sliders
 
 
 def convert2list(string):
@@ -53,6 +58,9 @@ class create_menu():
 				if len(line) < 1 or line[0] == "/":
 					continue
 
+				if line[0] == "&":
+					file2 = line[1:]
+					self.vars.update(create_menu(file2, {}, pygame.Rect(1, 1, 1, 1)).vars)
 				if line[0] == "<":
 					var = line[1:line.index(" ")]
 					elem = line[line.index("=") + 2:]
@@ -149,15 +157,16 @@ class create_menu():
 
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
-							default_value = float(self.vars[line[1: line.index("|")].strip()])
+							default_value = float(self.vars[
+										line[1: line.index("|")].strip()
+									]) / len(options)
+							default_value += 0.5 / len(options)
 						else:
 							if (float(line[: line.index("|")].strip())
 								== int(line[: line.index("|")].strip())):
-									selected = float(line[: line.index("|")].strip()) - 1
+									selected = float(line[: line.index("|")].strip())
 									default_value = float(selected) / len(options)
-									#placing the slider in the middle of the area
-									default_value += 1.0 / (2 * len(options))
-									print(default_value)
+									default_value += 0.5 / len(options)
 
 					else:
 						options = False

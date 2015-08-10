@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 import creator
 import pygame
-from creator import disp_elem
 
 #initialize engine ad create window
 pygame.init()
 pygame.fastevent.init()
 screen = pygame.display.set_mode((int(1920 / 2.0), int(1080 / 2.0)))
 
+fullscreen = True
+volume = 0.3
+
 #read menu config file and print vars and elemens
-men = creator.create_menu("./settings.menu", {"half": 0.2}, screen.get_rect())
-print((men.vars))
-print((men.elems))
+men = creator.create_menu("./settings.menu",
+			{"fullscreen": str(int(fullscreen)), "volume": str(volume)},
+			screen.get_rect())
+#print((men.vars))-
+#print((men.elems))
 #General loop
 while True:
 
@@ -20,7 +24,7 @@ while True:
 	for elem in men.elems:
 		if type(elem) == pygame.Surface:
 			screen.blit(elem, elem.get_rect())
-		elif isinstance(elem, (disp_elem.button, disp_elem.sliders)):
+		elif isinstance(elem, (creator.button, creator.sliders)):
 			elem.blit(screen, events)
 
 	#Checks for interaction with elements
