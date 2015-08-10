@@ -21,7 +21,8 @@
     ".ogg", 
     ".txt", 
     ".sh", 
-    ".menu"
+    ".menu", 
+    ".vars"
   ], 
   "project-type": "", 
   "postExecScript": "", 

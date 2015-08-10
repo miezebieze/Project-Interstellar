@@ -2,10 +2,10 @@
 import pygame
 import disp_elem
 from disp_elem import button
-from disp_elem import sliders
+from disp_elem import slider
 #button and sliders would be unsued
 button
-sliders
+slider
 
 
 def convert2list(string):
@@ -50,7 +50,7 @@ class create_menu():
 
 	def __init__(self, filename, variables, ref):
 		self.vars = variables
-		self.elems = []
+		self.elems = {"buttons": [], "sliders": [], "surfs": []}
 
 		with open(filename) as conf_file:
 			for line in conf_file:
@@ -137,8 +137,9 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems.append(disp_elem.button(rel_x, abs_x, rel_y, abs_y, ref,
-							text, typeface, maxsize, color, img[:3], int(img[3])))
+					self.elems["buttons"].append(disp_elem.button(rel_x, abs_x, rel_y, abs_y,
+									ref, text, typeface, maxsize, color, img[:3],
+									int(img[3])))
 
 				if line[0] == "-":
 					line = line[2:]
@@ -209,22 +210,20 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems.append(disp_elem.sliders(text, default_value, maxsize, typeface,
-							color, img, rel_x, abs_x, rel_y, abs_y, ref,
-							options))
+					self.elems["sliders"].append(disp_elem.slider(text, default_value,
+								maxsize, typeface, color, img,
+								rel_x, abs_x, rel_y, abs_y, ref, options))
 
 		if "background" in self.vars:
-			self.elems.append(pygame.transform.smoothscale(
+			self.elems["surfs"].append(pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
 					ref.size))
-		self.elems = self.elems[::-1]
 
 	def get_klicked(self):
 		klicked = []
-		for elem in self.elems:
-			if isinstance(elem, disp_elem.button):
-				if elem.klicked:
-					klicked.append(elem)
+		for elem in self.elems["buttons"]:
+			if elem.klicked:
+				klicked.append(elem)
 		return klicked
 
 	def get_elem(self, name):

@@ -35,7 +35,6 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	#TODO: Add rel x + y
 	def __init__(self, rel_x, x, rel_y, y, ref, text, typeface, size,
 			color, buttons_files, borderoff):
 		"""Initalises with x and y as center point"""
@@ -44,6 +43,7 @@ class button():
 		self.buttons = (pygame.image.load(buttons_files[0]),
 				pygame.image.load(buttons_files[1]),
 				pygame.image.load(buttons_files[2]))
+		self.img = self.buttons[0]
 		self.pos = self.buttons[0].get_rect()
 		self.x = x
 		self.y = y
@@ -79,24 +79,25 @@ class button():
 		self.textpos = self.text_img.get_rect()
 		self.textpos.center = self.pos.center
 
-	def blit(self, screen, events):
-		"""Blits the button"""
+	def update(self, events):
 		#blitts the button and changes image when hovered over or being clicked
 		#also posts a menu event to show that a button has been clicked
-		#to increase performance should be easy to understand
 		if self.pos.collidepoint(pygame.mouse.get_pos()) and not self.klicked:
-			screen.blit(self.buttons[1], self.pos)
+			self.img = self.buttons[1]
 			for event in events:
 				if event.type == MOUSEBUTTONDOWN and event.button == 1:
 					menue = pygame.event.Event(USEREVENT, code="MENU")
 					pygame.fastevent.post(menue)
 					self.klicked = True
-					screen.blit(self.buttons[2], self.pos)
+					self.img = self.buttons[2]
 		elif not self.klicked:
-			screen.blit(self.buttons[0], self.pos)
+			self.img = self.buttons[0]
 		else:
-			screen.blit(self.buttons[2], self.pos)
+			self.img = self.buttons[2]
 
+	def blit(self, screen):
+		"""Blits the button"""
+		screen.blit(self.img, self.pos)
 		screen.blit(self.text_img, self.textpos)
 
 
@@ -107,10 +108,10 @@ class inputfield():
 		self.font = pygame.font.SysFont(settings.typeface, 30)
 		self.header = text
 		if typ == 1:
-			self.field = settings.field
+			self.img = settings.field
 		elif typ == 2:
-			self.field = settings.field1
-		self.pos = settings.field.get_rect()
+			self.img = settings.field1
+		self.pos = settings.img.get_rect()
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
 		self.text = ""
 		self.render_text = settings.modrender(settings.typeface, 30, self.text,
@@ -152,7 +153,7 @@ class inputfield():
 		screen.blit(self.render_text, self.textpos)
 
 
-class sliders():
+class slider():
 
 	def __init__(self, name, default_value, size, typeface, color, box,
 		rel_x, x, rel_y, y, ref, options_list=False):
@@ -180,7 +181,7 @@ class sliders():
 		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)
 		self.scale = 1.0 / self.pos.w
 
-	def modify(self, events):
+	def update(self, events):
 		"""Modifies the slider (e.g. pos)"""
 		for event in events:
 			if event.type == MOUSEBUTTONUP:
@@ -205,10 +206,9 @@ class sliders():
 		tmp = (self.value * (self.pos.w - self.knob_pos.w))
 		self.knob_pos.left = self.pos.left + tmp
 
-	def blit(self, screen, events):
+	def blit(self, screen):
 		#( name, options_list=False):
 		"""Blits the slider"""
-		self.modify(events)
 		if type(self.options_list) == bool:
 			tmp = self.name + ": " + str(self.value * 100)[:3] + "%"
 			tmp = tmp.replace("0.0", "0").replace(".", "")

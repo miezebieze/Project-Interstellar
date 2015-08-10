@@ -137,8 +137,7 @@ shouldplaynextsong (bool)
 				events = pygame.event.get()
 			else:
 				return
-		#Playes next song if the last one has ended
-		#    and it should do so.
+		#Playes next song if the last one has ended.
 		if self.__endevent in events and shouldplaynextsong:
 			self.playlist.pop(0)
 			self._playing = False

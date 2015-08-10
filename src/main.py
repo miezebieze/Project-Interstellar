@@ -27,11 +27,10 @@ sounds.init()
 movement.handle()
 specials.init()
 
-
-print(("Loading time: " + str(pygame.time.get_ticks() / 1000.0)))
-
 if not settings.skip:
 	menu.main()
+
+print(("Loading time:" + str(settings.loading_time / 1000.0)))
 
 #start clock for checking time how long has been played
 global clock

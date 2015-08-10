@@ -6,70 +6,91 @@ from . import sounds
 from . import missions
 from libs.pyganim import pyganim
 import pygame
+from libs.menu import creator
 from pygame.locals import *
 
 """Responsible tor the menus"""
 
 
 def main():
-	"""Main menu"""
-	#i hope its easy to understand
-	screen = settings.screen
+	"""main menu"""
+
+	#import variables
 	screenx = settings.screenx_current
 	screeny = settings.screeny_current
-	fade = settings.fade
-	fade_pos = settings.fade_pos
-	color = settings.color
-	planets = []
-	background = pygame.image.load("./assets/sprites/Background1.tif")
-	background = pygame.transform.scale(background, (screenx, screeny))
-	background_pos = background.get_rect()
-	src = "./assets/sprites/spinning_planet/planet-"
-	for num in range(150):
-		planets.append((src + str(num) + ".png", 0.065))
-	planet = pyganim.PygAnimation(planets)
-	planet.rotozoom(20, 0.5)
-	planet_pos = planet.getRect()
-	planet_pos = planet_pos.move(int(screenx * 0.65), int(screeny * 0.33))
-	planet.play()
+	screen = settings.screen
 
-	settings.upd("screenvalues+vol")
-
-	screenx /= 2.0
-	screeny /= 4.0
+	#set mouse visible
 	pygame.mouse.set_visible(True)
-	run = True
 
-	start = objects.button(screenx, screeny, "Start", color)
-	setting = objects.button(screenx, screeny + 40, "Settings", color)
-	credit = objects.button(screenx, screeny + 80, "Credits", color)
-	escape = objects.button(screenx, screeny + 120, "Exit", color)
+	#create menu
+	menu = creator.create_menu("./assets/templates/main.menu", {},
+				pygame.Rect((0, 0), (screenx, screeny)))
 
+	#create fade effect
+	class fade_screen():
+
+		def __init__(self, screenx, screeny):
+			self.fade = pygame.Surface((screenx, screeny))
+			self.fade.fill((0, 0, 0))
+			self.fade.set_alpha(0)
+			self.timer = pygame.time.get_ticks()
+			self.alpha = 0
+
+		def blit(self, screen):
+			time = pygame.time.get_ticks()
+			if (time - self.timer) > 70 and self.alpha <= 100:
+				self.timer = pygame.time.get_ticks()
+				self.alpha += 1
+			self.fade.set_alpha(self.alpha)
+			screen.blit(self.fade, pygame.Rect(0, 0, 0, 0))
+	fade = fade_screen(screenx, screeny)
+	menu.elems["externals"] = [fade]
+
+	#create the planets animation
+	class create_planet():
+
+		def __init__(self, screenx, screeny):
+			planets = []
+			src = "./assets/sprites/spinning_planet/planet-"
+			for num in range(150):
+				planets.append((src + str(num) + ".png", 0.065))
+			planet = pyganim.PygAnimation(planets)
+			planet.rotate(20)
+			planet.scale((int(0.2 * screenx), int(0.2 * screenx)))
+			planet_pos = planet.getRect()
+			self.planet_pos = planet_pos.move(int(screenx * 0.7), int(screeny * 0.4))
+			planet.play()
+			self.planet = planet
+
+		def blit(self, screen):
+			self.planet.blit(screen, self.planet_pos)
+	planet = create_planet(screenx, screeny)
+	menu.elems["externals"].insert(0, planet)
+
+	#inserts menu music
 	sounds.music.queue("$not$menue.ogg", 0)
 	sounds.music.play("stop")
 	sounds.music.play("play", -1)
 
-	alpha = 0.0
+	run = True
+
+	settings.loading_time = pygame.time.get_ticks()
 
 	while run:
 
-		if alpha < 200:
-			alpha += 1
-			fade.set_alpha(alpha / 2)
-
-		screen.blit(background, background_pos)
-		screen.blit(fade, fade_pos)
-		planet.blit(screen, planet_pos)
-		screen.blit(fade, fade_pos)
-		start.blit()
-		setting.blit()
-		credit.blit()
-		escape.blit()
-		pygame.display.flip()
-
 		settings.upd("get_events")
 
+		for surf in menu.elems["surfs"]:
+			screen.blit(surf, pygame.Rect(0, 0, 0, 0))
+		for external in menu.elems["externals"]:
+			external.blit(screen)
+		for elem in menu.elems["buttons"] + menu.elems["sliders"]:
+			elem.update(settings.events)
+			elem.blit(screen)
+
 		sounds.music.update(False, False)
+
 		for event in settings.events:
 			if event.type == QUIT:
 				settings.quit()
@@ -82,29 +103,34 @@ def main():
 					sounds.music.play("next")
 					run = False
 			if event.type == USEREVENT and event.code == "MENU":
-				pygame.time.delay(200)
-				if start.klicked:
-					settings.reset()
-					sounds.music.play("next")
-					run = False
-				if setting.klicked:
-					options()
-					screenx = settings.screenx_current
-					screeny = settings.screeny_current
-					planet_pos.topleft = (int(screenx * 0.65), int(screeny * 0.33))
-					background = pygame.transform.scale(background,
-						(int(screenx), int(screeny)))
-					screenx /= 2.0
-					screeny /= 4.0
-					start.move(screenx, screeny)
-					setting.move(screenx, screeny + 40)
-					credit.move(screenx, screeny + 80)
-					escape.move(screenx, screeny + 120)
-				if credit.klicked:
-					namings.run()
-					alpha = 0
-				if escape.klicked:
-					settings.quit()
+				for elem in menu.get_klicked():
+					elem.klicked = False
+					if elem.text == "Start":
+						settings.reset()
+						sounds.music.play("next")
+						run = False
+					if elem.text == "Settings":
+						options()
+						screenx = settings.screenx_current
+						screeny = settings.screeny_current
+						planet_pos.topleft = (int(screenx * 0.65), int(screeny * 0.33))
+						for surface in menu.elems["surfs"]:
+							pos = menu.elems["surfs"].index(surface)
+							surface = pygame.transform.scale(surface,
+										(int(screenx), int(screeny)))
+							menu.elems["surfs"][pos] = surface
+						menu = creator.create_menu("./assets/templates/main.menu", {},
+									pygame.Rect((0, 0), (screenx, screeny)))
+						fade = fade_screen(screenx, screeny)
+						menu.elems["externals"] = [fade]
+						planet = create_planet(screenx, screeny)
+						menu.elems["externals"].insert(0, planet)
+					if elem.text == "Credits":
+						namings.run()
+					if elem.text == "Exit":
+						settings.quit()
+		pygame.display.flip()
+
 	pygame.mouse.set_visible(False)
 
 
@@ -112,8 +138,8 @@ def pause():
 	"""pausing menu"""
 	#should be easy to understand too
 	screen = settings.screen
-	screenx = settings.screenx_current / 2
-	screeny = settings.screeny_current / 4
+	screenx = settings.screenx_current
+	screeny = settings.screeny_current
 	fade = settings.fade
 	fade_pos = settings.fade_pos
 	color = settings.color
