@@ -8,6 +8,9 @@
 #custom pattern to make ignored files without addig new rule
 **IGNORE*.*
 
+#the Ninja project file
+**.nja
+
 #empty folders
 screenshots/*
 assets/sprites/player/*
