@@ -178,7 +178,6 @@ def pause():
 
 		missions.handle("pause")
 		events = pause_menu.run()
-		print events
 
 		for event in events:
 			if event in ["event.CONTINUE", "Continue"]:
