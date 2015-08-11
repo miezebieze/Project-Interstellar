@@ -5,6 +5,24 @@
 
 Version 0.3.x
 
+How to Run the Game
+-------------------
+<br>This is just a developement version so you need
+the programming language Python version 2.x:</br>
+https://www.python.org/downloads/
+<br>And the physics and graphics engine pygame:</br>
+http://www.pygame.org/download.shtml
+<br>Both have a good guide how to install them otherwise google is your friend.</br>
+<h5>Windows:</h5>
+In normal case double clicking Run.py should start it. If this does not work google for "How to start a .py file".
+<br></br>
+<h5>Debian based systems:</h5>
+Double click on Run.sh. If this does not work make sure it has its executable bit set. Do this by opening a treminal in this folder or navigating there with a "normal" terminal and then copy-paste this command: chmod u+x ./Run.sh
+<br></br>
+<h5>Other:</h5>
+Google for: "how to run python files in" and add you OS
+<br></br>
+
 How to play
 -----------
 To play, simply run the "Run.py" file located in the base directory
@@ -24,8 +42,8 @@ Features
 
 Custom music
 ------------
-Simply paste your music into the music folder to be included in the game.
-"_" will be replaced with spaces (" "). For best support use .ogg but .mp3 will work too.
+Simply paste your music into the ./assets/music folder to be included in the game.
+"_" will be replaced with spaces " ". For best support use .ogg but .mp3 will work too.
 
 File / Code information
 -----------------------
