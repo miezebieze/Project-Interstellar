@@ -1,7 +1,7 @@
-&default.vars
+&./assets/templates/default.vars
 
 @|Continue |$size|$typeface|$color|$box1|$half + 0|$qrt  +   0|
 @|Save Game|$size|$typeface|$color|$box1|$half + 0|$qrt  +  80|
-@|load Game|$size|$typeface|$color|$box1|$half + 0|$qrt  + 120|
+@|Load Game|$size|$typeface|$color|$box1|$half + 0|$qrt  + 120|
 @|Settings |$size|$typeface|$color|$box1|$half + 0|$qrt  +  40|
 @|Exit     |$size|$typeface|$color|$box1|$half + 0|$qrt  + 160|

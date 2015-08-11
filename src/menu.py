@@ -12,40 +12,95 @@ from pygame.locals import *
 """Responsible tor the menus"""
 
 
+class fade_screen():
+
+	def __init__(self, step, max_alpha, screenx, screeny):
+		self.fade = pygame.Surface((screenx, screeny))
+		self.fade.fill((0, 0, 0))
+		self.fade.set_alpha(0)
+		self.timer = pygame.time.get_ticks()
+		self.alpha = 0
+		self.max_alpha = max_alpha
+		self.step = step
+
+	def blit(self, screen):
+		time = pygame.time.get_ticks()
+		if (time - self.timer) > self.step and self.alpha <= self.max_alpha:
+			self.timer = pygame.time.get_ticks()
+			self.alpha += 1
+		self.fade.set_alpha(self.alpha)
+		screen.blit(self.fade, pygame.Rect(0, 0, 0, 0))
+
+	def update(self, screenx, screeny):
+		self.__init__(self.step, self.max_alpha, screenx, screeny)
+
+
+class menu():
+
+	def __init__(self, menu_name, fade_step, fade_max, variables, externals):
+		"""main menu"""
+
+		#import variables
+		self.screenx = settings.screenx_current
+		self.screeny = settings.screeny_current
+		self.screen = settings.screen
+		self.fade_step = fade_step
+		self.fade_max = fade_max
+		self.variables = variables
+		self.externals = externals
+		self.menu_name = menu_name
+
+		#set mouse visible
+		pygame.mouse.set_visible(True)
+
+		#create menu
+		self.menu = creator.create_menu(
+					"./assets/templates/" + self.menu_name + ".menu",
+					self.variables, pygame.Rect((0, 0), (self.screenx, self.screeny)))
+
+		#create fade effect
+		fade = fade_screen(self.fade_step, self.fade_max, self.screenx, self.screeny)
+		self.menu.elems["externals"] = [fade]
+
+		for elem in self.externals:
+			self.menu.elems["externals"].insert(0, elem)
+
+	def run(self):
+
+		settings.upd("get_events")
+		self.menu.blit(self.screen, settings.events)
+		sounds.music.update(False, False)
+
+		for event in settings.events:
+			if event.type == QUIT:
+				pygame.mouse.set_visible(False)
+				return(["event.EXIT"])
+			if event.type == KEYDOWN:
+				key = pygame.key.name(event.key)
+				if key == "escape":
+					pygame.mouse.set_visible(False)
+					return(["event.EXIT"])
+				if key == "return":
+					pygame.mouse.set_visible(False)
+					return(["event.CONTINUE"])
+			if event.type == USEREVENT and event.code == "MENU":
+				names = []
+				klicked = self.menu.get_klicked()
+				for elem in klicked:
+					elem.klicked = False
+					names.append(elem.text)
+				return names
+		return([])
+
+	def update(self):
+		for external in self.externals:
+			external.update(settings.screenx_current, settings.screeny_current)
+		self.__init__(self.menu_name, self.fade_step, self.fade_max,
+				self.variables, self.externals)
+
+
 def main():
 	"""main menu"""
-
-	#import variables
-	screenx = settings.screenx_current
-	screeny = settings.screeny_current
-	screen = settings.screen
-
-	#set mouse visible
-	pygame.mouse.set_visible(True)
-
-	#create menu
-	menu = creator.create_menu("./assets/templates/main.menu", {},
-				pygame.Rect((0, 0), (screenx, screeny)))
-
-	#create fade effect
-	class fade_screen():
-
-		def __init__(self, screenx, screeny):
-			self.fade = pygame.Surface((screenx, screeny))
-			self.fade.fill((0, 0, 0))
-			self.fade.set_alpha(0)
-			self.timer = pygame.time.get_ticks()
-			self.alpha = 0
-
-		def blit(self, screen):
-			time = pygame.time.get_ticks()
-			if (time - self.timer) > 70 and self.alpha <= 100:
-				self.timer = pygame.time.get_ticks()
-				self.alpha += 1
-			self.fade.set_alpha(self.alpha)
-			screen.blit(self.fade, pygame.Rect(0, 0, 0, 0))
-	fade = fade_screen(screenx, screeny)
-	menu.elems["externals"] = [fade]
 
 	#create the planets animation
 	class create_planet():
@@ -65,8 +120,13 @@ def main():
 
 		def blit(self, screen):
 			self.planet.blit(screen, self.planet_pos)
-	planet = create_planet(screenx, screeny)
-	menu.elems["externals"].insert(0, planet)
+
+		def update(self, screenx, screeny):
+			self.__init__(screenx, screeny)
+
+	planet = create_planet(settings.screenx_current, settings.screeny_current)
+
+	main_menu = menu("main", 70, 100, {}, [planet])
 
 	#inserts menu music
 	sounds.music.queue("$not$menue.ogg", 0)
@@ -75,145 +135,74 @@ def main():
 
 	run = True
 
-	settings.loading_time = pygame.time.get_ticks()
+	if settings.loading_time == 0:
+		settings.loading_time = pygame.time.get_ticks()
 
 	while run:
 
-		settings.upd("get_events")
+		events = main_menu.run()
 
-		for surf in menu.elems["surfs"]:
-			screen.blit(surf, pygame.Rect(0, 0, 0, 0))
-		for external in menu.elems["externals"]:
-			external.blit(screen)
-		for elem in menu.elems["buttons"] + menu.elems["sliders"]:
-			elem.update(settings.events)
-			elem.blit(screen)
+		for event in events:
 
-		sounds.music.update(False, False)
-
-		for event in settings.events:
-			if event.type == QUIT:
+			if event == "event.QUIT":
 				settings.quit()
-			if event.type == KEYDOWN:
-				key = pygame.key.name(event.key)
-				if key == "escape":
-					settings.quit()
-				if key == "return":
-					settings.reset()
-					sounds.music.play("next")
-					run = False
-			if event.type == USEREVENT and event.code == "MENU":
-				for elem in menu.get_klicked():
-					elem.klicked = False
-					if elem.text == "Start":
-						settings.reset()
-						sounds.music.play("next")
-						run = False
-					if elem.text == "Settings":
-						options()
-						screenx = settings.screenx_current
-						screeny = settings.screeny_current
-						planet_pos.topleft = (int(screenx * 0.65), int(screeny * 0.33))
-						for surface in menu.elems["surfs"]:
-							pos = menu.elems["surfs"].index(surface)
-							surface = pygame.transform.scale(surface,
-										(int(screenx), int(screeny)))
-							menu.elems["surfs"][pos] = surface
-						menu = creator.create_menu("./assets/templates/main.menu", {},
-									pygame.Rect((0, 0), (screenx, screeny)))
-						fade = fade_screen(screenx, screeny)
-						menu.elems["externals"] = [fade]
-						planet = create_planet(screenx, screeny)
-						menu.elems["externals"].insert(0, planet)
-					if elem.text == "Credits":
-						namings.run()
-					if elem.text == "Exit":
-						settings.quit()
+			if event == "event.CONTINUE":
+				run = False
+			if event == "Start":
+				settings.reset()
+				sounds.music.play("next")
+				run = False
+			if event == "Settings":
+				options()
+				main_menu.update()
+			if event == "Credits":
+				namings.run()
+			if event == "Exit":
+				settings.quit()
 		pygame.display.flip()
-
-	pygame.mouse.set_visible(False)
 
 
 def pause():
 	"""pausing menu"""
-	#should be easy to understand too
-	screen = settings.screen
-	screenx = settings.screenx_current / 2.0
-	screeny = settings.screeny_current / 4.0
-	fade = settings.fade
-	fade_pos = settings.fade_pos
-	color = settings.color
 
 	sounds.music.play("pause")
 	pygame.mouse.set_visible(True)
-	fade.set_alpha(255)
-	screen.blit(fade, fade_pos)
-	fade.set_alpha(100)
+
+	background = settings.screen.copy()
+	pause_menu = menu("pause", 1, 150, {}, [])
+	pause_menu.menu.elems["surfs"].insert(0, background)
 
 	run = True
-	back = objects.button(screenx, screeny, "Continue", color)
-	save = objects.button(screenx, screeny + 40, "Save Game", color)
-	load = objects.button(screenx, screeny + 80, "Load Game", color)
-	option = objects.button(screenx, screeny + 120, "Settings", color)
-	escape = objects.button(screenx, screeny + 160, "Quit", color)
 
 	while run:
 
-		screen.blit(fade, fade_pos)
-		back.blit()
-		save.blit()
-		load.blit()
-		option.blit()
-		escape.blit()
-		pygame.display.flip()
-
 		missions.handle("pause")
+		events = pause_menu.run()
+		print events
 
-		settings.upd("get_events")
-
-		for event in settings.events:
-			if event.type == QUIT:
-				settings.quit()
-			if event.type == KEYDOWN:
-				key = pygame.key.name(event.key)
-				if key == "escape":
-					main()
-					run = False
-					pass
-				if key == "return":
+		for event in events:
+			if event in ["event.CONTINUE", "Continue"]:
+				sounds.music.play("unpause")
+				run = False
+			if event == "Save Game":
+				savename = inputpopup(settings.screenx_current,
+						settings.screeny_current / 4,
+						"Save Game")
+				if savename != "Exit":
+					settings.save(savename)
+			if event == "Load Game":
+				savegame = savegames()
+				if savegame != "Exit":
+					settings.load(savegame)
 					sounds.music.play("unpause")
 					run = False
-					pass
-			if event.type == USEREVENT and event.code == "MENU":
-				pygame.time.delay(200)
-				if back.klicked:
-					sounds.music.play("unpause")
-					run = False
-				if save.klicked:
-					savename = inputpopup(screenx, screeny * 2, "Save Game")
-					if savename != "Exit":
-						settings.save(savename)
-				if load.klicked:
-					savegame = savegames()
-					if savegame != "Exit":
-						settings.load(savegame)
-						sounds.music.play("unpause")
-						run = False
-				if option.klicked:
-					options()
-					screenx = settings.screenx_current / 2.0
-					screeny = settings.screeny_current / 4.0
-					back.move(screenx, screeny)
-					save.move(screenx, screeny + 40)
-					load.move(screenx, screeny + 80)
-					option.move(screenx, screeny + 120)
-					escape.move(screenx, screeny + 160)
-				if escape.klicked:
-					main()
-					run = False
-
-	run = True
-	pygame.mouse.set_visible(False)
+			if event == "Settings":
+				options()
+				main_menu.update()
+			if event in ["Exit", "event.EXIT"]:
+				main()
+				run = False
+		pygame.display.flip()
 
 
 def inputpopup(x, y, header):

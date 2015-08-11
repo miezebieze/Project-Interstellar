@@ -79,6 +79,7 @@ def init():
 	global objects_on_screen  # entitys currently blitted to screen
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
+	global loading_time  # time until first blit
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -147,6 +148,7 @@ def init():
 	infinitevents = {"fire1": False, "roundfire": False}
 	musicend = USEREVENT + 100
 	events = []
+	loading_time = 0
 
 	from .player import player as player
 	player = player()

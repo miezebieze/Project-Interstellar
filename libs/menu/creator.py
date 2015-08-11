@@ -219,6 +219,18 @@ class create_menu():
 					pygame.image.load(self.vars["background"][0]),
 					ref.size))
 
+	def blit(self, screen, events):
+		for surf in self.elems["surfs"]:
+			screen.blit(surf, pygame.Rect(0, 0, 0, 0))
+		try:
+			for external in self.elems["externals"]:
+				external.blit(screen)
+		except:
+			pass
+		for elem in self.elems["buttons"] + self.elems["sliders"]:
+			elem.update(events)
+			elem.blit(screen)
+
 	def get_klicked(self):
 		klicked = []
 		for elem in self.elems["buttons"]:

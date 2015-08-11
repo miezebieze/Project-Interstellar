@@ -1,4 +1,4 @@
-&default.vars
+&./assets/templates/default.vars
 <#background = (../../assets/sprites/Background1.tif)
 
 -|Volume           |$volume    |$size|$typeface|$color|$box2|$half + 0|$qrt +  0|
