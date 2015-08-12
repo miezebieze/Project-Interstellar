@@ -33,11 +33,9 @@ class stars():
 		self.screenx = screenx - self.pos.w
 		self.screeny = screeny - self.pos.h
 		#gives a percentage where star is located
-		relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
-		relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
-		#calculates pixel position
-		self.pointx = relative_x * self.screenx
-		self.pointy = relative_y * self.screeny
+		self.relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
+		self.relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
+		self.update(screenx / 1920.0)
 
 	def move(self, x, y):
 		"""Moves the star according to player position"""
@@ -57,13 +55,17 @@ class stars():
 			return True
 		return False
 
-	def resize(self, ratio):
+	def update(self, ratio):
 		"""Resizes star fitting to resolution"""
 		size = int(self.size * (ratio / 2.0))
 		if size > 5:
 			self.image = pygame.image.load("./assets/sprites/star1.tif")
 			self.image = pygame.transform.smoothscale(self.image, (size, size))
 			self.pos = self.image.get_rect()
+		self.screenx = settings.screenx_current - self.pos.w
+		self.screeny = settings.screeny_current - self.pos.h
+		self.pointx = self.relative_x * self.screenx
+		self.pointy = self.relative_y * self.screeny
 
 
 class button():

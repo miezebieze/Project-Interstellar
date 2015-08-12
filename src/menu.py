@@ -170,7 +170,8 @@ def pause():
 
 	background = settings.screen.copy()
 	pause_menu = menu("pause", 1, 150, {}, [])
-	pause_menu.menu.elems["surfs"].insert(0, [background, pygame.Rect(0, 0, 0, 0)])
+	pause_menu.menu.elems["surfs"]["background"] = [background,
+						pygame.Rect(0, 0, 0, 0)]
 
 	run = True
 
@@ -197,7 +198,7 @@ def pause():
 					run = False
 			if event == "Settings":
 				options()
-				main_menu.update()
+				pause_menu.update()
 			if event in ["Exit", "event.EXIT"]:
 				main()
 				run = False

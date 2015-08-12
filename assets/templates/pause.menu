@@ -1,5 +1,6 @@
 &./assets/templates/default.vars
 
+*|Pause    |35   |$typeface|$color      |$half + 0|%12   +   0|
 @|Continue |$size|$typeface|$color|$box1|$half + 0|$qrt  +   0|
 @|Save Game|$size|$typeface|$color|$box1|$half + 0|$qrt  +  80|
 @|Load Game|$size|$typeface|$color|$box1|$half + 0|$qrt  + 120|

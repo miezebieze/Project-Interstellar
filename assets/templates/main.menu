@@ -1,8 +1,9 @@
 &./assets/templates/default.vars
 <#background = (./assets/sprites/Background1.tif)
 
-*|Title    |!auto|                |$img |%0    +
-@|Start    |$size|$typeface|$color|$box1|$half + 0|$qrt  +   0|
-@|Settings |$size|$typeface|$color|$box1|$half + 0|$qrt  +  40|
-@|Credits  |$size|$typeface|$color|$box1|$half + 0|$qrt  +  80|
-@|Exit     |$size|$typeface|$color|$box1|$half + 0|$qrt  + 120|
+*|Project Interstellar|40   |$typeface|$color      |$half + 0|%10  +   0|
+*|Main Menu           |30   |$typeface|$color      |$half + 0|$qrt +   0|
+@|Start               |$size|$typeface|$color|$box1|$half + 0|%40  +   0|
+@|Settings            |$size|$typeface|$color|$box1|$half + 0|%40  +  40|
+@|Credits             |$size|$typeface|$color|$box1|$half + 0|%40  +  80|
+@|Exit                |$size|$typeface|$color|$box1|$half + 0|%40  + 120|

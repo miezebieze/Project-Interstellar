@@ -50,7 +50,7 @@ class create_menu():
 
 	def __init__(self, filename, variables, ref):
 		self.vars = variables
-		self.elems = {"buttons": [], "sliders": [], "surfs": []}
+		self.elems = {"buttons": [], "sliders": [], "surfs": {}}
 
 		with open(filename) as conf_file:
 			for line in conf_file:
@@ -98,11 +98,11 @@ class create_menu():
 						self.vars[var[1:]] = convert2list(elem)
 
 				if line[0] == "#":
+					line = line[2:]
 					text = (line[:line.index("|")]).strip()
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					line = line[line.index("|") + 1:].lstrip()
 					line = line[line.index("|") + 1:].lstrip()
 					if line.strip()[0] == "$":
 						img = self.vars[line[1: line.index("|")].strip()]
@@ -116,7 +116,7 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems["surfs"].append([pygame.image.load(img[0]),
+					self.elems["surfs"][text] = [pygame.image.load(img[0]),
 								pygame.Rect(
 									(
 										(ref.w * rel_x) + abs_x,
@@ -126,7 +126,54 @@ class create_menu():
 										0,
 										0
 									)
-									)])
+									)]
+
+				if line[0] == "*":
+					line = line[2:]
+
+					text = (line[:line.index("|")]).strip()
+					if text[0] == "$":
+						text = self.vars[text[1:]]
+
+					line = line[line.index("|") + 1:].lstrip()
+					if line.strip()[0] == "$":
+						size = int(self.vars[line[1: line.index("|")].strip()])
+					else:
+						size = int(line[: line.index("|")].strip())
+
+					line = line[line.index("|") + 1:].lstrip()
+					if line[0] == "$":
+						typeface = self.vars[line[1: line.index("|")].strip()]
+					else:
+						typeface = line[: line.index("|")].strip()
+
+					line = line[line.index("|") + 1:].lstrip()
+					if line[0] == "$":
+						color = self.vars[line[1: line.index("|")].strip()]
+					else:
+						color = []
+						for elem in convert2list(line[:line.index("|")].rstrip()):
+							color.append(int(elem))
+
+					line = line[line.index("|") + 1:].lstrip()
+					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
+
+					line = line[line.index("|") + 1:-1].lstrip()
+					rel_y, abs_y = analyse_num(line, self.vars)
+
+					antialias = True
+
+					img = pygame.font.SysFont(typeface, size).render(text, antialias, color)
+
+					half_sizex = int(img.get_size()[0] / 2.0)
+					half_sizey = int(img.get_size()[1] / 2.0)
+
+					xpos = (ref.w * rel_x) + abs_x - half_sizex
+					ypos = (ref.h * rel_y) + abs_y - half_sizey
+
+					pos = pygame.Rect((xpos, ypos), (0, 0))
+
+					self.elems["surfs"][text] = [img, pos]
 
 				if line[0] == "@":
 					line = line[2:]
@@ -246,18 +293,24 @@ class create_menu():
 								rel_x, abs_x, rel_y, abs_y, ref, options))
 
 		if "background" in self.vars:
-			self.elems["surfs"].insert(0, [pygame.transform.smoothscale(
+			self.elems["surfs"]["background"] = [pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
-					ref.size), pygame.Rect(0, 0, 0, 0)])
+					ref.size), pygame.Rect(0, 0, 0, 0)]
 
 	def blit(self, screen, events):
-		for surf in self.elems["surfs"]:
-			screen.blit(surf[0], surf[1])
+		try:
+			screen.blit(self.elems["surfs"]["background"][0],
+				self.elems["surfs"]["background"][1])
+		except:
+			pass
 		try:
 			for external in self.elems["externals"]:
 				external.blit(screen)
 		except:
 			pass
+		for surf in self.elems["surfs"]:
+			if surf != "background":
+				screen.blit(self.elems["surfs"][surf][0], self.elems["surfs"][surf][1])
 		for elem in self.elems["buttons"] + self.elems["sliders"]:
 			elem.update(events)
 			elem.blit(screen)
