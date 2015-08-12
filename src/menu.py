@@ -14,7 +14,7 @@ from pygame.locals import *
 
 class fade_screen():
 
-	def __init__(self, step, max_alpha, screenx, screeny):
+	def __init__(self, step, step2, max_alpha, screenx, screeny):
 		self.fade = pygame.Surface((screenx, screeny))
 		self.fade.fill((0, 0, 0))
 		self.fade.set_alpha(0)
@@ -22,12 +22,13 @@ class fade_screen():
 		self.alpha = 0
 		self.max_alpha = max_alpha
 		self.step = step
+		self.step2 = step2
 
 	def blit(self, screen):
 		time = pygame.time.get_ticks()
 		if (time - self.timer) > self.step and self.alpha <= self.max_alpha:
 			self.timer = pygame.time.get_ticks()
-			self.alpha += 1
+			self.alpha += self.step2
 		self.fade.set_alpha(self.alpha)
 		screen.blit(self.fade, pygame.Rect(0, 0, 0, 0))
 
@@ -37,7 +38,8 @@ class fade_screen():
 
 class menu():
 
-	def __init__(self, menu_name, fade_step, fade_max, variables, externals):
+	def __init__(self, menu_name, fade_step, fade_step2, fade_max,
+			variables, externals):
 		"""main menu"""
 
 		#import variables
@@ -49,6 +51,7 @@ class menu():
 		self.variables = variables
 		self.externals = externals
 		self.menu_name = menu_name
+		self.fade_step2 = fade_step2
 
 		#set mouse visible
 		pygame.mouse.set_visible(True)
@@ -59,7 +62,8 @@ class menu():
 					self.variables, pygame.Rect((0, 0), (self.screenx, self.screeny)))
 
 		#create fade effect
-		fade = fade_screen(self.fade_step, self.fade_max, self.screenx, self.screeny)
+		fade = fade_screen(self.fade_step, self.fade_step2, self.fade_max,
+				self.screenx, self.screeny)
 		self.menu.elems["externals"] = [fade]
 
 		for elem in self.externals:
@@ -95,7 +99,7 @@ class menu():
 	def update(self):
 		for external in self.externals:
 			external.update(settings.screenx_current, settings.screeny_current)
-		self.__init__(self.menu_name, self.fade_step, self.fade_max,
+		self.__init__(self.menu_name, self.fade_step, self.fade_step2, self.fade_max,
 				self.variables, self.externals)
 
 
@@ -126,7 +130,7 @@ def main():
 	planet = create_planet(settings.screenx_current, settings.screeny_current)
 
 	#Load menu
-	main_menu = menu("main", 70, 100, {}, [planet])
+	main_menu = menu("main", 70, 1, 100, {}, [planet])
 
 	#inserts menu music
 	sounds.music.queue("$not$menue.ogg", 0)
@@ -169,7 +173,7 @@ def pause():
 	pygame.mouse.set_visible(True)
 
 	background = settings.screen.copy()
-	pause_menu = menu("pause", 1, 150, {}, [])
+	pause_menu = menu("pause", 5, 5, 150, {}, [])
 	pause_menu.menu.elems["surfs"]["background"] = [background,
 						pygame.Rect(0, 0, 0, 0)]
 

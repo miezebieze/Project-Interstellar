@@ -12,7 +12,7 @@ class world():
 
 	def generate(self, background, dstars, dtargets):
 		#initialize a new "world"
-		#TODO: Change loading of things to this class
+
 		#load background image
 		self.background = background
 		self.background_pos = self.background.get_rect()
