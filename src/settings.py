@@ -255,13 +255,11 @@ def upd(level):
 		global events
 		events = pygame.fastevent.get()
 		return
-	if level == "screenvalues+vol":  # So 1 counts too
+	if level == "screenvalues":
 		global screenx_current
 		global screeny_current
-		global volume
 		screenx_current = pygame.display.Info().current_w
 		screeny_current = int(screenx_current * 9.0 / 16.0)
-		volume = pygame.mixer.music.get_volume()
 		return
 	if level == "get_saves":
 		global saves
@@ -280,7 +278,7 @@ def upd(level):
 		global no16to9
 
 		draw.adjustscreen()
-		upd("screenvalues+vol")
+		upd("screenvalues")
 
 		konstspeed = 0.0025
 		konstspeed = konstspeed * (screenx_current / 1920.0)

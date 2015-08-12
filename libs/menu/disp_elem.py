@@ -207,7 +207,6 @@ class slider():
 		self.knob_pos.left = self.pos.left + tmp
 
 	def blit(self, screen):
-		#( name, options_list=False):
 		"""Blits the slider"""
 		if type(self.options_list) == bool:
 			tmp = self.name + ": " + str(self.value * 100)[:3] + "%"
@@ -222,7 +221,7 @@ class slider():
 				if self.value <= steps * area and self.value >= steps * (area - 1):
 					break
 			text = self.name + ": " + self.options_list[area - 1]
-			self.state = area
+			self.state = area - 1
 			self.render_text = modrender(self.typeface, 30,
 				text, True, self.color,
 				self.pos.size, 6)

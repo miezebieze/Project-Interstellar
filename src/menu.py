@@ -123,9 +123,9 @@ def main():
 
 		def update(self, screenx, screeny):
 			self.__init__(screenx, screeny)
-
 	planet = create_planet(settings.screenx_current, settings.screeny_current)
 
+	#Load menu
 	main_menu = menu("main", 70, 100, {}, [planet])
 
 	#inserts menu music
@@ -133,17 +133,17 @@ def main():
 	sounds.music.play("stop")
 	sounds.music.play("play", -1)
 
-	run = True
-
+	#Define loading time on first call
 	if settings.loading_time == 0:
 		settings.loading_time = pygame.time.get_ticks()
+	run = True
 
+	#Menu loop
 	while run:
 
+		#Calling events and checking through events
 		events = main_menu.run()
-
 		for event in events:
-
 			if event == "event.QUIT":
 				settings.quit()
 			if event == "event.CONTINUE":
@@ -304,69 +304,32 @@ def options():
 	"""The settings menu"""
 	#again: fairly easy
 
-	fade = settings.fade
-	fade_pos = settings.fade_pos
-	screenx = settings.screenx_current / 2.0
-	screeny = settings.screeny_current / 4.0
-	color = settings.color
-	screen = settings.screen
-	fullscreen = settings.fullscreen
-
-	if fullscreen == 1:
-		ison = "ON"
-	else:
-		ison = "OFF"
-
-	sounds.music.update()
-	sound = objects.sliders(sounds.music.volume, screenx, screeny)
-	fulscren = objects.button(screenx, screeny + 40, "Fullscreen : " + ison, color)
-	menu = objects.button(screenx, screeny + 80, "Back", color)
-
-	run = True
-
-	fade.set_alpha(255)
-	screen.blit(fade, fade_pos)
-	fade.set_alpha(100)
+	settings_menu = menu("settings", 0, 0,
+			{"fullscreen": str(int(settings.fullscreen)),
+			"volume": str(settings.volume)},
+			[])
 
 	sounds.music.play("pause")
 	sounds.music.queue("$not$testsound.mp3", 0)
 	sounds.music.play("play")
 
+	run = True
 	while run:
 
-		screen.blit(fade, fade_pos)
-		sound.blit("Volume: ")
-		fulscren.blit()
-		menu.blit()
+		events = settings_menu.run()
+		for event in events:
+			if event in ["event.EXIT", "Exit"]:
+				pygame.mixer.music.pause()
+				sounds.music.play("unpause")
+				run = False
+
+		for slider in settings_menu.menu.elems["sliders"]:
+			if slider.name == "Volume":
+				sounds.music.volume = slider.value
+				settings.volume = slider.value
+			if slider.name == "Fullscreen":
+				settings.fullscreen = bool(slider.state)
+		sounds.music.update(False, False)
 		pygame.display.flip()
 
-		settings.upd("get_events")
-
-		sounds.music.update(False, False)
-		for event in settings.events:
-			if event.type == KEYDOWN:
-				key = pygame.key.name(event.key)
-				if key == "escape":
-					pygame.mixer.music.pause()
-					sounds.music.play("unpause")
-					run = False
-			if event.type == QUIT:
-				settings.quit()
-			if event.type == USEREVENT and event.code == "MENU":
-				pygame.time.delay(200)
-				if fulscren.klicked:
-					fullscreen = settings.toggle(fullscreen, False, True)
-					if fullscreen:
-						fulscren.changetext("Fullscreen : ON", color)
-					elif not fullscreen:
-						fulscren.changetext("Fullscreen : Off", color)
-				if menu.klicked:
-					sounds.music.play("unpause")
-					run = False
-
-		sound.modify(settings.events)
-		sounds.music.volume = sound.value
-		sounds.music.update(False, False)
-
-	settings.fullscreen = fullscreen
 	settings.upd("adjust_screen")

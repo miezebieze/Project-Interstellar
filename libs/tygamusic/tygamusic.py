@@ -124,6 +124,7 @@ shouldplaynextsong (bool)
 		if music has ended
 """
 
+		#print self.volume
 		#Adjust volume to its own volume.
 		pygame.mixer.music.set_volume(self.volume)
 		#Adds a random song to playlist
