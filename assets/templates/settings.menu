@@ -3,4 +3,4 @@
 
 -|Volume           |$volume    |$size|$typeface|$color|$box2|$half + 0|$qrt +  0|
 -|Fullscreen|$offon|$fullscreen|$size|$typeface|$color|$box2|$half + 0|$qrt + 40|
-@|Exit                         |$size|$typeface|$color|$box1|$half + 0|$qrt + 80|
+@|Return                       |$size|$typeface|$color|$box1|$half + 0|$qrt + 80|

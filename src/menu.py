@@ -144,7 +144,7 @@ def main():
 		#Calling events and checking through events
 		events = main_menu.run()
 		for event in events:
-			if event == "event.QUIT":
+			if event == "event.EXIT":
 				settings.quit()
 			if event == "event.CONTINUE":
 				run = False
@@ -170,7 +170,7 @@ def pause():
 
 	background = settings.screen.copy()
 	pause_menu = menu("pause", 1, 150, {}, [])
-	pause_menu.menu.elems["surfs"].insert(0, background)
+	pause_menu.menu.elems["surfs"].insert(0, [background, pygame.Rect(0, 0, 0, 0)])
 
 	run = True
 
@@ -245,7 +245,6 @@ def inputpopup(x, y, header):
 
 def savegames():
 	"""creates wall with savegames to select"""
-	#problem? ask me.
 
 	settings.upd("get_saves")
 
@@ -302,7 +301,6 @@ def savegames():
 
 def options():
 	"""The settings menu"""
-	#again: fairly easy
 
 	settings_menu = menu("settings", 0, 0,
 			{"fullscreen": str(int(settings.fullscreen)),
@@ -318,7 +316,7 @@ def options():
 
 		events = settings_menu.run()
 		for event in events:
-			if event in ["event.EXIT", "Exit"]:
+			if event in ["event.EXIT", "Return"]:
 				pygame.mixer.music.pause()
 				sounds.music.play("unpause")
 				run = False

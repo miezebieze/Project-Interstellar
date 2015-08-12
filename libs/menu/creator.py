@@ -97,6 +97,37 @@ class create_menu():
 					if var[0] == "[":
 						self.vars[var[1:]] = convert2list(elem)
 
+				if line[0] == "#":
+					text = (line[:line.index("|")]).strip()
+					if text[0] == "$":
+						text = self.vars[text[1:]]
+
+					line = line[line.index("|") + 1:].lstrip()
+					line = line[line.index("|") + 1:].lstrip()
+					if line.strip()[0] == "$":
+						img = self.vars[line[1: line.index("|")].strip()]
+					else:
+						print("Pictures only accept variables as image source")
+						quit()
+
+					line = line[line.index("|") + 1:].lstrip()
+					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
+
+					line = line[line.index("|") + 1:-1].lstrip()
+					rel_y, abs_y = analyse_num(line, self.vars)
+
+					self.elems["surfs"].append([pygame.image.load(img[0]),
+								pygame.Rect(
+									(
+										(ref.w * rel_x) + abs_x,
+										(ref.h * rel_y) + abs_y,
+									),
+									(
+										0,
+										0
+									)
+									)])
+
 				if line[0] == "@":
 					line = line[2:]
 
@@ -215,13 +246,13 @@ class create_menu():
 								rel_x, abs_x, rel_y, abs_y, ref, options))
 
 		if "background" in self.vars:
-			self.elems["surfs"].append(pygame.transform.smoothscale(
+			self.elems["surfs"].insert(0, [pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]),
-					ref.size))
+					ref.size), pygame.Rect(0, 0, 0, 0)])
 
 	def blit(self, screen, events):
 		for surf in self.elems["surfs"]:
-			screen.blit(surf, pygame.Rect(0, 0, 0, 0))
+			screen.blit(surf[0], surf[1])
 		try:
 			for external in self.elems["externals"]:
 				external.blit(screen)
