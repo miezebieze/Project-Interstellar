@@ -8,6 +8,17 @@ button
 slider
 
 
+def convert2list(string):
+	num_of_elem = string.count(",") + 1
+	elements = []
+	string = string[1:]
+	for a in range(num_of_elem - 1):
+		elements.append(string[:string.index(",")].strip())
+		string = string[string.index(",") + 1:].strip()
+	elements.append(string[:-1])
+	return elements
+
+
 class create_outline():
 
 	def __init__(self, template_file):
@@ -31,12 +42,21 @@ class create_outline():
 		self.corner = None
 		self.line = None
 		self.line_orient = None
+		self.color = None
 		if "corner" in self.resources:
 			self.corner = pygame.image.load(self.resources["corner"])
 		if "line" in self.resources:
 			self.line = pygame.image.load(self.resources["line"])
 		if "line_orientation" in self.resources:
 			self.line_orient = pygame.image.load(self.resources["line_orientation"])
+		if "inner_color" in self.resources:
+			color = convert2list(self.resources["inner_color"])
+			if len(color) == 3:
+				self.color = (int(color[0]), int(color[1]), int(color[2]))
+			if len(color) == 4:
+				self.color = (int(color[0]), int(color[1]), int(color[2]), int(color[3]))
+		else:
+			self.color = (0, 0, 0, 0)
 		if self.corner is None:
 			if self.line is None:
 				print("No image given to create design.")
@@ -44,22 +64,55 @@ class create_outline():
 				if self.line_orient == "vertical":
 					self.line = pygame.transform.rotate(self.line, -90)
 				line_rect = self.line.get_rect()
-				slices = {}
-				for a in range(line_rect.h):
-					#TODO: create corner
-					slices
-					pass
+				size = line_rect.h
+				self.pixels = {}
+				self.pattern = pygame.Surface((1, size))
+				for a in range(size):
+					self.pattern.set_at((0, a), self.line.get_at((0, a)))
+				self.corner = pygame.Surface((size, size))
+				for a in range(size):
+					for x in range(size):
+						for y in range(size):
+							if x >= a and y >= a:
+								self.corner.set_at((x, y), self.pattern.get_at((0, a)))
+		else:
+			if self.line is None:
+				size = self.corner.get_height()
+				self.line = pygame.Surface((1, size))
+				for a in range(size):
+					self.line.set_at((0, a), self.corner.get_at((size - 1, a)))
 
-
-def convert2list(string):
-	num_of_elem = string.count(",") + 1
-	elements = []
-	string = string[1:]
-	for a in range(num_of_elem - 1):
-		elements.append(string[:string.index(",")].strip())
-		string = string[string.index(",") + 1:].strip()
-	elements.append(string[:-1])
-	return elements
+	def create_box(self, width, height):
+		border = self.line.get_height()
+		width += border * 2
+		height += border * 2
+		self.top = pygame.Surface((width, border))
+		#creating top frame line
+		for pos in range(width):
+			self.top.blit(self.line, pygame.Rect(pos, 0, 0, 0))
+		#blit left top corner
+		self.top.blit(self.corner, pygame.Rect(0, 0, 0, 0))
+		#blit right top corner
+		self.top.blit(pygame.transform.flip(self.corner, True, False),
+					pygame.Rect(width - border, 0, 0, 0))
+		#create bottom line
+		self.bottom = pygame.transform.flip(self.top, False, True)
+		#create left frame line
+		self.left = pygame.Surface((border, height))
+		tmp_line = pygame.transform.rotate(self.line, 90)
+		for pos in range(height):
+			self.left.blit(tmp_line, pygame.Rect(0, pos, 0, 0))
+		#create right frame line
+		self.right = pygame.transform.flip(self.left, True, False)
+		#Merge all together
+		final = pygame.Surface((width, height), pygame.SRCALPHA)
+		final.fill(self.color)
+		print self.color
+		final.blit(self.left, pygame.Rect(0, 0, 0, 0))
+		final.blit(self.right, pygame.Rect(width - border, 0, 0, 0))
+		final.blit(self.top, pygame.Rect(0, 0, 0, 0))
+		final.blit(self.bottom, pygame.Rect(0, height - border, 0, 0))
+		self.box = final
 
 
 def analyse_num(string, variables):

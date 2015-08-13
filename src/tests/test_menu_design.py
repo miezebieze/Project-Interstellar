@@ -102,13 +102,15 @@ class menu():
 				self.variables, self.externals)
 
 design = creator.create_outline("./assets/templates/nr1.design")
+design.create_box(200, 40)
 
 men = menu("savescreen", 0, 255, 255, {"savename": "This funny savegame"}, {})
-men.menu.elems["surfs"]["corner"] = [pygame.transform.scale(design.corner, (50, 50)), pygame.Rect(0, 0, 0, 0)]
+men.menu.elems["surfs"]["test"] = [design.box, pygame.Rect(0, 0, 0, 0)]
 run = True
 while run:
 	events = men.run()
 	for event in events:
+		pygame.time.wait(100)
 		if event == "event.EXIT":
 			run = False
 	pygame.display.flip()
