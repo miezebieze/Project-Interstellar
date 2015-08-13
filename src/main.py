@@ -31,6 +31,7 @@ if not settings.skip:
 	menu.main()
 
 print(("Loading time:" + str(settings.loading_time / 1000.0)))
+print(("Your seed is:" + str(settings.seed)))
 
 #start clock for checking time how long has been played
 global clock

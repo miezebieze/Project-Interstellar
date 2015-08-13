@@ -7,6 +7,7 @@ import os
 import shutil
 import sys
 import traceback
+import random
 
 
 def init():
@@ -80,6 +81,12 @@ def init():
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
 	global loading_time  # time until first blit
+	global seed
+
+	#for this operation os.urandom is used
+	seed_size = 16
+	seed = random.randint(10 ** (seed_size - 1), (10 ** seed_size) - 1)
+	random.seed(seed)
 
 	#set up screen
 	pygame.event.set_grab(False)
