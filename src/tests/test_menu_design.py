@@ -9,6 +9,7 @@ os.chdir("../../")
 global screen
 
 pygame.init()
+pygame.fastevent.init()
 screen = pygame.display.set_mode((600, 400))
 
 
@@ -100,7 +101,10 @@ class menu():
 		self.__init__(self.menu_name, self.fade_step, self.fade_step2, self.fade_max,
 				self.variables, self.externals)
 
-men = menu("savescreen", 0, 255, 255, {"savename": "This funny savegame"}, [])
+design = creator.create_outline("./assets/templates/nr1.design")
+
+men = menu("savescreen", 0, 255, 255, {"savename": "This funny savegame"}, {})
+men.menu.elems["surfs"]["corner"] = [pygame.transform.scale(design.corner, (50, 50)), pygame.Rect(0, 0, 0, 0)]
 run = True
 while run:
 	events = men.run()

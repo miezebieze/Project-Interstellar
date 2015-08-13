@@ -1,11 +1,54 @@
 # -*- coding: utf-8 -*-
 import pygame
 import disp_elem
-from disp_elem import button
-from disp_elem import slider
+from .disp_elem import button
+from .disp_elem import slider
 #button and sliders would be unsued
 button
 slider
+
+
+class create_outline():
+
+	def __init__(self, template_file):
+		self.resources = {}
+		self.read_file(template_file)
+		self.create_slices()
+
+	def read_file(self, template_file):
+		def split(line, splitter):
+			rline = line[line.index(splitter) + 1:].strip()
+			lline = line[:line.index(splitter)].strip()
+			return lline, rline
+
+		with open(template_file) as conf_file:
+			for line in conf_file:
+				if line[0] != "#":
+					option, var = split(line, "=")
+					self.resources[option] = var
+
+	def create_slices(self):
+		self.corner = None
+		self.line = None
+		self.line_orient = None
+		if "corner" in self.resources:
+			self.corner = pygame.image.load(self.resources["corner"])
+		if "line" in self.resources:
+			self.line = pygame.image.load(self.resources["line"])
+		if "line_orientation" in self.resources:
+			self.line_orient = pygame.image.load(self.resources["line_orientation"])
+		if self.corner is None:
+			if self.line is None:
+				print("No image given to create design.")
+			else:
+				if self.line_orient == "vertical":
+					self.line = pygame.transform.rotate(self.line, -90)
+				line_rect = self.line.get_rect()
+				slices = {}
+				for a in range(line_rect.h):
+					#TODO: create corner
+					slices
+					pass
 
 
 def convert2list(string):

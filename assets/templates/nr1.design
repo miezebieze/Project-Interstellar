@@ -1,0 +1,6 @@
+#corner = ./assets/sprites/design_template.tif
+line = ./assets/sprites/design.tif
+#line_orientation = vertical or horiontal
+#width = 6
+#height = 6
+#inner = (123,123,123,123)
