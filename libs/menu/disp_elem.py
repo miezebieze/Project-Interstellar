@@ -1,4 +1,4 @@
-	# lint:ok
+# lint:ok
 # -*- coding: utf-8 -*-
 
 import pygame
@@ -36,15 +36,17 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 class button():
 
 	def __init__(self, rel_x, x, rel_y, y, ref, text, typeface, size,
-			color, buttons_files, borderoff):
+			color, button_designs):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
-		#going to be simplified next refactoring
-		self.buttons = (pygame.image.load(buttons_files[0]),
-				pygame.image.load(buttons_files[1]),
-				pygame.image.load(buttons_files[2]))
-		self.img = self.buttons[0]
-		self.pos = self.buttons[0].get_rect()
+		#three different instances!
+		#this way three images can be generated
+		#is faster …
+		normal = create_outline(button_designs[0])
+		hover = create_outline(button_designs[0])
+		klick = create_outline(button_designs[0])
+		self.buttons = [normal, hover, klick]
+		self.state = 0
 		self.x = x
 		self.y = y
 		self.rel_x = rel_x
@@ -52,13 +54,20 @@ class button():
 		self.typeface = typeface
 		self.text = text
 		self.name = text
-		self.text_img = modrender(typeface, 30,
-			text, True, color,
-			self.pos.size, borderoff)
-		self.textpos = self.text_img.get_rect()
-		self.textpos.center = self.pos.center
 		self.klicked = False
+		#create font and text
+		font = pygame.font.SysFont(typeface, int(size))
+		self.text_img = font.render(self.text, True, color)
+		#define pos and size
+		self.pos = self.text_img.get_rect()
+		self.textpos = self.pos
+		#update position
 		self.move(self.x, self.rel_x, self.y, self.rel_y, ref)
+		#move buttons and create images
+		for num in range(len(self.buttons)):
+			self.buttons[num].create_box(num, self.pos)
+		#reposition text
+		self.textpos.center = self.pos.center
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
@@ -70,7 +79,7 @@ class button():
 
 	def move(self, x, rel_x, y, rel_y, ref):
 		"""Moves the button so that x and y are the center"""
-		self.pos = self.buttons[0].get_rect()
+		self.pos = pygame.Rect((0, 0), self.pos.size)
 		rel_x *= float(ref.w)
 		rel_y *= float(ref.h)
 		x += rel_x
@@ -80,24 +89,24 @@ class button():
 		self.textpos.center = self.pos.center
 
 	def update(self, events):
-		#blitts the button and changes image when hovered over or being clicked
+		#blits the button and changes image when hovered over or being clicked
 		#also posts a menu event to show that a button has been clicked
 		if self.pos.collidepoint(pygame.mouse.get_pos()) and not self.klicked:
-			self.img = self.buttons[1]
+			self.state = 1
 			for event in events:
 				if event.type == MOUSEBUTTONDOWN and event.button == 1:
 					menue = pygame.event.Event(USEREVENT, code="MENU")
 					pygame.fastevent.post(menue)
 					self.klicked = True
-					self.img = self.buttons[2]
+					self.state = 2
 		elif not self.klicked:
-			self.img = self.buttons[0]
+			self.state = 0
 		else:
-			self.img = self.buttons[2]
+			self.state = 2
 
 	def blit(self, screen):
 		"""Blits the button"""
-		screen.blit(self.img, self.pos)
+		screen.blit(self.buttons[self.state].box, self.buttons[self.state].pos)
 		screen.blit(self.text_img, self.textpos)
 
 
@@ -230,3 +239,114 @@ class slider():
 		screen.blit(self.box, self.pos)
 		screen.blit(self.knob, self.knob_pos)
 		screen.blit(self.render_text, self.textpos)
+
+
+class create_outline():
+
+	def __init__(self, template_file):
+		self.resources = {}
+		self.read_file(template_file)
+		self.modes = {}
+		for a in range(3):
+			self.modes[a] = self.create_template(a)
+
+	def read_file(self, template_file):
+		def split(line, splitter):
+			rline = line[line.index(splitter) + 1:].strip()
+			lline = line[:line.index(splitter)].strip()
+			return lline, rline
+
+		with open(template_file) as conf_file:
+			for line in conf_file:
+				if line[0] != "#":
+					option, var = split(line, "=")
+					self.resources[option] = var
+
+	def create_template(self, pos):
+		corner = None
+		line = None
+		line_orient = None
+		self.color = None
+		if "corner" in self.resources:
+			corner = pygame.image.load(self.resources["corner"])
+		if "line" in self.resources:
+			line = pygame.image.load(self.resources["line"])
+		if "line_orientation" in self.resources:
+			line_orient = pygame.image.load(self.resources["line_orientation"])
+		if "inner_color" in self.resources:
+			color = convert2list(self.resources["inner_color"])
+			if len(color) == 3:
+				self.color = (int(color[0]), int(color[1]), int(color[2]))
+			if len(color) == 4:
+				self.color = (int(color[0]), int(color[1]), int(color[2]), int(color[3]))
+		else:
+			self.color = (0, 0, 0, 0)
+		if corner is None:
+			if line is None:
+				print("No image given to create design.")
+			else:
+				if line_orient == "vertical":
+					line = pygame.transform.rotate(line, -90)
+				line_rect = line.get_rect()
+				size = line_rect.h
+				#crop the line to the wished string
+				line_string = pygame.Surface((1, size))
+				line_string.blit(line, (0, 0), pygame.Rect(pos, 0, 1, size))
+				line = line_string
+				line_rect = line.get_rect()
+				self.pixels = {}
+				self.pattern = pygame.Surface((1, size))
+				for a in range(size):
+					self.pattern.set_at((0, a), line.get_at((0, a)))
+				corner = pygame.Surface((size, size))
+				for a in range(size):
+					for x in range(size):
+						for y in range(size):
+							if x >= a and y >= a:
+								corner.set_at((x, y), self.pattern.get_at((0, a)))
+		else:
+			if line is None:
+				size = corner.get_height()
+				self.line = pygame.Surface((1, size))
+				for a in range(size):
+					self.line.set_at((0, a), corner.get_at((size - 1, a)))
+		return [line, corner]
+
+	def create_box(self, mode, rect):
+		posx = rect.x
+		posy = rect.y
+		width = rect.w
+		height = rect.height
+		border = self.modes[mode][0].get_height()
+		width += border * 2
+		height += border * 2
+		self.top = pygame.Surface((width, border))
+		#creating top frame line
+		for pos in range(width):
+			self.top.blit(self.modes[mode][0], pygame.Rect(pos, 0, 0, 0))
+		#blit left top corner
+		self.top.blit(self.modes[mode][1], pygame.Rect(0, 0, 0, 0))
+		#blit right top corner
+		self.top.blit(pygame.transform.flip(self.modes[mode][1], True, False),
+					pygame.Rect(width - border, 0, 0, 0))
+		#create bottom line
+		self.bottom = pygame.transform.flip(self.top, False, True)
+		#create left frame line
+		self.left = pygame.Surface((border, height))
+		tmp_line = pygame.transform.rotate(self.modes[mode][0], 90)
+		for pos in range(height):
+			self.left.blit(tmp_line, pygame.Rect(0, pos, 0, 0))
+		#create right frame line
+		self.right = pygame.transform.flip(self.left, True, False)
+		#Merge all together
+		final = pygame.Surface((width, height), pygame.SRCALPHA)
+		final.fill(self.color)
+		final.blit(self.left, pygame.Rect(0, 0, 0, 0))
+		final.blit(self.right, pygame.Rect(width - border, 0, 0, 0))
+		final.blit(self.top, pygame.Rect(0, 0, 0, 0))
+		final.blit(self.bottom, pygame.Rect(0, height - border, 0, 0))
+		self.box = final
+		self.pos = self.box.get_rect()
+		self.pos.x = posx - border
+		self.pos.y = posy - border
+		return self.box

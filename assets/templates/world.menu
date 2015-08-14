@@ -1,5 +1,5 @@
 &./assets/templates/default.vars
-
+/#TODO: images
 /$image1-9 need to be provided and should be klickable pictures
 /so the world is selectable
 
@@ -11,3 +11,4 @@
 @|world6|$image6|$size|$typeface|$color|$box1|%25 + 0|%75 + 0|
 @|world7|$image7|$size|$typeface|$color|$box1|%50 + 0|%75 + 0|
 @|world8|$image8|$size|$typeface|$color|$box1|%75 + 0|%75 + 0|
+@|Exit          |$size|$typeface|$color|$box1|$half + 0|$qrt  + 160|

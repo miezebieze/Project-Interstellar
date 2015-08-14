@@ -101,11 +101,11 @@ class menu():
 		self.__init__(self.menu_name, self.fade_step, self.fade_step2, self.fade_max,
 				self.variables, self.externals)
 
-design = creator.create_outline("./assets/templates/nr1.design")
-design.create_box(200, 40)
+#design = creator.create_outline("./assets/templates/nr1.design")
+#design.create_box(0, 0, 200, 40)
 
-men = menu("savescreen", 0, 255, 255, {"savename": "This funny savegame"}, {})
-men.menu.elems["surfs"]["test"] = [design.box, pygame.Rect(0, 0, 0, 0)]
+men = menu("pause", 0, 255, 255, {"savename": "This funny savegame"}, {})
+#men.menu.elems["surfs"]["test"] = [design.box, pygame.Rect(0, 0, 0, 0)]
 run = True
 while run:
 	events = men.run()

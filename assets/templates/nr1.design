@@ -1,5 +1,6 @@
-corner = ./assets/sprites/design_template.tif
-#line = ./assets/sprites/design.tif
+type = button
+#corner = ./assets/sprites/design1.tif
+line = ./assets/sprites/design1.tif
 #line_orientation = vertical or horiontal
 #inner_color = (255,128,128,100)
 #Can create templates if line xor corner is missing
