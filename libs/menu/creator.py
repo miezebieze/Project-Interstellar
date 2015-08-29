@@ -118,7 +118,7 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems["surfs"][text] = [pygame.image.load(img[0]),
+					self.elems["surfs"][text] = [pygame.image.load(img[0]).convert_alpha(),
 								pygame.Rect(
 									(
 										(ref.w * rel_x) + abs_x,
@@ -183,36 +183,48 @@ class create_menu():
 					text = (line[:line.index("|")]).strip()
 					if text[0] == "$":
 						text = self.vars[text[1:]]
+					content = text
 
-					if line.count("|") == 8:
-						#TODO: This:
-						img
-
-					line = line[line.index("|") + 1:].lstrip()
-					if line.strip()[0] == "$":
-						size = self.vars[line[1: line.index("|")].strip()]
+					if line.count("|") == 5:
+						imagemode = True
+						line = line[line.index("|") + 1:].lstrip()
+						if line.strip()[0] == "$":
+							content = pygame.image.load(self.vars[line[1: line.index("|")].strip()])
+						else:
+							content = pygame.image.load(str(line[: line.index("|")].strip()))
 					else:
-						size = float(line[: line.index("|")].strip())
+						imagemode = False
 
-					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
-						typeface = self.vars[line[1: line.index("|")].strip()]
-					else:
-						typeface = line[: line.index("|")].strip()
+					if not imagemode:
+						line = line[line.index("|") + 1:].lstrip()
+						if line.strip()[0] == "$":
+							size = self.vars[line[1: line.index("|")].strip()]
+						else:
+							size = float(line[: line.index("|")].strip())
 
-					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
-						color = self.vars[line[1: line.index("|")].strip()]
+						line = line[line.index("|") + 1:].lstrip()
+						if line[0] == "$":
+							typeface = self.vars[line[1: line.index("|")].strip()]
+						else:
+							typeface = line[: line.index("|")].strip()
+
+						line = line[line.index("|") + 1:].lstrip()
+						if line[0] == "$":
+							color = self.vars[line[1: line.index("|")].strip()]
+						else:
+							color = []
+							for elem in convert2list(line[:line.index("|")].rstrip()):
+								color.append(int(elem))
 					else:
-						color = []
-						for elem in convert2list(line[:line.index("|")].rstrip()):
-							color.append(int(elem))
+						size = 0
+						typeface = "monospace"
+						color = (255, 255, 255)
 
 					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":
 						design = self.vars[line[1: line.index("|")].strip()]
 					else:
-						print("Error: Outline only accepts only variables")
+						print("Error: Outline only accepts variables")
 						quit()
 
 					line = line[line.index("|") + 1:].lstrip()
@@ -221,8 +233,8 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems["buttons"].append(disp_elem.button(rel_x, abs_x, rel_y, abs_y,
-									ref, text, typeface, size, color, design[:3]))
+					self.elems["buttons"].append(disp_elem.button(text, rel_x, abs_x, rel_y, abs_y,
+									ref, content, typeface, size, color, design[:3]))
 
 				if line[0] == "-":
 					line = line[2:]
@@ -299,7 +311,7 @@ class create_menu():
 
 		if "background" in self.vars:
 			self.elems["surfs"]["background"] = [pygame.transform.smoothscale(
-					pygame.image.load(self.vars["background"][0]),
+					pygame.image.load(self.vars["background"][0]).convert(),
 					ref.size), pygame.Rect(0, 0, 0, 0)]
 
 	def blit(self, screen, events):

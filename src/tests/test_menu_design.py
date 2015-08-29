@@ -91,7 +91,7 @@ class menu():
 				klicked = self.menu.get_klicked()
 				for elem in klicked:
 					elem.klicked = False
-					names.append(elem.text)
+					names.append(elem.name)
 				return names
 		return([])
 
@@ -104,13 +104,21 @@ class menu():
 #design = creator.create_outline("./assets/templates/nr1.design")
 #design.create_box(0, 0, 200, 40)
 
-men = menu("pause", 0, 255, 255, {"savename": "This funny savegame"}, {})
+men = menu("world", 0, 255, 255, {"savename": "This funny savegame",
+				"image1": "./assets/sprites/logo.tif",
+				"image2": "./assets/sprites/logo.png",
+				"image3": "./assets/sprites/station1.tif",
+				"image4": "./assets/sprites/bar1.tif",
+				"image5": "./assets/sprites/inputbox1.tif",
+				"image6": "./assets/sprites/inputbox2.tif",
+				"image7": "./assets/sprites/mine_on.tif",
+				"image8": "./assets/sprites/mine_off.tif"}, {})
 #men.menu.elems["surfs"]["test"] = [design.box, pygame.Rect(0, 0, 0, 0)]
 run = True
 while run:
 	events = men.run()
 	for event in events:
 		pygame.time.wait(100)
-		if event == "event.EXIT":
+		if event in ["event.EXIT", "Exit"]:
 			run = False
 	pygame.display.flip()

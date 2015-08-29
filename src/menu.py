@@ -92,7 +92,7 @@ class menu():
 				klicked = self.menu.get_klicked()
 				for elem in klicked:
 					elem.klicked = False
-					names.append(elem.text)
+					names.append(elem.name)
 				return names
 		return([])
 

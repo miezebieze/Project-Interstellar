@@ -105,20 +105,22 @@ def init():
 	if not os.path.exists("./screenshots/"):
 		os.makedirs("./screenshots/")
 
-	#load images
+	#load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
-	button = pygame.image.load("./assets/sprites/Button1.tif")
-	buttonover = pygame.image.load("./assets/sprites/Button2.tif")
-	buttonclick = pygame.image.load("./assets/sprites/Button3.tif")
-	field = pygame.image.load("./assets/sprites/inputbox1.tif")
-	field1 = pygame.image.load("./assets/sprites/inputbox2.tif")
-	knob = pygame.image.load("./assets/sprites/knob1.tif")
-	box = pygame.image.load("./assets/sprites/Button1.tif")
-	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif")
-	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif")
-	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
-	border1 = pygame.image.load("./assets/sprites/bar1.tif")
+	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
+	buttonover = pygame.image.load("./assets/sprites/Button2.tif").convert_alpha()
+	buttonclick = pygame.image.load("./assets/sprites/Button3.tif").convert_alpha()
+	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
+	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
+	knob = pygame.image.load("./assets/sprites/knob1.tif").convert()
+	box = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
+	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
+	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
+				).convert_alpha()
+	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif"
+				).convert_alpha()
+	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha
 
 	fade_pos = fade.get_rect()  # lint:ok
 

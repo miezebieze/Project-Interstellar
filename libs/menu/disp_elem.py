@@ -35,13 +35,24 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	def __init__(self, rel_x, x, rel_y, y, ref, text, typeface, size,
+	def __init__(self, name, rel_x, x, rel_y, y, ref, content, typeface, size,
 			color, button_designs):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
 		#three different instances!
 		#this way three images can be generated
 		#is faster …
+		#TODO: implement image…
+		self.isimage = False
+		if type(content) == pygame.Surface:
+			self.content = content
+			self.contentpos = content.get_rect()
+			self.isimage = True
+		else:
+			self.contentpos = pygame.Rect(0, 0, 0, 0)
+			font = pygame.font.SysFont(typeface, int(size))
+			self.content = font.render(name, True, color)
+			self.typeface = typeface
 		normal = create_outline(button_designs[0])
 		hover = create_outline(button_designs[0])
 		klick = create_outline(button_designs[0])
@@ -51,31 +62,27 @@ class button():
 		self.y = y
 		self.rel_x = rel_x
 		self.rel_y = rel_y
-		self.typeface = typeface
-		self.text = text
-		self.name = text
+		self.name = name
 		self.klicked = False
 		#create font and text
-		font = pygame.font.SysFont(typeface, int(size))
-		self.text_img = font.render(self.text, True, color)
 		#define pos and size
-		self.pos = self.text_img.get_rect()
-		self.textpos = self.pos
+		self.pos = self.content.get_rect()
+		self.contentpos = self.pos
 		#update position
 		self.move(self.x, self.rel_x, self.y, self.rel_y, ref)
 		#move buttons and create images
 		for num in range(len(self.buttons)):
-			self.buttons[num].create_box(num, self.pos)
+			self.buttons[num].create_box(num, self.contentpos)
 		#reposition text
-		self.textpos.center = self.pos.center
+		self.contentpos.center = self.pos.center
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
-		self.text_img = modrender(self.typeface, 30,
+		self.content = modrender(self.typeface, 30,
 			text, True, color,
 			self.pos.size, 6)
-		self.textpos = self.text_img.get_rect()
-		self.textpos.center = self.pos.center
+		self.contentpos = self.text_img.get_rect()
+		self.contentpos.center = self.pos.center
 
 	def move(self, x, rel_x, y, rel_y, ref):
 		"""Moves the button so that x and y are the center"""
@@ -85,11 +92,11 @@ class button():
 		x += rel_x
 		y += rel_y
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.textpos = self.text_img.get_rect()
-		self.textpos.center = self.pos.center
+		self.contentpos = self.content.get_rect()
+		self.contentpos.center = self.pos.center
 
 	def update(self, events):
-		#blits the button and changes image when hovered over or being clicked
+		#changes image when hovered over or being clicked
 		#also posts a menu event to show that a button has been clicked
 		if self.pos.collidepoint(pygame.mouse.get_pos()) and not self.klicked:
 			self.state = 1
@@ -106,8 +113,8 @@ class button():
 
 	def blit(self, screen):
 		"""Blits the button"""
+		screen.blit(self.content, self.contentpos)
 		screen.blit(self.buttons[self.state].box, self.buttons[self.state].pos)
-		screen.blit(self.text_img, self.textpos)
 
 
 class inputfield():
