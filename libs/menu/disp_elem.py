@@ -41,13 +41,16 @@ class button():
 		#basic font and then everything should be clear
 		#three different instances!
 		#this way three images can be generated
-		#is faster …
-		#TODO: implement image…
 		self.isimage = False
-		if type(content) == pygame.Surface:
-			self.content = content
-			self.contentpos = content.get_rect()
-			self.isimage = True
+		if content != name:
+			if type(content) == pygame.Surface:
+				self.content = content
+				self.contentpos = self.content.get_rect()
+				self.isimage = True
+			elif type(content) == str:
+				self.content = pygame.image.load(content).convert_alpha()
+				self.contentpos = self.content.get_rect()
+				self.isimage = True
 		else:
 			self.contentpos = pygame.Rect(0, 0, 0, 0)
 			font = pygame.font.SysFont(typeface, int(size))

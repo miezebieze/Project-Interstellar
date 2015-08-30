@@ -88,6 +88,8 @@ def handle():
 #				world = worlds.world()
 				settings.localmap["[1]"].generate(settings.localmap["[1]"].background,
 							settings.dstars, settings.dtargets)
+				settings.world.generate(settings.world.background,
+							settings.dstars, settings.dtargets)
 			if len(key) == 3 and settings.debugscreen:
 				if key[0] == "[" and key[2] == "]":
 					settings.world = settings.localmap[key]

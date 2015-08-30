@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from data import creator
 import os
+import random
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 os.chdir("../../")
 
@@ -104,15 +105,25 @@ class menu():
 #design = creator.create_outline("./assets/templates/nr1.design")
 #design.create_box(0, 0, 200, 40)
 
+#generate random color surfaces
+images = []
+for tmp in range(8):
+	surf = pygame.Surface((160 * 2 / 3, 90 * 2 / 3))
+	surf.fill((random.randint(0, 255),
+		random.randint(0, 255),
+		random.randint(0, 255)))
+	images.append(surf)
+
+#Load menu
 men = menu("world", 0, 255, 255, {"savename": "This funny savegame",
-				"image1": "./assets/sprites/logo.tif",
-				"image2": "./assets/sprites/logo.png",
-				"image3": "./assets/sprites/station1.tif",
-				"image4": "./assets/sprites/bar1.tif",
-				"image5": "./assets/sprites/inputbox1.tif",
-				"image6": "./assets/sprites/inputbox2.tif",
-				"image7": "./assets/sprites/mine_on.tif",
-				"image8": "./assets/sprites/mine_off.tif"}, {})
+				"image1": images[0],
+				"image2": images[1],
+				"image3": images[2],
+				"image4": images[3],
+				"image5": images[4],
+				"image6": images[5],
+				"image7": images[6],
+				"image8": images[7]}, {})
 #men.menu.elems["surfs"]["test"] = [design.box, pygame.Rect(0, 0, 0, 0)]
 run = True
 while run:

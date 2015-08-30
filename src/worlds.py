@@ -1,6 +1,7 @@
 from . import settings
 from . import objects
 from . import draw
+from . import menu
 import pygame
 import random
 import math
@@ -69,14 +70,36 @@ class world():
 						return True
 					else:
 						return False
-				test = testpoint(playerpos.topleft)
-				test = test or testpoint(playerpos.bottomleft)
-				test = test or testpoint(playerpos.topright)
-				test = test or testpoint(playerpos.bottomright)
-				if test:
-					#Is in warp station
-					#TODO
-					pass
+
+				def test_collide():
+					test = testpoint(playerpos.topleft)
+					test = test or testpoint(playerpos.bottomleft)
+					test = test or testpoint(playerpos.topright)
+					test = test or testpoint(playerpos.bottomright)
+					return test
+				if test_collide():
+					#Warps to the selected world and gets a bit pushed off the station
+					selected_num = menu.choose_world()
+					if selected_num >= 0:
+						settings.world = settings.localmap["[" + selected_num + "]"]
+					settings.player.up = False
+					settings.player.down = False
+					settings.player.left = False
+					settings.player.right = False
+					settings.up = False
+					settings.down = False
+					settings.left = False
+					settings.right = False
+					while test_collide():
+						if settings.player.pos.center[0] < self.pos.center[0]:
+							settings.player.move_ip(-20, 0)
+						else:
+							settings.player.move_ip(20, 0)
+						if settings.player.pos.center[1] < self.pos.center[1]:
+							settings.player.move_ip(0, -20)
+						else:
+							settings.player.move_ip(0, 20)
+						playerpos = settings.player.pos
 
 			def blit(self):
 				self.screen.blit(self.img, self.pos)

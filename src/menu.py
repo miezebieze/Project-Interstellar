@@ -4,6 +4,7 @@ from . import namings
 from . import objects
 from . import sounds
 from . import missions
+import random
 from libs.pyganim import pyganim
 import pygame
 from libs.menu import creator
@@ -207,6 +208,62 @@ def pause():
 				main()
 				run = False
 		pygame.display.flip()
+
+
+def choose_world():
+	"""pausing menu"""
+
+	sounds.music.play("pause")
+	pygame.mouse.set_visible(True)
+
+	background = settings.screen.copy()
+	images = []
+	for tmp in range(8):
+		surf = pygame.Surface((160 * 2 / 3, 90 * 2 / 3))
+		surf.fill((random.randint(0, 255),
+			random.randint(0, 255),
+			random.randint(0, 255)))
+		images.append(surf)
+	world_menu = menu("world", 5, 5, 150, {
+				"image1": images[0],
+				"image2": images[1],
+				"image3": images[2],
+				"image4": images[3],
+				"image5": images[4],
+				"image6": images[5],
+				"image7": images[6],
+				"image8": images[7]}, {})
+
+	world_menu.menu.elems["surfs"]["background"] = [background,
+						pygame.Rect(0, 0, 0, 0)]
+	selected = -1
+
+	run = True
+
+	while run:
+		events = world_menu.run()
+		for event in events:
+			if event in ["event.CONTINUE", "Warp"]:
+				sounds.music.play("unpause")
+				run = False
+			if event == "Return":
+				selected = -1
+				run = False
+			if event in ["Exit", "event.EXIT"]:
+				main()
+				run = False
+			if event[0:5] == "world":
+				selected = event[5]
+			pygame.time.wait(128)
+		for elem in world_menu.menu.elems["buttons"]:
+			if elem.name == "world" + str(selected):
+				elem.state = 1
+				#print elem.name
+		pygame.display.flip()
+
+	pygame.mouse.set_visible(False)
+	missions.handle("pause")
+	return selected
 
 
 def inputpopup(x, y, header):

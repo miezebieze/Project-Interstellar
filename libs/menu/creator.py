@@ -189,9 +189,9 @@ class create_menu():
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
-							content = pygame.image.load(self.vars[line[1: line.index("|")].strip()])
+							content = self.vars[line[1: line.index("|")].strip()]
 						else:
-							content = pygame.image.load(str(line[: line.index("|")].strip()))
+							content = str(line[: line.index("|")].strip())
 					else:
 						imagemode = False
 
@@ -233,8 +233,10 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					self.elems["buttons"].append(disp_elem.button(text, rel_x, abs_x, rel_y, abs_y,
-									ref, content, typeface, size, color, design[:3]))
+					self.elems["buttons"].append(disp_elem.button(text,
+									rel_x, abs_x, rel_y, abs_y, ref,
+									content,
+									typeface, size, color, design[:3]))
 
 				if line[0] == "-":
 					line = line[2:]

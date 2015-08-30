@@ -120,7 +120,7 @@ def init():
 				).convert_alpha()
 	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif"
 				).convert_alpha()
-	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha
+	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha()
 
 	fade_pos = fade.get_rect()  # lint:ok
 
