@@ -218,11 +218,16 @@ def choose_world():
 
 	background = settings.screen.copy()
 	images = []
+	tmpfont = pygame.font.SysFont("monospace", 13)
 	for tmp in range(8):
 		surf = pygame.Surface((160 * 2 / 3, 90 * 2 / 3))
 		surf.fill((random.randint(0, 255),
 			random.randint(0, 255),
 			random.randint(0, 255)))
+		text = tmpfont.render("world" + str(tmp + 1), True, (0, 0, 0))
+		tmprect = text.get_rect()
+		tmprect.center = surf.get_rect().center
+		surf.blit(text, tmprect)
 		images.append(surf)
 	world_menu = menu("world", 5, 5, 150, {
 				"image1": images[0],

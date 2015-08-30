@@ -90,6 +90,9 @@ def handle():
 							settings.dstars, settings.dtargets)
 				settings.world.generate(settings.world.background,
 							settings.dstars, settings.dtargets)
+				#print settings.world.warp1.pos
+				#print settings.world.background_pos.w
+				#print settings.world.background_pos.h
 			if len(key) == 3 and settings.debugscreen:
 				if key[0] == "[" and key[2] == "]":
 					settings.world = settings.localmap[key]
