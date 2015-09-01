@@ -165,6 +165,7 @@ def main():
 			if event == "Exit":
 				settings.quit()
 		pygame.display.flip()
+	sounds.music.play("next", 0)
 
 
 def pause():

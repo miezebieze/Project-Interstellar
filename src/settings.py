@@ -44,6 +44,7 @@ def init():
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
+	global debugmode  # Enables debugmode
 	global isnear  # easteregg
 	global button  # image for the button
 	global buttonover  # = when hovered over
@@ -137,7 +138,8 @@ def init():
 	konstspeed = 0.0025
 
 	fullscreen = False
-	debugscreen = True
+	debugscreen = False
+	debugmode = False
 	dstars = 500
 	isnear = "False"
 	code = ""
@@ -166,8 +168,8 @@ def init():
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
 	#more complex default settings like creation of stars and targets and so on
-	if debugscreen:
-		volume = 0.0
+	if debugmode:
+		#volume = 0.0
 		fullscreen = False
 
 	def get_anim_source(num, quantity):
@@ -209,9 +211,10 @@ def init():
 	from . import worlds
 	localmap = {}
 	for a in range(9):
-		world = worlds.world()
+		world = worlds.world(str(a))
 		world.generate(background, dstars, dtargets)
 		localmap["[" + str(a + 1) + "]"] = world
+	world = localmap["[1]"]
 
 	upd("adjust_screen")
 
@@ -219,25 +222,8 @@ def init():
 def reset():
 
 	"""resets some settings"""
-	global up
-	global down
-	global left
-	global right
-	global player
-	global player_pos
-	global fade_pos
-	global background_pos
-	global rot_dest
-	global move
-	global move_x
-	global move_y
-	global speed
 	global konstspeed
-	global debugscreen
 	global color
-	global timeplay
-	global dstars
-	global dtargets
 
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
@@ -251,7 +237,7 @@ def reset():
 	from . import missions
 	missions.handle("pause")
 
-	if debugscreen:
+	if debugmode:
 		fullscreen = False  # lint:ok
 
 	world.generate(world.background, dstars, dtargets)
@@ -371,7 +357,8 @@ class save():
 		self.config.set("main", "fullscreen", str(fullscreen))
 		self.config.set("main", "screenx_current", str(screenx_current))
 		self.config.set("main", "screeny_current", str(screeny_current))
-		self.config.set("main", "debug", str(debugscreen))
+		self.config.set("main", "debugscreen", str(debugscreen))
+		self.config.set("main", "debugmode", str(debugmode))
 		self.config.set("main", "skip", "True")
 		self.config.set("main", "posx", str(player.pos.x))
 		self.config.set("main", "posy", str(player.pos.y))
@@ -387,6 +374,7 @@ def load(name):
 	global screenx_current
 	global screeny_current
 	global debugscreen
+	global debugmode
 	global config
 	global skip
 	global pos_x
@@ -411,14 +399,14 @@ def load(name):
 			fullscreen = config.getboolean("main", "fullscreen")
 			screenx_current = int(config.getfloat("main", "screenx_current"))
 			screeny_current = int(config.getfloat("main", "screeny_current"))
-			debugscreen = config.getboolean("main", "debug")
+			debugscreen = config.getboolean("main", "debugscreen")
+			debugmode = config.getboolean("main", "debugmode")
 			skip = config.getboolean("main", "skip")
 			pos_x = config.getfloat("main", "posy")
 			pos_y = config.getfloat("main", "posx")
 			sounds.music.volume = config.getfloat("main", "volume")
-			highscore = config.getint("main", "highscore")
 			#lint:enable
-		except NoOptionError as test:
+		except SafeConfigParser.NoOptionError as test:
 			print(("Saved game couldn't be loaded completly: " + str(test)))
 		except Exception:
 			print(("Unexpected error:", sys.exc_info()[0]))

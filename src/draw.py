@@ -57,6 +57,7 @@ def ingame():
 	debug()
 	drawsongname()
 	screen.blit(textsurf, textrect)
+	drawworldname()
 
 	if no16to9:
 		screen.blit(correcture, correcture_pos)
@@ -148,11 +149,23 @@ def drawsongname():
 			show -= 1 if show > 0 else False
 			if show <= 40 * 4 and alpha > 0:
 				alpha -= 1.6
-
-			songname.set_alpha(int(alpha))
+			try:
+				songname.set_alpha(int(alpha))
+			except:
+				pass
+				#Timing error is not important
 
 	if pygame.mixer.music.get_volume() != 0.0 and show != 0:
 		screen.blit(songname, font_pos)
+
+
+def drawworldname():
+			font = pygame.font.SysFont(settings.typeface, 50)
+			name = font.render("World: " + str(settings.world.name),
+					True, settings.color)
+			pos = name.get_rect()
+			pos.centerx = settings.screenx_current / 2
+			settings.screen.blit(name, pos)
 
 
 def adjustscreen():

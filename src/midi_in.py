@@ -85,5 +85,5 @@ def quit():
 def do():
 
 	global connected
-	if settings.debugscreen and connected:
+	if settings.debugmode and connected:
 		get_input()
