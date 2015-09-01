@@ -39,13 +39,6 @@ def ingame():
 	#nothing to explain here i guess
 
 	screen = settings.screen
-	screenx = settings.screenx_current
-
-	texttargets = str(len(settings.world.targets)) + " / " + str(settings.dtargets)
-	textsurf = settings.stdfont.render(texttargets, 1, settings.color)
-	textrect = textsurf.get_rect()
-	textrect.right = screenx
-	textrect.top = 40
 
 	adjustscreen()
 
@@ -56,7 +49,7 @@ def ingame():
 	settings.player.blit(screen)
 	debug()
 	drawsongname()
-	screen.blit(textsurf, textrect)
+	drawtargetsum()
 	drawworldname()
 
 	if no16to9:
@@ -118,6 +111,29 @@ def debug():
 		screen.blit(textdoesmove, (0, 120))
 		screen.blit(texttime, (0, 140))
 		screen.blit(textentitys, (0, 160))
+
+
+def drawtargetsum():
+
+	textlocaltargets = (str(len(settings.world.targets))
+			+ " / "
+			+ str(settings.dtargets))
+	text1surf = settings.stdfont.render(textlocaltargets, 1, settings.color)
+	text1rect = text1surf.get_rect()
+	text1rect.right = settings.screenx_current
+	text1rect.top = 40
+
+	alltargets = 0
+	for world in settings.localmap:
+		alltargets += len(settings.localmap[world].targets)
+
+	textglobaltargets = str(alltargets) + " / " + str(settings.dtargets * 8)
+	text2surf = settings.stdfont.render(textglobaltargets, 1, settings.color)
+	text2rect = text2surf.get_rect()
+	text2rect.right = settings.screenx_current
+	text2rect.top = 60
+	settings.screen.blit(text1surf, text1rect)
+	settings.screen.blit(text2surf, text2rect)
 
 
 def drawsongname():

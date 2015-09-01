@@ -139,7 +139,7 @@ def init():
 
 	fullscreen = False
 	debugscreen = False
-	debugmode = False
+	debugmode = True
 	dstars = 500
 	isnear = "False"
 	code = ""
@@ -169,8 +169,10 @@ def init():
 
 	#more complex default settings like creation of stars and targets and so on
 	if debugmode:
+		#Add custom handler here for when debugmode is activated
 		#volume = 0.0
-		fullscreen = False
+		#fullscreen = False
+		pass
 
 	def get_anim_source(num, quantity):
 		animationsourcetmp = []
@@ -210,11 +212,11 @@ def init():
 
 	from . import worlds
 	localmap = {}
-	for a in range(9):
+	for a in range(8):
 		world = worlds.world(str(a))
 		world.generate(background, dstars, dtargets)
-		localmap["[" + str(a + 1) + "]"] = world
-	world = localmap["[1]"]
+		localmap[str(a + 1)] = world
+	world = localmap["1"]
 
 	upd("adjust_screen")
 
@@ -282,7 +284,7 @@ def upd(level):
 
 		return
 	print("Something went wrong here")
-	int("test")  # Used to crash the game to see where no option is selected
+	raise Exception
 
 
 def toggle(var, option1, option2):

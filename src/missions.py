@@ -21,7 +21,11 @@ def handle(usage):
 		oldtime = pygame.time.get_ticks()
 		newtime = pygame.time.get_ticks()
 
-	if len(settings.world.targets) == 0:
+	alltargets = 0
+	for world in settings.localmap:
+		alltargets += len(settings.localmap[world].targets)
+
+	if alltargets == 0:
 		from . import draw
 		from . import movement
 

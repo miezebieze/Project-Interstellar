@@ -47,6 +47,7 @@ def main():
 		#get events/user-input
 		settings.upd("get_events")
 		sounds.music.update(settings.events)
+		sounds.music.volume = settings.volume
 
 		#handle the user input
 		interface.handle()
