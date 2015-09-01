@@ -369,7 +369,7 @@ def savegames():
 def options():
 	"""The settings menu"""
 
-	settings_menu = menu("settings", 0, 0,
+	settings_menu = menu("settings", 0, 0, 255,
 			{"fullscreen": str(int(settings.fullscreen)),
 			"volume": str(settings.volume)},
 			[])
