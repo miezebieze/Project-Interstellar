@@ -305,13 +305,17 @@ class target():
 		self.kill_entity = False
 		self.inscreen = True
 		self.move(settings.player.pos.x, settings.player.pos.y)
+		self.test = 0
 
 	def update(self):
 		"""Adjusts position according to screen size"""
 		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
 					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
-		self.pos_y = self.pos_yper * float(settings.world.background_pos.w
-					- 20 - self.pos.h) + 10 + self.pos.w / 2.0
+		self.pos_y = self.pos_yper * float(settings.world.background_pos.h
+					- 20 - self.pos.h) + 10 + self.pos.h / 2.0
+		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
+					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
+		self.pos_y = self.pos_yper * ((settings.screeny_current - self.pos.h) * 2.0)
 
 	def move(self, x, y):
 		"""Moves rect according to playerposition"""
@@ -335,8 +339,8 @@ class target():
 	def test_ishit(self, bulletrect):
 		"""Tests if target got hit"""
 		if self.pos.colliderect(bulletrect) and not self.gothit:
-			self.pos_x -= self.explosion.get_Rect().w
-			self.pos_y -= self.explosion.get_Rect().h
+			self.pos_x -= self.explosion.getRect().w / 2.0
+			self.pos_y -= self.explosion.getRect().h / 2.0
 			self.explosion.play()
 			self.gothit = True
 

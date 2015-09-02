@@ -84,7 +84,7 @@ class menu():
 				key = pygame.key.name(event.key)
 				if key == "escape":
 					pygame.mouse.set_visible(False)
-					return(["event.EXIT"])
+					return(["event.QUIT"])
 				if key == "return":
 					pygame.mouse.set_visible(False)
 					return(["event.CONTINUE"])
@@ -149,8 +149,6 @@ def main():
 		#Calling events and checking through events
 		events = main_menu.run()
 		for event in events:
-			if event == "event.EXIT":
-				settings.quit()
 			if event == "event.CONTINUE":
 				run = False
 			if event == "Start":
@@ -162,7 +160,7 @@ def main():
 				main_menu.update()
 			if event == "Credits":
 				namings.run()
-			if event == "Exit":
+			if event in ["Exit", "event.EXIT", "event.QUIT"]:
 				settings.quit()
 		pygame.display.flip()
 	sounds.music.play("next", 0)
@@ -205,7 +203,7 @@ def pause():
 			if event == "Settings":
 				options()
 				pause_menu.update()
-			if event in ["Exit", "event.EXIT"]:
+			if event in ["Exit", "event.EXIT", "event.QUIT"]:
 				main()
 				run = False
 		pygame.display.flip()
@@ -252,12 +250,11 @@ def choose_world():
 			if event in ["event.CONTINUE", "Warp"]:
 				sounds.music.play("unpause")
 				run = False
-			if event == "Return":
+			if event in ["Return", "event.QUIT"]:
 				selected = -1
 				run = False
-			if event in ["Exit", "event.EXIT"]:
-				main()
-				run = False
+			if event in ["event.EXIT"]:
+				settings.quit()
 			if event[0:5] == "world":
 				selected = event[5]
 			pygame.time.wait(128)

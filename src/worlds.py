@@ -175,7 +175,7 @@ class world():
 		screen_current = (int(tmpx), int(tmpy))
 		background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 		self.background = pygame.transform.smoothscale(background, screen_current)
-		self.background_pos = background.get_rect()
+		self.background_pos = self.background.get_rect()
 
 		tmp = -(settings.player.pos.x * (settings.screenx_current *
 					(settings.fake_size - 1)))
