@@ -67,9 +67,9 @@ def handle():
 					and settings.player.pos.y >= 0.9:
 				pygame.mixer.music.load("./assets/music/$not$ard_tatort.ogg")
 				pygame.mixer.music.play(1, 0.0)
-				if key == "f" or key == "space":
-					tmp = objects.bullet(settings.player.rotation, settings.player.pos)
-					settings.bullets.append(tmp)
+			if key == "f" or key == "space":
+				tmp = objects.bullet(settings.player.rotation, settings.player.pos)
+				settings.bullets.append(tmp)
 			if key == "c":
 				specials.fire = True
 			if settings.debugmode:
@@ -91,6 +91,9 @@ def handle():
 								settings.dstars, settings.dtargets)
 					settings.world.generate(settings.world.background,
 								settings.dstars, settings.dtargets)
+				if key == "b":
+					for target in settings.world.targets:
+						print target.pos
 				if len(key) == 3 and settings.debugmode:
 					if key[0] == "[" and key[2] == "]":
 						num = int(key[1])

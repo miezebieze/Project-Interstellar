@@ -287,8 +287,16 @@ class target():
 		self.pos = self.image.get_rect()
 		self.pos_xper = random.random()
 		self.pos_yper = random.random()
-		self.pos_x = self.pos_xper * settings.world.background_pos.w - 20 - self.pos.w
-		self.pos_y = self.pos_yper * settings.world.background_pos.h - 20 - self.pos.h
+		self.pos_x = (self.pos_xper * (settings.world.background_pos.w
+					- 20 - self.pos.w)
+					+ 10 + self.pos.w / 2)
+		self.pos_y = (self.pos_yper * (settings.world.background_pos.h
+					- 20 - self.pos.h)
+					+ 10 + self.pos.h / 2)
+		if not 0 < self.pos_x < settings.world.background_pos:
+			print("Targets have been found outside the world!")
+			print("Please report these values on our github page.")
+			raise ValueError(str(self.pos_x) + str(self.pos_y))
 		if self.pos_x < 20:
 			self.pos_x += 40 + 2 * self.pos.w
 		if self.pos_y < 20:

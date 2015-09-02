@@ -170,7 +170,7 @@ def init():
 	#more complex default settings like creation of stars and targets and so on
 	if debugmode:
 		#Add custom handler here for when debugmode is activated
-		#volume = 0.0
+		volume = 0.0
 		#fullscreen = False
 		pass
 
