@@ -287,8 +287,6 @@ class target():
 		self.pos = self.image.get_rect()
 		self.pos_xper = random.random()
 		self.pos_yper = random.random()
-		self.pos_xper = 0
-		self.pos_yper = 0
 		self.update()
 		if not 0 < self.pos_x < settings.world.background_pos:
 			message1 = "Targets have been found outside the world!\n"
