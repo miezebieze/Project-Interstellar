@@ -82,7 +82,7 @@ class world():
 					#Warps to the selected world and gets a bit pushed off the station
 					selected_num = menu.choose_world()
 					if selected_num >= 0:
-						settings.world = settings.localmap["[" + selected_num + "]"]
+						settings.world = settings.localmap[selected_num]
 					settings.player.up = False
 					settings.player.down = False
 					settings.player.left = False

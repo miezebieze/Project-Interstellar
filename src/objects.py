@@ -287,34 +287,31 @@ class target():
 		self.pos = self.image.get_rect()
 		self.pos_xper = random.random()
 		self.pos_yper = random.random()
-		self.pos_x = (self.pos_xper * (settings.world.background_pos.w
-					- 20 - self.pos.w)
-					+ 10 + self.pos.w / 2)
-		self.pos_y = (self.pos_yper * (settings.world.background_pos.h
-					- 20 - self.pos.h)
-					+ 10 + self.pos.h / 2)
+		self.pos_xper = 0
+		self.pos_yper = 0
+		self.update()
 		if not 0 < self.pos_x < settings.world.background_pos:
-			print("Targets have been found outside the world!")
-			print("Please report these values on our github page.")
-			raise ValueError(str(self.pos_x) + str(self.pos_y))
-		if self.pos_x < 20:
-			self.pos_x += 40 + 2 * self.pos.w
-		if self.pos_y < 20:
-			self.pos_y += 40 + 2 * self.pos.h
+			message1 = "Targets have been found outside the world!\n"
+			message2 = "Please report these values on our github page.\n"
+			raise ValueError(message1
+					+ message2
+					+ str(self.pos_x)
+					+ ":"
+					+ str(self.pos_y))
 		self.timer = random.randint(0, 1000)
 		self.gothit = False
 		random_explosion = random.randint(0, len(settings.explosions) - 1)
 		self.explosion = settings.explosions[random_explosion]
-		self.movex = int(self.explosion.getRect().w / 2.0)
-		self.movey = int(self.explosion.getRect().h / 2.0) - 5
 		self.kill_entity = False
 		self.inscreen = True
 		self.move(settings.player.pos.x, settings.player.pos.y)
 
 	def update(self):
 		"""Adjusts position according to screen size"""
-		self.pos_x = self.pos_xper * settings.screenx_current * 2 - 20 - self.pos.w
-		self.pos_y = self.pos_yper * settings.screeny_current * 2 - 20 - self.pos.h
+		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
+					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
+		self.pos_y = self.pos_yper * float(settings.world.background_pos.w
+					- 20 - self.pos.h) + 10 + self.pos.w / 2.0
 
 	def move(self, x, y):
 		"""Moves rect according to playerposition"""
@@ -338,8 +335,8 @@ class target():
 	def test_ishit(self, bulletrect):
 		"""Tests if target got hit"""
 		if self.pos.colliderect(bulletrect) and not self.gothit:
-			self.pos_x -= self.movex
-			self.pos_y -= self.movey
+			self.pos_x -= self.explosion.get_Rect().w
+			self.pos_y -= self.explosion.get_Rect().h
 			self.explosion.play()
 			self.gothit = True
 
