@@ -1,8 +1,8 @@
 &./assets/templates/default.vars
 
 *|Pause    |35   |$typeface|$color      |$half + 0|%12   +   0|
-@|Continue |$size|$typeface|$color|$box1|$half + 0|$qrt  +   0|
-@|Save Game|$size|$typeface|$color|$box1|$half + 0|$qrt  +  80|
-@|Load Game|$size|$typeface|$color|$box1|$half + 0|$qrt  + 120|
-@|Settings |$size|$typeface|$color|$box1|$half + 0|$qrt  +  40|
-@|Exit     |$size|$typeface|$color|$box1|$half + 0|$qrt  + 160|
+@|Continue |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt  +   0|
+@|Save Game|$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt  +  80|
+@|Load Game|$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt  + 120|
+@|Settings |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt  +  40|
+@|Exit     |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt  + 160|

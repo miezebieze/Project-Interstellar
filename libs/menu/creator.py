@@ -185,7 +185,7 @@ class create_menu():
 						text = self.vars[text[1:]]
 					content = text
 
-					if line.count("|") == 5:
+					if line.count("|") == 6:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
@@ -201,6 +201,12 @@ class create_menu():
 							size = self.vars[line[1: line.index("|")].strip()]
 						else:
 							size = float(line[: line.index("|")].strip())
+
+						line = line[line.index("|") + 1:].lstrip()
+						if line.strip()[0] == "$":
+							ratio = self.vars[line[1: line.index("|")].strip()]
+						else:
+							ratio = float(line[: line.index("|")].strip())
 
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
@@ -236,7 +242,7 @@ class create_menu():
 					self.elems["buttons"].append(disp_elem.button(text,
 									rel_x, abs_x, rel_y, abs_y, ref,
 									content,
-									typeface, size, self.vars["ratio"], color, design[:3]))
+									typeface, size, ratio, color, design[:3]))
 
 				if line[0] == "-":
 					line = line[2:]
@@ -245,7 +251,7 @@ class create_menu():
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					if line.count("|") == 9:
+					if line.count("|") == 10:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							options = self.vars[line[1: line.index("|")].strip()]
@@ -276,18 +282,24 @@ class create_menu():
 
 					line = line[line.index("|") + 1:].lstrip()
 					if line.strip()[0] == "$":
-						maxsize = int(self.vars[line[1: line.index("|")].strip()])
+						size = int(self.vars[line[1: line.index("|")].strip()])
 					else:
-						maxsize = int(line[: line.index("|")].strip())
+						size = int(line[: line.index("|")].strip())
 
 					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
+					if line.strip()[0] == "$":
+						ratio = self.vars[line[1: line.index("|")].strip()]
+					else:
+						ratio = float(line[: line.index("|")].strip())
+
+					line = line[line.index("|") + 1:].lstrip()
+					if line.strip()[0] == "$":
 						typeface = self.vars[line[1: line.index("|")].strip()]
 					else:
 						typeface = line[: line.index("|")].strip()
 
 					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
+					if line.strip()[0] == "$":
 						color = self.vars[line[1: line.index("|")].strip()]
 					else:
 						color = []
@@ -309,7 +321,7 @@ class create_menu():
 
 					#OPTIMIZE: add "normal" way to add ratio
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
-								maxsize, self.vars["ratio"], typeface, color, img,
+								size, ratio, typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))
 
 		if "background" in self.vars:
