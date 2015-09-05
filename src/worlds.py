@@ -192,7 +192,6 @@ class world():
 			draw.correcture_pos = draw.correcture.fill((0, 0, 0))
 			draw.correcture_pos.bottomleft = (0, settings.screeny)
 
-		#TODO: Why is this called so often?
 		for star in self.stars:
 			star.update(settings.screenx_current / 1920.0)
 

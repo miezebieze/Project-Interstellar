@@ -35,11 +35,11 @@ def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
 
 class button():
 
-	def __init__(self, name, rel_x, x, rel_y, y, ref, content, typeface, size,
-			color, button_designs):
+	def __init__(self, name, rel_x, x, rel_y, y, ref, content, typeface,
+			size, ratio, color, button_designs):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear
-		#three different instances!
+		#three different instances of create_outline!
 		#this way three images can be generated
 		self.isimage = False
 		if content != name:
@@ -52,9 +52,22 @@ class button():
 				self.contentpos = self.content.get_rect()
 				self.isimage = True
 		else:
-			self.contentpos = pygame.Rect(0, 0, 0, 0)
 			font = pygame.font.SysFont(typeface, int(size))
+
 			self.content = font.render(name, True, color)
+			self.contentpos = self.content.get_rect()
+
+			tmp_center_image = pygame.Surface((self.contentpos.h * ratio,
+						self.contentpos.h)).convert_alpha()
+			tmp_center_image.fill((0, 0, 0, 0))
+			tmp_center_pos = tmp_center_image.get_rect()
+
+			self.contentpos.center = tmp_center_pos.center
+			tmp_center_image.blit(self.content, self.contentpos)
+
+			self.content = tmp_center_image
+			self.contentpos = self.content.get_rect()
+
 			self.typeface = typeface
 		normal = create_outline(button_designs[0])
 		hover = create_outline(button_designs[0])
@@ -174,28 +187,35 @@ class inputfield():
 
 class slider():
 
-	def __init__(self, name, default_value, size, typeface, color, box,
+	def __init__(self, name, default_value, size, ratio, typeface, color, box,
 		rel_x, x, rel_y, y, ref, options_list=False):
 		"""Creates a new slider"""
 		self.value = default_value
-		self.box = pygame.image.load(box[0])
-		self.knob = pygame.image.load(box[1])
-		self.knob_pos = self.knob.get_rect()
+		self.box = create_outline(box[0])
 		self.dragged = False
-		self.typeface = typeface
+		self.typeface = pygame.font.SysFont(typeface, size)
 		self.color = color
 		self.options_list = options_list
 		self.name = name
-		self.size = size
 		self.borderoff = box[3]
 		self.state = 1
+		self.ratio = ratio
+		self.knob_pos = pygame.Rect(0, 0, 0, 0)
 
-		self.pos = self.box.get_rect()
+		self.pos = pygame.Rect(0, 0, 0, 0)
+		self.update([])
 		rel_x *= float(ref.w)
 		rel_y *= float(ref.h)
 		x += rel_x
 		y += rel_y
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
+		tmp_size = (self.render_text.get_size()[1])
+		self.pos.size = (self.ratio * tmp_size, tmp_size)
+		self.box.create_box(0, self.pos)
+		self.pos.size = self.box.box.get_size()
+		self.pos.center = (x, y)
+		self.knob = pygame.transform.scale(pygame.image.load(box[1]),
+					(self.pos.w / 15, self.pos.h))
+		self.knob_pos = self.knob.get_rect()
 		self.knob_pos.top = self.pos.top
 		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)
 		self.scale = 1.0 / self.pos.w
@@ -225,14 +245,10 @@ class slider():
 		tmp = (self.value * (self.pos.w - self.knob_pos.w))
 		self.knob_pos.left = self.pos.left + tmp
 
-	def blit(self, screen):
-		"""Blits the slider"""
 		if type(self.options_list) == bool:
-			tmp = self.name + ": " + str(self.value * 100)[:3] + "%"
-			tmp = tmp.replace("0.0", "0").replace(".", "")
-			self.render_text = modrender(self.typeface, self.size,
-				tmp, True, self.color,
-				self.pos.size, self.borderoff)
+			text = self.name + ": " + str(self.value * 100)[:3] + "%"
+			text = text.replace("0.0", "0").replace(".", "")
+			self.render_text = self.typeface.render(text, True, self.color)
 		else:
 			steps = 1.0 / len(self.options_list)
 			for area in range(len(self.options_list)):
@@ -241,12 +257,13 @@ class slider():
 					break
 			text = self.name + ": " + self.options_list[area - 1]
 			self.state = area - 1
-			self.render_text = modrender(self.typeface, 30,
-				text, True, self.color,
-				self.pos.size, 6)
+			self.render_text = self.typeface.render(text, True, self.color)
+
+	def blit(self, screen):
+		"""Blits the slider"""
 		self.textpos = self.render_text.get_rect()
 		self.textpos.center = self.pos.center
-		screen.blit(self.box, self.pos)
+		screen.blit(self.box.box, self.pos)
 		screen.blit(self.knob, self.knob_pos)
 		screen.blit(self.render_text, self.textpos)
 

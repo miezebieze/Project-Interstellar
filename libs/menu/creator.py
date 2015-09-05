@@ -236,7 +236,7 @@ class create_menu():
 					self.elems["buttons"].append(disp_elem.button(text,
 									rel_x, abs_x, rel_y, abs_y, ref,
 									content,
-									typeface, size, color, design[:3]))
+									typeface, size, self.vars["ratio"], color, design[:3]))
 
 				if line[0] == "-":
 					line = line[2:]
@@ -307,8 +307,9 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
+					#OPTIMIZE: add "normal" way to add ratio
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
-								maxsize, typeface, color, img,
+								maxsize, self.vars["ratio"], typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))
 
 		if "background" in self.vars:

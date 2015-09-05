@@ -82,7 +82,8 @@ def init():
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
 	global loading_time  # time until first blit
-	global seed
+	global seed  # the environments seed
+	global button_ratio
 
 	#for this operation os.urandom is used
 	seed_size = 16
@@ -109,13 +110,14 @@ def init():
 	#load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
-	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
-	buttonover = pygame.image.load("./assets/sprites/Button2.tif").convert_alpha()
-	buttonclick = pygame.image.load("./assets/sprites/Button3.tif").convert_alpha()
+	#TODO
+#	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
+#	buttonover = pygame.image.load("./assets/sprites/Button2.tif").convert_alpha()
+#	buttonclick = pygame.image.load("./assets/sprites/Button3.tif").convert_alpha(
 	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
 	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
 	knob = pygame.image.load("./assets/sprites/knob1.tif").convert()
-	box = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
+#	box = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
 	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
 	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
 				).convert_alpha()
@@ -136,7 +138,7 @@ def init():
 	left = False
 	right = False
 	konstspeed = 0.0025
-
+	button_ratio = 7.0
 	fullscreen = False
 	debugscreen = False
 	debugmode = True
@@ -213,11 +215,10 @@ def init():
 	from . import worlds
 	localmap = {}
 	for a in range(8):
-		world = worlds.world(str(a))
+		world = worlds.world(str(a + 1))
 		world.generate(background, dstars, dtargets)
 		localmap[str(a + 1)] = world
 	world = localmap["1"]
-
 	upd("adjust_screen")
 
 
@@ -281,7 +282,6 @@ def upd(level):
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
 		world.adjust_to_screen()
-
 		return
 	print("Something went wrong here")
 	raise Exception

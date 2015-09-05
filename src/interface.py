@@ -76,7 +76,6 @@ def handle():
 				if key == "r":
 					if pygame.key.get_mods() == 4416:
 						settings.psycomode = settings.toggle(settings.psycomode, True, False)
-						pass
 				if key == "q":
 					settings.volume = 0
 				if key == "l":
@@ -85,8 +84,6 @@ def handle():
 					for target in settings.world.targets:
 						target.test_ishit(pygame.Rect((-1000, -1000), (3000, 3000)))
 				if key == "g":
-#					from . import worlds
-#					world = worlds.world()
 					settings.localmap["[1]"].generate(settings.localmap["[1]"].background,
 								settings.dstars, settings.dtargets)
 					settings.world.generate(settings.world.background,

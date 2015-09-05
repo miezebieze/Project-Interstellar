@@ -4,7 +4,6 @@ from . import namings
 from . import objects
 from . import sounds
 from . import missions
-import random
 from libs.pyganim import pyganim
 import pygame
 from libs.menu import creator
@@ -216,27 +215,27 @@ def choose_world():
 	pygame.mouse.set_visible(True)
 
 	background = settings.screen.copy()
-	images = []
+	prewiev_images = []
 	tmpfont = pygame.font.SysFont("monospace", 13)
 	for tmp in range(8):
-		surf = pygame.Surface((160 * 2 / 3, 90 * 2 / 3))
-		surf.fill((random.randint(0, 255),
-			random.randint(0, 255),
-			random.randint(0, 255)))
-		text = tmpfont.render("world" + str(tmp + 1), True, (0, 0, 0))
+		prewiev_size = (int(settings.screenx_current / 5.0),
+				int(settings.screeny_current / 5.0))
+		surf = settings.localmap[str(tmp + 1)].background
+		surf = pygame.transform.smoothscale(surf, prewiev_size)
+		text = tmpfont.render("world" + str(tmp + 1), True, settings.color)
 		tmprect = text.get_rect()
 		tmprect.center = surf.get_rect().center
 		surf.blit(text, tmprect)
-		images.append(surf)
+		prewiev_images.append(surf)
 	world_menu = menu("world", 5, 5, 150, {
-				"image1": images[0],
-				"image2": images[1],
-				"image3": images[2],
-				"image4": images[3],
-				"image5": images[4],
-				"image6": images[5],
-				"image7": images[6],
-				"image8": images[7]}, {})
+				"image1": prewiev_images[0],
+				"image2": prewiev_images[1],
+				"image3": prewiev_images[2],
+				"image4": prewiev_images[3],
+				"image5": prewiev_images[4],
+				"image6": prewiev_images[5],
+				"image7": prewiev_images[6],
+				"image8": prewiev_images[7]}, {})
 
 	world_menu.menu.elems["surfs"]["background"] = [background,
 						pygame.Rect(0, 0, 0, 0)]
@@ -381,7 +380,7 @@ def options():
 
 		events = settings_menu.run()
 		for event in events:
-			if event in ["event.EXIT", "Return"]:
+			if event in ["event.EXIT", "event.QUIT", "Return"]:
 				pygame.mixer.music.pause()
 				sounds.music.play("unpause")
 				run = False
