@@ -249,6 +249,7 @@ class slider():
 			text = self.name + ": " + str(self.value * 100)[:3] + "%"
 			text = text.replace("0.0", "0").replace(".", "")
 			self.render_text = self.typeface.render(text, True, self.color)
+			self.is_defined_list = False
 		else:
 			steps = 1.0 / len(self.options_list)
 			for area in range(len(self.options_list)):
@@ -258,6 +259,7 @@ class slider():
 			text = self.name + ": " + self.options_list[area - 1]
 			self.state = area - 1
 			self.render_text = self.typeface.render(text, True, self.color)
+			self.is_defined_list = True
 
 	def blit(self, screen):
 		"""Blits the slider"""

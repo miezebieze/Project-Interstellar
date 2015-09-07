@@ -319,7 +319,6 @@ class create_menu():
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
-					#OPTIMIZE: add "normal" way to add ratio
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
 								size, ratio, typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))

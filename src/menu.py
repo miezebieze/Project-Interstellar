@@ -7,6 +7,7 @@ from . import missions
 from libs.pyganim import pyganim
 import pygame
 from libs.menu import creator
+from libs.menu import writer
 from pygame.locals import *
 
 """Responsible tor the menus"""
@@ -69,32 +70,63 @@ class menu():
 		for elem in self.externals:
 			self.menu.elems["externals"].insert(0, elem)
 
+	class slider_post():
+		"""A class for posting sliders and including their value
+		as a float representative of the class. When the Class is compared
+		it will compare the sliders name and reuturn the result."""
+		def __init__(self, name, value):
+			self.name = name
+			self.value = value
+
+		def __eq__(self, other):
+			return self.name == other
+
+		def __float__(self):
+			return float(self.value)
+
+		def __int__(self):
+			return int(self.value)
+
+		def __bool__(self):
+			try:
+				return bool(self.value)
+			except:
+				raise ValueError(
+					"Could not convert {0} to bool: {1}".format(type(self.value), self.value))
+
 	def run(self):
 
 		settings.upd("get_events")
 		self.menu.blit(self.screen, settings.events)
 		sounds.music.update(False, False)
 
+		events = []
 		for event in settings.events:
 			if event.type == QUIT:
 				pygame.mouse.set_visible(False)
-				return(["event.EXIT"])
+				events.append(["event.EXIT"])
 			if event.type == KEYDOWN:
 				key = pygame.key.name(event.key)
 				if key == "escape":
 					pygame.mouse.set_visible(False)
-					return(["event.QUIT"])
+					events.append(["event.QUIT"])
 				if key == "return":
 					pygame.mouse.set_visible(False)
-					return(["event.CONTINUE"])
+					events.append(["event.CONTINUE"])
 			if event.type == USEREVENT and event.code == "MENU":
-				names = []
 				klicked = self.menu.get_klicked()
 				for elem in klicked:
 					elem.klicked = False
-					names.append(elem.name)
-				return names
-		return([])
+					events.append(elem.name)
+		for slider in self.menu.elems["sliders"]:
+			if slider.dragged:
+				if slider.is_defined_list:
+					tmp_value = slider.state
+				else:
+					tmp_value = slider.value
+				tmp_event = self.slider_post(slider.name, tmp_value)
+				events.append(tmp_event)
+		return(events)
 
 	def update(self):
 		for external in self.externals:
@@ -366,9 +398,12 @@ def savegames():
 def options():
 	"""The settings menu"""
 
+	button_size = settings.button_size
+
 	settings_menu = menu("settings", 0, 0, 255,
 			{"fullscreen": str(int(settings.fullscreen)),
-			"volume": str(settings.volume)},
+			"volume": str(settings.volume),
+			"button size": str(button_size)},
 			[])
 
 	sounds.music.play("pause")
@@ -384,14 +419,20 @@ def options():
 				pygame.mixer.music.pause()
 				sounds.music.play("unpause")
 				run = False
+			if event == "Volume":
+				sounds.music.volume = float(event)
+				settings.volume = float(event)
+			if event == "Fullscreen":
+				settings.fullscreen = bool(event)
+			if event == "Button Size":
+				button_size = int(event)
+				settings.button_size = int(event)
+				writer.write("./assets/templates/default.vars", "size",
+						10 + (5 * button_size))
 
-		for slider in settings_menu.menu.elems["sliders"]:
-			if slider.name == "Volume":
-				sounds.music.volume = slider.value
-				settings.volume = slider.value
-			if slider.name == "Fullscreen":
-				settings.fullscreen = bool(slider.state)
 		sounds.music.update(False, False)
 		pygame.display.flip()
 
+	writer.write("./assets/templates/default.vars", "ratio", 20)
+	writer.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")

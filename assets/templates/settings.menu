@@ -1,6 +1,8 @@
 &./assets/templates/default.vars
+<[sizes = (Very Small, Small, Medium, Big, Very Big)
 <#background = (./assets/sprites/Background1.tif)
 
--|Volume           |$volume    |$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +  0|
--|Fullscreen|$offon|$fullscreen|$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt + 40|
-@|Return                       |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt + 80|
+-|Volume            |$volume     |$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +   0|
+-|Button Size|$sizes|$button size|$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +  40|
+-|Fullscreen |$offon|$fullscreen |$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +  80|
+@|Return                         |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt + 120|

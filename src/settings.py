@@ -83,7 +83,8 @@ def init():
 	global localmap  # A dict of the local worlds
 	global loading_time  # time until first blit
 	global seed  # the environments seed
-	global button_ratio
+	global button_ratio  # The ratio from height to length of buttons
+	global button_size  # A value determining the size of buttons
 
 	#for this operation os.urandom is used
 	seed_size = 16
@@ -110,14 +111,10 @@ def init():
 	#load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
-	#TODO
-#	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
-#	buttonover = pygame.image.load("./assets/sprites/Button2.tif").convert_alpha()
-#	buttonclick = pygame.image.load("./assets/sprites/Button3.tif").convert_alpha(
+	#TODO remove use of button
+	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
 	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
 	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
-	knob = pygame.image.load("./assets/sprites/knob1.tif").convert()
-#	box = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
 	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
 	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
 				).convert_alpha()
@@ -139,6 +136,7 @@ def init():
 	right = False
 	konstspeed = 0.0025
 	button_ratio = 7.0
+	button_size = 3
 	fullscreen = False
 	debugscreen = False
 	debugmode = True
