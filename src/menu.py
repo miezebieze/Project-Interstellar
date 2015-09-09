@@ -433,6 +433,7 @@ def options():
 		sounds.music.update(False, False)
 		pygame.display.flip()
 
-	writer.write("./assets/templates/default.vars", "ratio", 20)
+	writer.write("./assets/templates/default.vars", "size", 10 + (5 * button_size))
+	print "wrote size"
 	writer.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")

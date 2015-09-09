@@ -136,7 +136,7 @@ def init():
 	right = False
 	konstspeed = 0.0025
 	button_ratio = 7.0
-	button_size = 3
+	button_size = 0
 	fullscreen = False
 	debugscreen = False
 	debugmode = True

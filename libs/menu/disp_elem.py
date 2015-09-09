@@ -41,56 +41,69 @@ class button():
 		#basic font and then everything should be clear
 		#three different instances of create_outline!
 		#this way three images can be generated
+
+		#This prepares button for either to contain text or an image
 		self.isimage = False
-		if content != name:
-			if type(content) == pygame.Surface:
+		if content != name:  # True = Image
+			if type(content) == pygame.Surface:  # Surf already exists
 				self.content = content
 				self.contentpos = self.content.get_rect()
 				self.isimage = True
-			elif type(content) == str:
+			elif type(content) == str:  # Only string is provided, image needs loading
 				self.content = pygame.image.load(content).convert_alpha()
 				self.contentpos = self.content.get_rect()
 				self.isimage = True
-		else:
+		else:  # False = Font/Text
+			#Loads the font
 			font = pygame.font.SysFont(typeface, int(size))
 
+			#renders the text and creates a rect
 			self.content = font.render(name, True, color)
 			self.contentpos = self.content.get_rect()
 
-			tmp_center_image = pygame.Surface((self.contentpos.h * ratio,
+			#creating emtpy surface that is the size of the desired button
+			tmp_centertext_image = pygame.Surface((self.contentpos.h * ratio,
 						self.contentpos.h)).convert_alpha()
-			tmp_center_image.fill((0, 0, 0, 0))
-			tmp_center_pos = tmp_center_image.get_rect()
+			tmp_centertext_image.fill((0, 0, 0, 0))
+			tmp_center_pos = tmp_centertext_image.get_rect()
 
+			#blitting the text onto the surface
 			self.contentpos.center = tmp_center_pos.center
-			tmp_center_image.blit(self.content, self.contentpos)
+			tmp_centertext_image.blit(self.content, self.contentpos)
 
-			self.content = tmp_center_image
+			#Adding image to interface
+			self.content = tmp_centertext_image
 			self.contentpos = self.content.get_rect()
-
+			#saving typeface for later use
 			self.typeface = typeface
+
+		#creating ouline templates
 		normal = create_outline(button_designs[0])
 		hover = create_outline(button_designs[0])
 		klick = create_outline(button_designs[0])
 		self.buttons = [normal, hover, klick]
 		self.state = 0
-		self.x = x
-		self.y = y
-		self.rel_x = rel_x
-		self.rel_y = rel_y
 		self.name = name
 		self.klicked = False
 		#create font and text
 		#define pos and size
 		self.pos = self.content.get_rect()
 		self.contentpos = self.pos
+		#calcualte absolute position
+		x = x + rel_x * float(ref.w)
+		y = y + rel_y * float(ref.h)
 		#update position
-		self.move(self.x, self.rel_x, self.y, self.rel_y, ref)
+		self.move(x, y)
 		#move buttons and create images
 		for num in range(len(self.buttons)):
 			self.buttons[num].create_box(num, self.contentpos)
 		#reposition text
 		self.contentpos.center = self.pos.center
+
+	def center(self):
+		"""Moves position so that the position is now the center position"""
+		self.move(self.pos.x - self.pos.w / 2,
+			self.pos.y - self.pos.h / 2)
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
@@ -100,16 +113,14 @@ class button():
 		self.contentpos = self.text_img.get_rect()
 		self.contentpos.center = self.pos.center
 
-	def move(self, x, rel_x, y, rel_y, ref):
-		"""Moves the button so that x and y are the center"""
-		self.pos = pygame.Rect((0, 0), self.pos.size)
-		rel_x *= float(ref.w)
-		rel_y *= float(ref.h)
-		x += rel_x
-		y += rel_y
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
+	def move(self, x, y):
+		"""Moves the button to topleft = x, y"""
+		self.pos.topleft = (0, 0)
+		self.pos = self.pos.move(x, y)
 		self.contentpos = self.content.get_rect()
 		self.contentpos.center = self.pos.center
+		for num in range(len(self.buttons)):
+			self.buttons[num].create_box(num, self.contentpos)
 
 	def update(self, events):
 		#changes image when hovered over or being clicked

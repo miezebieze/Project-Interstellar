@@ -60,18 +60,49 @@ class create_menu():
 				if len(line) < 1 or line[0] == "/":
 					continue
 
-				if line[0] == "&":
+				#This checks for the identation
+				ident = 0
+				if line[0].isspace():
+					for counter in range(len(line)):
+						if line[counter].isspace():
+							#If true multiple types of
+							#whitespace is used in one line
+							#as identation
+							if line[counter] != line[0]:
+								raise SyntaxError("Usage of both tabs and spaces.")
+						else:  # First non-whitespace character
+							if line[0] == " ":  # Identation is spaces
+								#4 spaces = 1 identation
+								ident = line[:counter + 1].count(" ") / 4.0
+								#print warning when the amount of spaces
+								#is not divisible by four
+								#(might be the cause for some nasty to find
+								#errors)
+								if type(ident) != int:
+									print(("Warning: Unusual amount of identation: "
+										+ str(ident * 4)))
+							if line[0] == "	":  # Identation is tabs
+								ident = line[:counter + 1].count("	")
+							break
+					line = line.strip()  # removes whitespace for analysis
+
+				#Here are the diferent types of elements
+				#and comments that can be used
+				if line[0] == "&":  # An import of existing variables
 					file2 = line[1:]
 					self.vars.update(create_menu(file2, {}, pygame.Rect(1, 1, 1, 1)).vars)
-				if line[0] == "<":
+				if line[0] == "<":  # A variable is defined in language
 					var = line[1:line.index(" ")]
 					elem = line[line.index("=") + 2:]
-					if var[0] == "\"":
+					if var[0] == "\"":  # A string variable
 						self.vars[var[1:]] = elem
-					if var[0] == "~":
+					if var[0] == "~":  # A float variable
 						self.vars[var[1:]] = float(elem)
-					if var[0] == "#":
+					if var[0] == "#":  # A desing variable
 						elems = convert2list(elem)
+						#this adds non-existing types
+						#(hoverover and klicked)
+						#to the desing if they are missing
 						try:
 							elems[len(elems) - 1] = int(elems[len(elems) - 1])
 							if len(elems) == 2:
@@ -90,16 +121,16 @@ class create_menu():
 							if len(elems) == 3:
 								elems.append(0)
 						self.vars[var[1:]] = elems
-					if var[0] == "*":
+					if var[0] == "*":  # A color variable
 						self.vars[var[1:]] = []
 						for numelem in convert2list(elem):
 							self.vars[var[1:]].append(int(numelem))
-					if var[0] == "%":
+					if var[0] == "%":  # A float defenition as percentage
 						self.vars[var[1:]] = float(elem) / 100.0
-					if var[0] == "[":
+					if var[0] == "[":  # A general list
 						self.vars[var[1:]] = convert2list(elem)
 
-				if line[0] == "#":
+				if line[0] == "#":  # An image is defined in language
 					line = line[2:]
 					text = (line[:line.index("|")]).strip()
 					if text[0] == "$":
@@ -130,7 +161,7 @@ class create_menu():
 									)
 									)]
 
-				if line[0] == "*":
+				if line[0] == "*":  # A title is defined in language
 					line = line[2:]
 
 					text = (line[:line.index("|")]).strip()
@@ -177,7 +208,7 @@ class create_menu():
 
 					self.elems["surfs"][text] = [img, pos]
 
-				if line[0] == "@":
+				if line[0] == "@":  # A button is defined in language
 					line = line[2:]
 
 					text = (line[:line.index("|")]).strip()
@@ -185,7 +216,7 @@ class create_menu():
 						text = self.vars[text[1:]]
 					content = text
 
-					if line.count("|") == 6:
+					if line.count("|") == 7:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
@@ -233,16 +264,51 @@ class create_menu():
 						print("Error: Outline only accepts variables")
 						quit()
 
+					#Reads the relation point
+					#(Topleft, Topright, Bottomleft, Bottomright)
+					line = line[line.index("|") + 1:].lstrip()
+					if line[0] == "$":
+						relation = self.vars[line[1: line.index("|")].strip()]
+					else:
+						relation = line[: line.index("|")].strip()
+					relation = relation.lower()  # All lowercase to allow customizability
+
 					line = line[line.index("|") + 1:].lstrip()
 					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
-
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
+					#If relative to another button
+					if ident > 0:
+						old_button = self.elems["buttons"][-1].buttons[0]
+						border_size = old_button.modes[0][0].get_height()
+						#Adds absolute x and y value to current button
+						if relation[:3] == "top":
+							abs_y += self.elems["buttons"][-1 * ident].pos.top
+						if relation[:6] == "bottom":
+							abs_y += self.elems["buttons"][-1 * ident].buttons[0].pos.bottom
+							abs_y += border_size
+						if relation[-4:] == "left":
+							abs_x += self.elems["buttons"][-1 * ident].pos.left
+						if relation[-5:] == "right":
+							abs_x += self.elems["buttons"][-1 * ident].pos.right
+							abs_x += border_size
+						#Ignores relative placement
+						rel_x = 0
+						rel_y = 0
 
 					self.elems["buttons"].append(disp_elem.button(text,
 									rel_x, abs_x, rel_y, abs_y, ref,
 									content,
 									typeface, size, ratio, color, design[:3]))
+					#Centers non-relative buttons so their center is on the
+					#given x and y coordiante
+					if ident == 0:
+						self.elems["buttons"][-1].center()
+					else:
+						button = self.elems["buttons"][-2].buttons[0]
+						border = button.modes[0][0].get_height()
+						self.elems["buttons"][-1].pos.x += 2 * border
+						self.elems["buttons"][-1].pos.y += 4 * border
 
 				if line[0] == "-":
 					line = line[2:]
