@@ -64,30 +64,9 @@ class create_menu():
 
 				#This checks for the identation
 				old_ident = ident
-				ident = 0
-				if line[0].isspace():
-					for counter in range(len(line)):
-						if line[counter].isspace():
-							#If true multiple types of
-							#whitespace is used in one line
-							#as identation
-							if line[counter] != line[0]:
-								raise SyntaxError("Usage of both tabs and spaces.")
-						else:  # First non-whitespace character
-							if line[0] == " ":  # Identation is spaces
-								#4 spaces = 1 identation
-								ident = line[:counter + 1].count(" ") / 4.0
-								#print warning when the amount of spaces
-								#is not divisible by four
-								#(might be the cause for some nasty to find
-								#errors)
-								if type(ident) != int:
-									print(("Warning: Unusual amount of identation: "
-										+ str(ident * 4)))
-							if line[0] == "	":  # Identation is tabs
-								ident = line[:counter + 1].count("	")
-							break
-					line = line.strip()  # removes whitespace for analysis
+				if line[0] == "~":
+					ident = line[:line.index("@")].count("~")  # Counts identation marks
+					line = line[ident:]  # removes identation marks for analysis
 
 				#Here are the diferent types of elements
 				#and comments that can be used
@@ -382,6 +361,7 @@ class create_menu():
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
 								size, ratio, typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))
+					self.elems["slider"][-1].center()
 
 		if "background" in self.vars:
 			self.elems["surfs"]["background"] = [pygame.transform.smoothscale(

@@ -233,13 +233,16 @@ class slider():
 		self.pos.size = (self.ratio * tmp_size, tmp_size)
 		self.box.create_box(0, self.pos)
 		self.pos.size = self.box.box.get_size()
-		self.pos.center = (x, y)
+		self.pos.topleft = (x, y)
 		self.knob = pygame.transform.scale(pygame.image.load(box[1]),
 					(self.pos.w / 15, self.pos.h))
 		self.knob_pos = self.knob.get_rect()
 		self.knob_pos.top = self.pos.top
 		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)
 		self.scale = 1.0 / self.pos.w
+
+	def center(self):
+		self.pos.center = self.pos.topleft
 
 	def update(self, events):
 		"""Modifies the slider (e.g. pos)"""
