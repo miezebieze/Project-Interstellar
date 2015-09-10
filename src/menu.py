@@ -100,19 +100,24 @@ class menu():
 		self.menu.blit(self.screen, settings.events)
 		sounds.music.update(False, False)
 
+#		button = self.menu.elems["buttons"][1]
+#		print button.pos
+#		print pygame.mouse.get_pos()
+#		print button.pos.collidepoint(pygame.mouse.get_pos())
+
 		events = []
 		for event in settings.events:
 			if event.type == QUIT:
 				pygame.mouse.set_visible(False)
-				events.append(["event.EXIT"])
+				events.append("event.EXIT")
 			if event.type == KEYDOWN:
 				key = pygame.key.name(event.key)
 				if key == "escape":
 					pygame.mouse.set_visible(False)
-					events.append(["event.QUIT"])
+					events.append("event.QUIT")
 				if key == "return":
 					pygame.mouse.set_visible(False)
-					events.append(["event.CONTINUE"])
+					events.append("event.CONTINUE")
 			if event.type == USEREVENT and event.code == "MENU":
 				klicked = self.menu.get_klicked()
 				for elem in klicked:

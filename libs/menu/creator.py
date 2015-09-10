@@ -281,11 +281,15 @@ class create_menu():
 					if ident > 0:
 						old_button = self.elems["buttons"][-1].buttons[0]
 						border_size = old_button.modes[0][0].get_height()
+						amount_of_buttons = len(self.elems["buttons"])
+						#The plus one is needed because the current
+						#button has not yet been addded to list
+						pos_in_list = amount_of_buttons - (ident + 1)
 						#Adds absolute x and y value to current button
 						if relation[:3] == "top":
 							abs_y += self.elems["buttons"][-1 * ident].pos.top
 						if relation[:6] == "bottom":
-							abs_y += self.elems["buttons"][-1 * ident].buttons[0].pos.bottom
+							abs_y += self.elems["buttons"][pos_in_list].buttons[0].pos.bottom
 							abs_y += border_size
 						if relation[-4:] == "left":
 							abs_x += self.elems["buttons"][-1 * ident].pos.left
