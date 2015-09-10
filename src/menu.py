@@ -100,11 +100,6 @@ class menu():
 		self.menu.blit(self.screen, settings.events)
 		sounds.music.update(False, False)
 
-#		button = self.menu.elems["buttons"][1]
-#		print button.pos
-#		print pygame.mouse.get_pos()
-#		print button.pos.collidepoint(pygame.mouse.get_pos())
-
 		events = []
 		for event in settings.events:
 			if event.type == QUIT:
@@ -439,6 +434,5 @@ def options():
 		pygame.display.flip()
 
 	writer.write("./assets/templates/default.vars", "size", 10 + (5 * button_size))
-	print "wrote size"
 	writer.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")

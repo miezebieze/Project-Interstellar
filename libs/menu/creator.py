@@ -54,6 +54,8 @@ class create_menu():
 		self.vars = variables
 		self.elems = {"buttons": [], "sliders": [], "surfs": {}}
 
+		ident = 0
+
 		with open(filename) as conf_file:
 			for line in conf_file:
 				line = line.rstrip("\n")
@@ -61,6 +63,7 @@ class create_menu():
 					continue
 
 				#This checks for the identation
+				old_ident = ident
 				ident = 0
 				if line[0].isspace():
 					for counter in range(len(line)):
@@ -279,23 +282,15 @@ class create_menu():
 					rel_y, abs_y = analyse_num(line, self.vars)
 					#If relative to another button
 					if ident > 0:
-						old_button = self.elems["buttons"][-1].buttons[0]
-						border_size = old_button.modes[0][0].get_height()
-						amount_of_buttons = len(self.elems["buttons"])
-						#The plus one is needed because the current
-						#button has not yet been addded to list
-						pos_in_list = amount_of_buttons - (ident + 1)
 						#Adds absolute x and y value to current button
 						if relation[:3] == "top":
-							abs_y += self.elems["buttons"][-1 * ident].pos.top
+							abs_y += self.elems["buttons"][-1 * (ident - old_ident)].pos.top
 						if relation[:6] == "bottom":
-							abs_y += self.elems["buttons"][pos_in_list].buttons[0].pos.bottom
-							abs_y += border_size
+							abs_y += self.elems["buttons"][-1 * (ident - old_ident)].pos.bottom
 						if relation[-4:] == "left":
-							abs_x += self.elems["buttons"][-1 * ident].pos.left
+							abs_x += self.elems["buttons"][-1 * (ident - old_ident)].pos.left
 						if relation[-5:] == "right":
-							abs_x += self.elems["buttons"][-1 * ident].pos.right
-							abs_x += border_size
+							abs_x += self.elems["buttons"][-1 * (ident - old_ident)].pos.right
 						#Ignores relative placement
 						rel_x = 0
 						rel_y = 0
@@ -308,11 +303,6 @@ class create_menu():
 					#given x and y coordiante
 					if ident == 0:
 						self.elems["buttons"][-1].center()
-					else:
-						button = self.elems["buttons"][-2].buttons[0]
-						border = button.modes[0][0].get_height()
-						self.elems["buttons"][-1].pos.x += 2 * border
-						self.elems["buttons"][-1].pos.y += 4 * border
 
 				if line[0] == "-":
 					line = line[2:]
