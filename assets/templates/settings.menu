@@ -3,6 +3,6 @@
 <#background = (./assets/sprites/Background1.tif)
 
 -|Volume            |$volume     |$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +   0|
--|Button Size|$sizes|$button size|$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +  40|
--|Fullscreen |$offon|$fullscreen |$size|$ratio|$typeface|$color|$box2|$half + 0|$qrt +  80|
-@|Return                         |$size|$ratio|$typeface|$color|$box1|asd|$half + 0|$qrt + 120|
+~-|Button Size|$sizes|$button size|$size|$ratio|$typeface|$color|$box2|BottomLeft|$half + 0|$qrt +   0|
+~~-|Fullscreen |$offon|$fullscreen |$size|$ratio|$typeface|$color|$box2|BottomLeft|$half + 0|$qrt +   0|
+@|Return                         |$size|$ratio|$typeface|$color|$box1|$half + 0|$qrt + 120|

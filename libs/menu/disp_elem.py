@@ -242,7 +242,10 @@ class slider():
 		self.scale = 1.0 / self.pos.w
 
 	def center(self):
+		"""Centeres itself around its x and y position"""
 		self.pos.center = self.pos.topleft
+		self.knob_pos.top = self.pos.top
+		self.knob_pos.left = self.pos.left + (self.pos.w * self.value)
 
 	def update(self, events):
 		"""Modifies the slider (e.g. pos)"""

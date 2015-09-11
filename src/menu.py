@@ -87,9 +87,16 @@ class menu():
 		def __int__(self):
 			return int(self.value)
 
+		def __nonzero__(self):
+			try:
+				return bool(int(self.value))
+			except:
+				raise ValueError(
+					"Could not convert {0} to bool: {1}".format(type(self.value), self.value))
+
 		def __bool__(self):
 			try:
-				return bool(self.value)
+				return bool(int(self.value))
 			except:
 				raise ValueError(
 					"Could not convert {0} to bool: {1}".format(type(self.value), self.value))

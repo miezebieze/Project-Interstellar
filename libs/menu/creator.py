@@ -64,8 +64,9 @@ class create_menu():
 
 				#This checks for the identation
 				old_ident = ident
+				ident = 0
 				if line[0] == "~":
-					ident = line[:line.index("@")].count("~")  # Counts identation marks
+					ident = line[:line.index("|") - 1].count("~")  # Counts identation marks
 					line = line[ident:]  # removes identation marks for analysis
 
 				#Here are the diferent types of elements
@@ -198,7 +199,10 @@ class create_menu():
 						text = self.vars[text[1:]]
 					content = text
 
-					if line.count("|") == 7:
+					#Determines wether relation argument is given
+					additional_arguments = 1 if ident > 0 else 0
+					#Through relation argument there might be another "|"
+					if line.count("|") == 7 - additional_arguments:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
@@ -246,14 +250,15 @@ class create_menu():
 						print("Error: Outline only accepts variables")
 						quit()
 
-					#Reads the relation point
-					#(Topleft, Topright, Bottomleft, Bottomright)
-					line = line[line.index("|") + 1:].lstrip()
-					if line[0] == "$":
-						relation = self.vars[line[1: line.index("|")].strip()]
-					else:
-						relation = line[: line.index("|")].strip()
-					relation = relation.lower()  # All lowercase to allow customizability
+					if ident > 0:
+						#Reads the relation point
+						#(Topleft, Topright, Bottomleft, Bottomright)
+						line = line[line.index("|") + 1:].lstrip()
+						if line[0] == "$":
+							relation = self.vars[line[1: line.index("|")].strip()]
+						else:
+							relation = line[: line.index("|")].strip()
+						relation = relation.lower()  # All lowercase to allow customizability
 
 					line = line[line.index("|") + 1:].lstrip()
 					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
@@ -283,14 +288,17 @@ class create_menu():
 					if ident == 0:
 						self.elems["buttons"][-1].center()
 
-				if line[0] == "-":
+				if line[0] == "-":  # A slider is defined
 					line = line[2:]
 
 					text = (line[:line.index("|")]).strip()
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					if line.count("|") == 10:
+					#Determines wether relation argument is given
+					additional_arguments = 1 if ident > 0 else 0
+					#Through relation argument there might be another "|"
+					if line.count("|") == 10 + additional_arguments:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							options = self.vars[line[1: line.index("|")].strip()]
@@ -315,6 +323,7 @@ class create_menu():
 						options = False
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
+							#print line[1: line.index("|")].strip()
 							default_value = float(self.vars[line[1: line.index("|")].strip()])
 						else:
 							default_value = float(line[: line.index("|")].strip())
@@ -352,16 +361,41 @@ class create_menu():
 						print("Error: Outline only accepts only variables")
 						quit()
 
+					if ident > 0:
+						#Reads the relation point
+						#(Topleft, Topright, Bottomleft, Bottomright)
+						line = line[line.index("|") + 1:].lstrip()
+						if line[0] == "$":
+							relation = self.vars[line[1: line.index("|")].strip()]
+						else:
+							relation = line[: line.index("|")].strip()
+						relation = relation.lower()  # All lowercase to allow customizability
+
 					line = line[line.index("|") + 1:].lstrip()
 					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
 
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
 
+					if ident > 0:
+						#Adds absolute x and y value to current button
+						if relation[:3] == "top":
+							abs_y += self.elems["sliders"][-1 * (ident - old_ident)].pos.top
+						if relation[:6] == "bottom":
+							abs_y += self.elems["sliders"][-1 * (ident - old_ident)].pos.bottom
+						if relation[-4:] == "left":
+							abs_x += self.elems["sliders"][-1 * (ident - old_ident)].pos.left
+						if relation[-5:] == "right":
+							abs_x += self.elems["sliders"][-1 * (ident - old_ident)].pos.right
+						#Ignores relative placement
+						rel_x = 0
+						rel_y = 0
+
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
 								size, ratio, typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))
-					self.elems["slider"][-1].center()
+					if ident == 0:
+						self.elems["sliders"][-1].center()
 
 		if "background" in self.vars:
 			self.elems["surfs"]["background"] = [pygame.transform.smoothscale(
