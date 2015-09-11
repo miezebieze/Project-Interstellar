@@ -70,6 +70,7 @@ class stars():
 
 class button():
 
+	#FIXME: replace through menu lib
 	def __init__(self, x, y, text, color):
 		"""Initalises with x and y as center point"""
 		#basic font and then everything should be clear

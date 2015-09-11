@@ -227,6 +227,7 @@ def pause():
 				sounds.music.play("unpause")
 				run = False
 			if event == "Save Game":
+				#FIXME: Out of position
 				savename = inputpopup(settings.screenx_current,
 						settings.screeny_current / 4,
 						"Save Game")
@@ -409,7 +410,7 @@ def options():
 	#a conversion method between selector
 	#and actual text size
 	#found by trial and error
-	button_size = (int(button_size) - 10) / 5.0
+	button_size = int(float(button_size) - 10) / 5
 
 	settings_menu = menu("settings", 0, 0, 255,
 			{"fullscreen": str(int(settings.fullscreen)),
@@ -437,7 +438,6 @@ def options():
 				settings.fullscreen = bool(event)
 			if event == "Button Size":
 				button_size = int(event)
-				settings.button_size = int(event)
 				#a conversion method between selector
 				#and actual text size
 				#found by trial and error

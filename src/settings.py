@@ -84,7 +84,6 @@ def init():
 	global loading_time  # time until first blit
 	global seed  # the environments seed
 	global button_ratio  # The ratio from height to length of buttons
-	global button_size  # A value determining the size of buttons
 
 	#for this operation os.urandom is used
 	seed_size = 16
@@ -136,7 +135,6 @@ def init():
 	right = False
 	konstspeed = 0.0025
 	button_ratio = 7.0
-	button_size = 0
 	fullscreen = False
 	debugscreen = False
 	debugmode = True

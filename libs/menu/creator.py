@@ -202,7 +202,7 @@ class create_menu():
 					#Determines wether relation argument is given
 					additional_arguments = 1 if ident > 0 else 0
 					#Through relation argument there might be another "|"
-					if line.count("|") == 7 - additional_arguments:
+					if line.count("|") == 5 + additional_arguments:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
@@ -242,6 +242,7 @@ class create_menu():
 						size = 0
 						typeface = "monospace"
 						color = (255, 255, 255)
+						ratio = 0
 
 					line = line[line.index("|") + 1:].lstrip()
 					if line[0] == "$":

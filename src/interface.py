@@ -84,7 +84,7 @@ def handle():
 					for target in settings.world.targets:
 						target.test_ishit(pygame.Rect((-1000, -1000), (3000, 3000)))
 				if key == "g":
-					settings.localmap["[1]"].generate(settings.localmap["[1]"].background,
+					settings.localmap["1"].generate(settings.localmap["1"].background,
 								settings.dstars, settings.dtargets)
 					settings.world.generate(settings.world.background,
 								settings.dstars, settings.dtargets)
