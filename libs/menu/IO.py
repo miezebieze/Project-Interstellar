@@ -22,3 +22,14 @@ def write(filename, variable, value):
 	conf_file.close()
 	with open(filename, "w") as conf_file:
 		conf_file.writelines(lines)
+
+
+def read(filename, variable):
+	with open(filename, "r+") as conf_file:
+		for line in conf_file:
+			if line.strip():
+				if line.strip()[0] == "<":
+					ident = line.index("<")
+					varname = (line[ident + 2:line.index("=") - 1]).strip()
+					if varname == variable:
+						return line[line.index("=") + 1:].strip()

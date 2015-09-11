@@ -7,7 +7,7 @@ from . import missions
 from libs.pyganim import pyganim
 import pygame
 from libs.menu import creator
-from libs.menu import writer
+from libs.menu import IO
 from pygame.locals import *
 
 """Responsible tor the menus"""
@@ -405,7 +405,11 @@ def savegames():
 def options():
 	"""The settings menu"""
 
-	button_size = settings.button_size
+	button_size = IO.read("./assets/templates/default.vars", "size")
+	#a conversion method between selector
+	#and actual text size
+	#found by trial and error
+	button_size = (int(button_size) - 10) / 5.0
 
 	settings_menu = menu("settings", 0, 0, 255,
 			{"fullscreen": str(int(settings.fullscreen)),
@@ -434,12 +438,17 @@ def options():
 			if event == "Button Size":
 				button_size = int(event)
 				settings.button_size = int(event)
-				writer.write("./assets/templates/default.vars", "size",
+				#a conversion method between selector
+				#and actual text size
+				#found by trial and error
+				IO.write("./assets/templates/default.vars", "size",
 						10 + (5 * button_size))
 
 		sounds.music.update(False, False)
 		pygame.display.flip()
 
-	writer.write("./assets/templates/default.vars", "size", 10 + (5 * button_size))
-	writer.write("./assets/templates/default.vars", "ratio", 1100)
+	#explanation of the 10 + (5 * …) is written in
+	#the Button Size handler in events loop
+	IO.write("./assets/templates/default.vars", "size", 10 + (5 * button_size))
+	IO.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")

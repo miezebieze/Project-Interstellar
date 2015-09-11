@@ -267,6 +267,7 @@ class create_menu():
 					#If relative to another button
 					if ident > 0:
 						#Adds absolute x and y value to current button
+						#TODO: the referring element to is not always a button
 						if relation[:3] == "top":
 							abs_y += self.elems["buttons"][-1 * (ident - old_ident)].pos.top
 						if relation[:6] == "bottom":
