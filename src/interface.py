@@ -73,12 +73,11 @@ def handle():
 			if key == "c":
 				specials.fire = True
 			if settings.debugmode:
-				if key == "r":
-					if pygame.key.get_mods() == 4416:
-						settings.psycomode = settings.toggle(settings.psycomode, True, False)
+				if key == "p":
+					settings.psycomode = settings.toggle(settings.psycomode, True, False)
 				if key == "q":
 					settings.volume = 0
-				if key == "l":
+				if key == "n":
 					settings.player.new_ship("ship_2")
 				if key == "t":
 					for target in settings.world.targets:
@@ -88,7 +87,7 @@ def handle():
 								settings.dstars, settings.dtargets)
 					settings.world.generate(settings.world.background,
 								settings.dstars, settings.dtargets)
-				if key == "b":
+				if key == "h":
 					for target in settings.world.targets:
 						print target.pos
 				if len(key) == 3 and settings.debugmode:

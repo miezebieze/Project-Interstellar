@@ -16,16 +16,6 @@ def init():
 	global down  # player should move down
 	global left  # player should move left
 	global right  # player should move right
-#		global player  # player surf
-#		global player_pos  # player rect
-#		global rotation  # current rotation of player
-#		global rot_dest  # destination in which to rotate
-#		global move  # determines if player should move at all
-#		global move_x  # movement in x direction in pixels
-#		global move_y  # movement in y direction in pixels
-#		global pos_x  # percentage position of screen
-#		global pos_y  # percentage position of screen
-#		global speed  # speed of player
 	global konstspeed  # some konstant for speed
 	global clock  # clock object of pygame
 	global stdfont  # global font defenition
@@ -65,13 +55,11 @@ def init():
 	global musics  # the list of music titles assoziated wih the music files
 	global saves  # all savegames
 	global psycomode  # if psycomode is turned on
-#		global timeplay  # time how long the player has been playing
 	global current_game  # the current savegame and default when no game is saved
 	global explosions  # list of surfs of explosions
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
 	global dtargets  # amount of targets
-#		global update  # determines whether new image needs to be loaded
 	global include_music
 	global morevents
 	global infinitevents
@@ -150,7 +138,7 @@ def init():
 	psycomode = False
 	current_game = "default"
 	run = True
-	dtargets = 15
+	dtargets = 5
 	include_music = False
 	morevents = []
 	bullets = []
