@@ -6,8 +6,7 @@ from . import sounds
 from . import missions
 from libs.pyganim import pyganim
 import pygame
-from libs.menu import creator
-from libs.menu import IO
+from libs import menu
 from pygame.locals import *
 
 """Responsible tor the menus"""
@@ -37,7 +36,7 @@ class fade_screen():
 		self.__init__(self.step, self.max_alpha, screenx, screeny)
 
 
-class menu():
+class menu_template():
 
 	def __init__(self, menu_name, fade_step, fade_step2, fade_max,
 			variables, externals):
@@ -58,7 +57,7 @@ class menu():
 		pygame.mouse.set_visible(True)
 
 		#create menu
-		self.menu = creator.create_menu(
+		self.menu = menu.create_menu(
 					"./assets/templates/" + self.menu_name + ".menu",
 					self.variables, pygame.Rect((0, 0), (self.screenx, self.screeny)))
 
@@ -169,7 +168,7 @@ def main():
 	planet = create_planet(settings.screenx_current, settings.screeny_current)
 
 	#Load menu
-	main_menu = menu("main", 70, 1, 100, {}, [planet])
+	main_menu = menu_template("main", 70, 1, 100, {}, [planet])
 
 	#inserts menu music
 	sounds.music.queue("$not$menue.ogg", 0)
@@ -211,7 +210,7 @@ def pause():
 	pygame.mouse.set_visible(True)
 
 	background = settings.screen.copy()
-	pause_menu = menu("pause", 5, 5, 150, {}, [])
+	pause_menu = menu_template("pause", 5, 5, 150, {}, [])
 	pause_menu.menu.elems["surfs"]["background"] = [background,
 						pygame.Rect(0, 0, 0, 0)]
 
@@ -267,7 +266,7 @@ def choose_world():
 		tmprect.center = surf.get_rect().center
 		surf.blit(text, tmprect)
 		prewiev_images.append(surf)
-	world_menu = menu("world", 5, 5, 150, {
+	world_menu = menu_template("world", 5, 5, 150, {
 				"image1": prewiev_images[0],
 				"image2": prewiev_images[1],
 				"image3": prewiev_images[2],
@@ -406,13 +405,13 @@ def savegames():
 def options():
 	"""The settings menu"""
 
-	button_size = IO.read("./assets/templates/default.vars", "size")
+	button_size = menu.IO.read("./assets/templates/default.vars", "size")
 	#a conversion method between selector
 	#and actual text size
 	#found by trial and error
 	button_size = int(float(button_size) - 10) / 5
 
-	settings_menu = menu("settings", 0, 0, 255,
+	settings_menu = menu_template("settings", 0, 0, 255,
 			{"fullscreen": str(int(settings.fullscreen)),
 			"volume": str(settings.volume),
 			"button size": str(button_size)},
@@ -441,7 +440,7 @@ def options():
 				#a conversion method between selector
 				#and actual text size
 				#found by trial and error
-				IO.write("./assets/templates/default.vars", "size",
+				menu.IO.write("./assets/templates/default.vars", "size",
 						10 + (5 * button_size))
 
 		sounds.music.update(False, False)
@@ -449,6 +448,7 @@ def options():
 
 	#explanation of the 10 + (5 * …) is written in
 	#the Button Size handler in events loop
-	IO.write("./assets/templates/default.vars", "size", 10 + (5 * button_size))
-	IO.write("./assets/templates/default.vars", "ratio", 1100)
+	menu.IO.write("./assets/templates/default.vars", "size",
+			10 + (5 * button_size))
+	menu.IO.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")

@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame
 import disp_elem
-from .disp_elem import button
-from .disp_elem import slider
-from .disp_elem import create_outline
-#button and sliders would be unsued
-button
-slider
-create_outline
 
 
 def convert2list(string):
