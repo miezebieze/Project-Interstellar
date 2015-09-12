@@ -226,9 +226,8 @@ def pause():
 				sounds.music.play("unpause")
 				run = False
 			if event == "Save Game":
-				#FIXME: Out of position
-				savename = inputpopup(settings.screenx_current,
-						settings.screeny_current / 4,
+				savename = inputpopup(settings.screenx_current / 2,
+						settings.screeny_current / 2,
 						"Save Game")
 				if savename != "Exit":
 					settings.save(savename)
