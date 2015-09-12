@@ -183,7 +183,7 @@ def init():
 	saves = []
 	for filename in os.listdir("./saves"):
 		if filename.endswith(".ini"):
-			filename = filename[:-4]
+			filename = unicode(filename[:-4])
 			saves.append(filename)
 
 	if fullscreen:
