@@ -197,8 +197,6 @@ Look up individual options's comments in sourcecode for an in depth explanation.
 			try:  # try is cheaper than if
 				self._timeplayed[self.playlist[self._pauselevel]] += currentpos
 			except:
-				print self._pauselevel
-				print self.playlist
 				self._timeplayed[self.playlist[self._pauselevel]] = currentpos
 			self._playing = False
 			self._pauselevel += 1
@@ -206,7 +204,9 @@ Look up individual options's comments in sourcecode for an in depth explanation.
 
 		if options[0] == "unpause" and len(self.playlist) != 0:
 			#Restarts music and removes previous music if it hasnt been paused yet.
-			self._pauselevel -= 1
+			#the check is needed if someone unpauses more than pauses
+			if self._pauselevel > 0:
+				self._pauselevel -= 1
 			while self._timeplayed[self.playlist[0]] == 0 and len(self.playlist) > 1:
 				self.playlist.pop(0)
 			pygame.mixer.music.load(self._path + self.playlist[0])
