@@ -197,6 +197,8 @@ Look up individual options's comments in sourcecode for an in depth explanation.
 			try:  # try is cheaper than if
 				self._timeplayed[self.playlist[self._pauselevel]] += currentpos
 			except:
+				print self._pauselevel
+				print self.playlist
 				self._timeplayed[self.playlist[self._pauselevel]] = currentpos
 			self._playing = False
 			self._pauselevel += 1

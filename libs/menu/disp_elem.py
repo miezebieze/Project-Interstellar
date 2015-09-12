@@ -1,8 +1,8 @@
 # lint:ok
 # -*- coding: utf-8 -*-
-
 import pygame
 from pygame.locals import *
+import string
 
 
 def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
@@ -154,55 +154,65 @@ class button():
 		screen.blit(self.buttons[self.state].box, self.pos)
 
 
-class inputfield():
+class input_field():
 
-	def __init__(self, x, y, typ, text, color):
+	def __init__(self, x, y, text, typeface, color, box):
 		"""Creates a new inputfield"""
-		self.font = pygame.font.SysFont(settings.typeface, 30)
+		self.name = text
+		self.typeface = typeface
+		self.color = color
+		self.font = pygame.font.SysFont(self.typeface, 30)
 		self.header = text
-		if typ == 1:
-			self.img = settings.field
-		elif typ == 2:
-			self.img = settings.field1
-		self.pos = settings.img.get_rect()
+		self.img = box
+		self.pos = self.img.get_rect()
 		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
 		self.text = ""
-		self.render_text = settings.modrender(settings.typeface, 30, self.text,
-			True, color,
+		self.render_text = modrender(self.typeface, 30, self.text,
+			True, self.color,
 			self.pos.size, 9)
 		self.textpos = self.render_text.get_rect()
 		self.textpos.center = self.pos.center
-		self.render_header = settings.modrender(settings.typeface, 30, self.header,
-			True, color,
-			settings.screen.get_rect().size, 0)
+		self.render_header = modrender(self.typeface, 30, self.header,
+			True, self.color,
+			(50000, 10000), 0)
 		self.headerpos = self.render_header.get_rect()
 		self.headerpos.center = self.pos.center
 		self.headerpos.y -= 50
 
-	def gettext(self):
-		"""Returns text if return is pressed or removes one if return is pressed"""
-		from . import interface
-		key = interface.getall(False)
+	def get_all_key_input(self, should_get_all, events):
+		"""Gets all pressed keys"""
+		for event in events:
+			if event.type == QUIT:
+				exit()
+			if event.type == KEYDOWN:
+				key = pygame.key.name(event.key)
+				tmp = (not key == "return" and not should_get_all)
+				if (event.unicode in string.printable or (key[:5] == "world")) and tmp:
+					return event.unicode
+				elif should_get_all:
+					return key
+
+	def gettext(self, events):
+		"""Returns text if return is pressed or removes one if delete is pressed"""
+		key = self.get_all_key_input(False, events)
 		if key is not None and self.textpos.width < self.pos.width - 18:
 			self.text = self.text + key
 		if key is None:
-			key = interface.getall(True)
+			key = self.get_all_key_input(True, events)
 			if key == "return":
 				return self.text
 			if key == "backspace":
 				self.text = self.text[:len(self.text) - 1]
-
-	def blit(self):
-		"""Blits the inputfield"""
-		color = settings.color
-		screen = settings.screen
-		self.render_text = settings.modrender(settings.typeface, 30, self.text,
-			True, color,
+		self.render_text = modrender(self.typeface, 30, self.text,
+			True, self.color,
 			self.pos.size, 9)
 		self.textpos = self.render_text.get_rect()
 		self.textpos.center = self.pos.center
+
+	def blit(self, screen):
+		"""Blits the inputfield"""
 		screen.blit(self.render_header, self.headerpos)
-		screen.blit(self.field, self.pos)
+		screen.blit(self.img, self.pos)
 		screen.blit(self.render_text, self.textpos)
 
 

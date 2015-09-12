@@ -83,6 +83,7 @@ class world():
 					selected_num = menu.choose_world()
 					if selected_num >= 0:
 						settings.world = settings.localmap[selected_num]
+						settings.world.adjust_to_screen()
 					settings.player.up = False
 					settings.player.down = False
 					settings.player.left = False

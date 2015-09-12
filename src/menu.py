@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import settings
 from . import namings
-from . import objects
 from . import sounds
 from . import missions
 from libs.pyganim import pyganim
@@ -303,6 +302,7 @@ def choose_world():
 
 	pygame.mouse.set_visible(False)
 	missions.handle("pause")
+	sounds.music.play("unpause")
 	return selected
 
 
@@ -315,7 +315,8 @@ def inputpopup(x, y, header):
 	fade = settings.fade
 	fade_pos = settings.fade_pos
 
-	infield1 = objects.inputfield(x, y, 1, header, settings.color)
+	infield1 = menu.disp_elem.input_field(x, y, header,
+					settings.typeface, settings.color, settings.field)
 	screen.blit(fade, fade_pos)
 
 	run = True
@@ -329,14 +330,14 @@ def inputpopup(x, y, header):
 			return text
 		settings.upd("get_events")
 
-		text = infield1.gettext()
+		text = infield1.gettext(settings.events)
 
 		for event in settings.events:
 			if event.type == KEYDOWN:
 				if pygame.key.name(event.key) == "escape":
 					return "Exit"
 
-		infield1.blit()
+		infield1.blit(screen)
 		pygame.display.flip()
 
 		if text is not None:
@@ -374,13 +375,18 @@ def savegames():
 
 	for a in range(len(saves)):
 		tmp = saves[a].replace("\\", "/")
-		saves_buttons.append(objects.button(xaxis[a], yaxis[a], tmp, color))
+		#20 and 11 are values for size and ratio and
+		#were found trough testing which looks best
+		saves_buttons.append(menu.disp_elem.button(tmp, 0, xaxis[a], 0, yaxis[a],
+					pygame.Rect((0, 0), (screenx, screeny)),
+					tmp, settings.typeface, 20, 11,
+					color, ["./assets/templates/nr1.design"]))
 
 	a = 0
 	while run:
-		for a in range(len(saves)):
-			saves_buttons[a].blit()
 		settings.upd("get_events")
+		for a in range(len(saves)):
+			saves_buttons[a].update(settings.events)
 		for event in settings.events:
 			if event.type == QUIT:
 				settings.quit()
@@ -395,8 +401,10 @@ def savegames():
 						pygame.time.delay(200)
 						return saves[a]
 
-		pygame.display.flip()
 		screen.blit(fade, fade_pos)
+		for a in range(len(saves)):
+			saves_buttons[a].blit(screen)
+		pygame.display.flip()
 
 	run = True
 

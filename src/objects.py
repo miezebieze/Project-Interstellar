@@ -68,67 +68,10 @@ class stars():
 		self.pointy = self.relative_y * self.screeny
 
 
-class button():
-
-	#FIXME: replace through menu lib
-	def __init__(self, x, y, text, color):
-		"""Initalises with x and y as center point"""
-		#basic font and then everything should be clear
-		#and the self.pos.move line basicly move its center to y and x
-		#going to be simplified next refactoring
-		self.button = settings.button
-		self.pos = settings.button.get_rect()
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.text = settings.modrender(settings.typeface, 30,
-			text, True, color,
-			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-		self.klicked = False
-
-	def changetext(self, text, color):
-		"""Changes the text inside the button"""
-		self.text = settings.modrender(settings.typeface, 30,
-			text, True, color,
-			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-
-	def move(self, x, y):
-		"""Moves the button so that x and y are the center"""
-		self.button = settings.button
-		self.pos = settings.button.get_rect()
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-
-	def blit(self):
-		"""Blits the button"""
-		#blitts the button and changes image when hovered over or being clicked
-		#also posts a menu event to show that a button has been clicked
-		#to increase performance should be easy to understand
-		screen = settings.screen
-		self.klicked = False
-		if self.pos.collidepoint(pygame.mouse.get_pos()):
-			self.button = settings.buttonover
-			screen.blit(self.button, self.pos)
-			for event in settings.events:
-				if event.type == MOUSEBUTTONDOWN and event.button == 1:
-					self.button = settings.buttonclick
-					screen.blit(self.button, self.pos)
-					menue = pygame.event.Event(USEREVENT, code="MENU")
-					pygame.fastevent.post(menue)
-					self.klicked = True
-		else:
-			self.button = settings.button
-			screen.blit(self.button, self.pos)
-
-		screen.blit(self.text, self.textpos)
-
-
 class inputfield():
 
 	def __init__(self, x, y, typ, text, color):
+		print "used"
 		"""Creates a new inputfield"""
 		self.font = pygame.font.SysFont(settings.typeface, 30)
 		self.header = text
@@ -175,63 +118,6 @@ class inputfield():
 		self.textpos.center = self.pos.center
 		screen.blit(self.render_header, self.headerpos)
 		screen.blit(self.field, self.pos)
-		screen.blit(self.render_text, self.textpos)
-
-
-class sliders():
-
-	def __init__(self, value, x, y):
-		"""Creates a new slider"""
-		self.value = value
-		self.box = settings.box
-		self.knob = settings.knob
-		self.pos = self.box.get_rect()
-		self.knob_pos = self.knob.get_rect()
-		self.pos.top = y - (self.pos.h / 2.0)
-		self.pos.left = x - (self.pos.w / 2.0)
-		self.knob_pos.top = self.pos.top
-		self.knob_pos.left = self.pos.left + (self.pos.w * value)
-		self.scale = 1.0 / self.pos.w
-		self.dragged = False
-
-	def modify(self, events):
-		"""Modifies the slider (e.g. pos)"""
-		for event in events:
-			if event.type == MOUSEBUTTONUP:
-				if event.button == 1:
-					self.dragged = False
-			if event.type == MOUSEBUTTONDOWN:
-					if self.pos.collidepoint(pygame.mouse.get_pos()):
-						if event.button == 1:
-							self.dragged = True
-			if self.dragged:
-				self.value = (pygame.mouse.get_pos()[0] - self.pos.left) * self.scale
-
-		if self.value < 0:
-			self.value = 0
-		if self.value > 1:
-			self.value = 1
-
-		if self.value <= 0.01:
-			self.value = 0.0
-		if self.value >= 0.995:
-			self.value = 1.0
-		tmp = (self.value * (self.pos.w - self.knob_pos.w))
-		self.knob_pos.left = self.pos.left + tmp
-
-	def blit(self, name):
-		"""Blits the slider"""
-		screen = settings.screen
-		tmp = name + "{0:.2f}".format(self.value) + "%"
-		tmp = tmp.replace("0.0", "").replace("0.", "").replace(".", "")
-		self.render_text = settings.modrender(settings.typeface, 30,
-			tmp, True, settings.color,
-			self.pos.size, 6)
-		self.textpos = self.render_text.get_rect()
-		self.textpos.center = self.pos.center
-
-		screen.blit(self.box, self.pos)
-		screen.blit(self.knob, self.knob_pos)
 		screen.blit(self.render_text, self.textpos)
 
 
