@@ -377,9 +377,10 @@ def savegames():
 		tmp = saves[a].replace("\\", "/")
 		#20 and 11 are values for size and ratio and
 		#were found trough testing which looks best
-		saves_buttons.append(menu.disp_elem.button(tmp, 0, xaxis[a], 0, yaxis[a],
+		saves_buttons.append(menu.disp_elem.button(tmp.decode("utf-8"),
+					0, xaxis[a], 0, yaxis[a],
 					pygame.Rect((0, 0), (screenx, screeny)),
-					tmp, settings.typeface, 20, 11,
+					tmp.decode("utf-8"), settings.typeface, 20, 11,
 					color, ["./assets/templates/nr1.design"]))
 
 	a = 0
