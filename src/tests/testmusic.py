@@ -41,7 +41,6 @@ class new_music_class():
 
 	def update(self):
 		"""Update-routine like check if music has ended"""
-		#self.volume = settings.volume
 		pygame.mixer.music.set_volume(self.volume)
 		if len(self.playlist) < 4:
 			self.add_random("end")

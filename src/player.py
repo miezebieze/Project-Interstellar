@@ -19,7 +19,7 @@ class player():
 		self.rot_dest = 0  # Where the player should turn
 		self.should_move = False  # Determines wether player should move
 		self.move_x = 0  # Delta pixel per tick (x)
-		self.move_y = 0  # Delta pixel per tick (x)
+		self.move_y = 0  # Delta pixel per tick (y)
 		self.rel_x = 0  # relative x position
 		self.rel_y = 0  # relative y position
 		self.timeplay = 0  # Time player has played
@@ -72,7 +72,16 @@ class player():
 		if self.rotation == 315:
 			self.img = self.playeruple
 
+	def move_ip(self, addx, addy):
+		#lint:disable
+		self.rel_x = (self.pos.x + addx) / float(settings.screenx_current)
+		self.rel_y = (self.pos.y + addy) / float(settings.screeny_current)
+		self.pos.top = int(self.rel_y * settings.screeny_current)
+		self.pos.left = int(self.rel_x * settings.screenx_current)
+		#lint:enable
+
 	def move(self):
+		"""Handle the movement and collisions"""
 		#lint:disable
 		konstspeed = settings.konstspeed
 		windowwidth = settings.screenx_current

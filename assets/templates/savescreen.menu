@@ -1,0 +1,7 @@
+&./assets/templates/default.vars
+/#TODO halp
+*|Load saved game|30   |$typeface|$color      |$half + 0|%10 + 0|
+*|$savename      |20   |$typeface|$color      |$half + 0|%20 + 0|
+/add project stats here
+@|Previous       |$size|$ratio|$typeface|$color|$box1|%30   + 0|%90 + 0|
+@|Next           |$size|$ratio|$typeface|$color|$box1|%70   + 0|%90 + 0|

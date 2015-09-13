@@ -27,11 +27,11 @@ sounds.init()
 movement.handle()
 specials.init()
 
-
-print(("Loading time: " + str(pygame.time.get_ticks() / 1000.0)))
-
 if not settings.skip:
 	menu.main()
+
+print(("Loading time:" + str(settings.loading_time / 1000.0)))
+print(("Your seed is:" + str(settings.seed)))
 
 #start clock for checking time how long has been played
 global clock
@@ -47,6 +47,7 @@ def main():
 		#get events/user-input
 		settings.upd("get_events")
 		sounds.music.update(settings.events)
+		sounds.music.volume = settings.volume
 
 		#handle the user input
 		interface.handle()

@@ -39,13 +39,6 @@ def ingame():
 	#nothing to explain here i guess
 
 	screen = settings.screen
-	screenx = settings.screenx_current
-
-	texttargets = str(len(settings.world.targets)) + " / " + str(settings.dtargets)
-	textsurf = settings.stdfont.render(texttargets, 1, settings.color)
-	textrect = textsurf.get_rect()
-	textrect.right = screenx
-	textrect.top = 40
 
 	adjustscreen()
 
@@ -56,7 +49,8 @@ def ingame():
 	settings.player.blit(screen)
 	debug()
 	drawsongname()
-	screen.blit(textsurf, textrect)
+	drawtargetsum()
+	drawworldname()
 
 	if no16to9:
 		screen.blit(correcture, correcture_pos)
@@ -119,6 +113,29 @@ def debug():
 		screen.blit(textentitys, (0, 160))
 
 
+def drawtargetsum():
+
+	textlocaltargets = (str(len(settings.world.targets))
+			+ " / "
+			+ str(settings.dtargets))
+	text1surf = settings.stdfont.render(textlocaltargets, 1, settings.color)
+	text1rect = text1surf.get_rect()
+	text1rect.right = settings.screenx_current
+	text1rect.top = 40
+
+	alltargets = 0
+	for world in settings.localmap:
+		alltargets += len(settings.localmap[world].targets)
+
+	textglobaltargets = str(alltargets) + " / " + str(settings.dtargets * 8)
+	text2surf = settings.stdfont.render(textglobaltargets, 1, settings.color)
+	text2rect = text2surf.get_rect()
+	text2rect.right = settings.screenx_current
+	text2rect.top = 60
+	settings.screen.blit(text1surf, text1rect)
+	settings.screen.blit(text2surf, text2rect)
+
+
 def drawsongname():
 	"""shows the songname if new song is played"""
 	global show
@@ -148,11 +165,23 @@ def drawsongname():
 			show -= 1 if show > 0 else False
 			if show <= 40 * 4 and alpha > 0:
 				alpha -= 1.6
-
-			songname.set_alpha(int(alpha))
+			try:
+				songname.set_alpha(int(alpha))
+			except:
+				pass
+				#Timing error is not important
 
 	if pygame.mixer.music.get_volume() != 0.0 and show != 0:
 		screen.blit(songname, font_pos)
+
+
+def drawworldname():
+			font = pygame.font.SysFont(settings.typeface, 50)
+			name = font.render("World: " + str(settings.world.name),
+					True, settings.color)
+			pos = name.get_rect()
+			pos.centerx = settings.screenx_current / 2
+			settings.screen.blit(name, pos)
 
 
 def adjustscreen():

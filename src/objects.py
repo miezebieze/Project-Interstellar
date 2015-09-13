@@ -33,11 +33,9 @@ class stars():
 		self.screenx = screenx - self.pos.w
 		self.screeny = screeny - self.pos.h
 		#gives a percentage where star is located
-		relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
-		relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
-		#calculates pixel position
-		self.pointx = relative_x * self.screenx
-		self.pointy = relative_y * self.screeny
+		self.relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
+		self.relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
+		self.update(screenx / 1920.0)
 
 	def move(self, x, y):
 		"""Moves the star according to player position"""
@@ -57,75 +55,23 @@ class stars():
 			return True
 		return False
 
-	def resize(self, ratio):
+	def update(self, ratio):
 		"""Resizes star fitting to resolution"""
 		size = int(self.size * (ratio / 2.0))
 		if size > 5:
 			self.image = pygame.image.load("./assets/sprites/star1.tif")
 			self.image = pygame.transform.smoothscale(self.image, (size, size))
 			self.pos = self.image.get_rect()
-
-
-class button():
-
-	def __init__(self, x, y, text, color):
-		"""Initalises with x and y as center point"""
-		#basic font and then everything should be clear
-		#and the self.pos.move line basicly move its center to y and x
-		#going to be simplified next refactoring
-		self.button = settings.button
-		self.pos = settings.button.get_rect()
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.text = settings.modrender(settings.typeface, 30,
-			text, True, color,
-			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-		self.klicked = False
-
-	def changetext(self, text, color):
-		"""Changes the text inside the button"""
-		self.text = settings.modrender(settings.typeface, 30,
-			text, True, color,
-			self.pos.size, 6)
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-
-	def move(self, x, y):
-		"""Moves the button so that x and y are the center"""
-		self.button = settings.button
-		self.pos = settings.button.get_rect()
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.textpos = self.text.get_rect()
-		self.textpos.center = self.pos.center
-
-	def blit(self):
-		"""Blits the button"""
-		#blitts the button and changes image when hovered over or being clicked
-		#also posts a menu event to show that a button has been clicked
-		#to increase performance should be easy to understand
-		screen = settings.screen
-		self.klicked = False
-		if self.pos.collidepoint(pygame.mouse.get_pos()):
-			self.button = settings.buttonover
-			screen.blit(self.button, self.pos)
-			for event in settings.events:
-				if event.type == MOUSEBUTTONDOWN and event.button == 1:
-					self.button = settings.buttonclick
-					screen.blit(self.button, self.pos)
-					menue = pygame.event.Event(USEREVENT, code="MENU")
-					pygame.fastevent.post(menue)
-					self.klicked = True
-		else:
-			self.button = settings.button
-			screen.blit(self.button, self.pos)
-
-		screen.blit(self.text, self.textpos)
+		self.screenx = settings.screenx_current - self.pos.w
+		self.screeny = settings.screeny_current - self.pos.h
+		self.pointx = self.relative_x * self.screenx
+		self.pointy = self.relative_y * self.screeny
 
 
 class inputfield():
 
 	def __init__(self, x, y, typ, text, color):
+		print "used"
 		"""Creates a new inputfield"""
 		self.font = pygame.font.SysFont(settings.typeface, 30)
 		self.header = text
@@ -172,63 +118,6 @@ class inputfield():
 		self.textpos.center = self.pos.center
 		screen.blit(self.render_header, self.headerpos)
 		screen.blit(self.field, self.pos)
-		screen.blit(self.render_text, self.textpos)
-
-
-class sliders():
-
-	def __init__(self, value, x, y):
-		"""Creates a new slider"""
-		self.value = value
-		self.box = settings.box
-		self.knob = settings.knob
-		self.pos = self.box.get_rect()
-		self.knob_pos = self.knob.get_rect()
-		self.pos.top = y - (self.pos.h / 2.0)
-		self.pos.left = x - (self.pos.w / 2.0)
-		self.knob_pos.top = self.pos.top
-		self.knob_pos.left = self.pos.left + (self.pos.w * value)
-		self.scale = 1.0 / self.pos.w
-		self.dragged = False
-
-	def modify(self, events):
-		"""Modifies the slider (e.g. pos)"""
-		for event in events:
-			if event.type == MOUSEBUTTONUP:
-				if event.button == 1:
-					self.dragged = False
-			if event.type == MOUSEBUTTONDOWN:
-					if self.pos.collidepoint(pygame.mouse.get_pos()):
-						if event.button == 1:
-							self.dragged = True
-			if self.dragged:
-				self.value = (pygame.mouse.get_pos()[0] - self.pos.left) * self.scale
-
-		if self.value < 0:
-			self.value = 0
-		if self.value > 1:
-			self.value = 1
-
-		if self.value <= 0.01:
-			self.value = 0.0
-		if self.value >= 0.995:
-			self.value = 1.0
-		tmp = (self.value * (self.pos.w - self.knob_pos.w))
-		self.knob_pos.left = self.pos.left + tmp
-
-	def blit(self, name):
-		"""Blits the slider"""
-		screen = settings.screen
-		tmp = name + "{0:.2f}".format(self.value) + "%"
-		tmp = tmp.replace("0.0", "").replace("0.", "").replace(".", "")
-		self.render_text = settings.modrender(settings.typeface, 30,
-			tmp, True, settings.color,
-			self.pos.size, 6)
-		self.textpos = self.render_text.get_rect()
-		self.textpos.center = self.pos.center
-
-		screen.blit(self.box, self.pos)
-		screen.blit(self.knob, self.knob_pos)
 		screen.blit(self.render_text, self.textpos)
 
 
@@ -283,28 +172,35 @@ class target():
 		self.image = settings.targeton_img
 		self.chooser = True
 		self.pos = self.image.get_rect()
-		self.pos_xper = random.randint(0, 10000) / 10000.0
-		self.pos_yper = random.randint(0, 10000) / 10000.0
-		self.pos_x = self.pos_xper * settings.world.background_pos.w - 20 - self.pos.w
-		self.pos_y = self.pos_yper * settings.world.background_pos.h - 20 - self.pos.h
-		if self.pos_x < 20:
-			self.pos_x += 40 + 2 * self.pos.w
-		if self.pos_y < 20:
-			self.pos_y += 40 + 2 * self.pos.h
+		self.pos_xper = random.random()
+		self.pos_yper = random.random()
+		self.update()
+		if not 0 < self.pos_x < settings.world.background_pos:
+			message1 = "Targets have been found outside the world!\n"
+			message2 = "Please report these values on our github page.\n"
+			raise ValueError(message1
+					+ message2
+					+ str(self.pos_x)
+					+ ":"
+					+ str(self.pos_y))
 		self.timer = random.randint(0, 1000)
 		self.gothit = False
 		random_explosion = random.randint(0, len(settings.explosions) - 1)
 		self.explosion = settings.explosions[random_explosion]
-		self.movex = int(self.explosion.getRect().w / 2.0)
-		self.movey = int(self.explosion.getRect().h / 2.0) - 5
 		self.kill_entity = False
 		self.inscreen = True
 		self.move(settings.player.pos.x, settings.player.pos.y)
+		self.test = 0
 
 	def update(self):
 		"""Adjusts position according to screen size"""
-		self.pos_x = self.pos_xper * settings.screenx_current * 2 - 20 - self.pos.w
-		self.pos_y = self.pos_yper * settings.screeny_current * 2 - 20 - self.pos.h
+		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
+					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
+		self.pos_y = self.pos_yper * float(settings.world.background_pos.h
+					- 20 - self.pos.h) + 10 + self.pos.h / 2.0
+		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
+					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
+		self.pos_y = self.pos_yper * ((settings.screeny_current - self.pos.h) * 2.0)
 
 	def move(self, x, y):
 		"""Moves rect according to playerposition"""
@@ -328,8 +224,8 @@ class target():
 	def test_ishit(self, bulletrect):
 		"""Tests if target got hit"""
 		if self.pos.colliderect(bulletrect) and not self.gothit:
-			self.pos_x -= self.movex
-			self.pos_y -= self.movey
+			self.pos_x -= self.explosion.getRect().w / 2.0
+			self.pos_y -= self.explosion.getRect().h / 2.0
 			self.explosion.play()
 			self.gothit = True
 

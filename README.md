@@ -65,8 +65,8 @@ File / Code information
 | objects.py | 287 | 54 | 341 |
 | settings.py | 381 | 78 | 459 |
 | sounds.py | 7 | 4 | 11 |
-| specials | 70 | 15 | 85 |
-| | | | 
+| specials.py | 70 | 15 | 85 |
+| | | |
 | <strong>Total</strong> | <strong>2220</strong> | <strong>501</strong> | <strong>2721</strong> |
 
 <strong>Top3 code only:</strong><ul>

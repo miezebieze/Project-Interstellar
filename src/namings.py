@@ -24,7 +24,7 @@ def run():
 	screen.blit(fade, fade_pos)
 	pygame.display.flip()
 
-	settings.upd("screenvalues+vol")
+	settings.upd("screenvalues")
 
 	#load the credits.txt and assign place
 	with open("./assets/lang/credits.txt") as credits_file:

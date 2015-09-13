@@ -67,25 +67,36 @@ def handle():
 					and settings.player.pos.y >= 0.9:
 				pygame.mixer.music.load("./assets/music/$not$ard_tatort.ogg")
 				pygame.mixer.music.play(1, 0.0)
-			if key == "c":
-				specials.fire = True
-
 			if key == "f" or key == "space":
 				tmp = objects.bullet(settings.player.rotation, settings.player.pos)
 				settings.bullets.append(tmp)
-			if key == "o":
-				if pygame.key.get_mods() == 4416:
+			if key == "c":
+				specials.fire = True
+			if settings.debugmode:
+				if key == "p":
 					settings.psycomode = settings.toggle(settings.psycomode, True, False)
-					pass
-			if key == "q":
-				settings.volume = 0
-			if key == "t":
-				settings.player.new_ship("ship_2")
-				#settings.targets = []
-				pass
-			if len(key) == 3 and settings.debugscreen:
-				if key[0] == "[" and key[2] == "]":
-					settings.world = settings.localmap[key]
+				if key == "q":
+					settings.volume = 0
+				if key == "n":
+					settings.player.new_ship("ship_2")
+				if key == "t":
+					for target in settings.world.targets:
+						target.test_ishit(pygame.Rect((-1000, -1000), (3000, 3000)))
+				if key == "g":
+					settings.localmap["1"].generate(settings.localmap["1"].background,
+								settings.dstars, settings.dtargets)
+					settings.world.generate(settings.world.background,
+								settings.dstars, settings.dtargets)
+				if key == "h":
+					for target in settings.world.targets:
+						print target.pos
+				if len(key) == 3 and settings.debugmode:
+					if key[0] == "[" and key[2] == "]":
+						num = int(key[1])
+						if num != 5:
+							if num > 5:
+								num -= 1
+							settings.world = settings.localmap[str(num)]
 
 		settings.player.select_angle(settings.up, settings.down,
 				settings.left, settings.right)

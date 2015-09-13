@@ -7,6 +7,7 @@ import os
 import shutil
 import sys
 import traceback
+import random
 
 
 def init():
@@ -15,16 +16,6 @@ def init():
 	global down  # player should move down
 	global left  # player should move left
 	global right  # player should move right
-#		global player  # player surf
-#		global player_pos  # player rect
-#		global rotation  # current rotation of player
-#		global rot_dest  # destination in which to rotate
-#		global move  # determines if player should move at all
-#		global move_x  # movement in x direction in pixels
-#		global move_y  # movement in y direction in pixels
-#		global pos_x  # percentage position of screen
-#		global pos_y  # percentage position of screen
-#		global speed  # speed of player
 	global konstspeed  # some konstant for speed
 	global clock  # clock object of pygame
 	global stdfont  # global font defenition
@@ -43,6 +34,7 @@ def init():
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
+	global debugmode  # Enables debugmode
 	global isnear  # easteregg
 	global button  # image for the button
 	global buttonover  # = when hovered over
@@ -63,13 +55,11 @@ def init():
 	global musics  # the list of music titles assoziated wih the music files
 	global saves  # all savegames
 	global psycomode  # if psycomode is turned on
-#		global timeplay  # time how long the player has been playing
 	global current_game  # the current savegame and default when no game is saved
 	global explosions  # list of surfs of explosions
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
 	global dtargets  # amount of targets
-#		global update  # determines whether new image needs to be loaded
 	global include_music
 	global morevents
 	global infinitevents
@@ -79,6 +69,14 @@ def init():
 	global objects_on_screen  # entitys currently blitted to screen
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
+	global loading_time  # time until first blit
+	global seed  # the environments seed
+	global button_ratio  # The ratio from height to length of buttons
+
+	#for this operation os.urandom is used
+	seed_size = 16
+	seed = random.randint(10 ** (seed_size - 1), (10 ** seed_size) - 1)
+	random.seed(seed)
 
 	#set up screen
 	pygame.event.set_grab(False)
@@ -97,20 +95,19 @@ def init():
 	if not os.path.exists("./screenshots/"):
 		os.makedirs("./screenshots/")
 
-	#load images
+	#load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
-	button = pygame.image.load("./assets/sprites/Button1.tif")
-	buttonover = pygame.image.load("./assets/sprites/Button2.tif")
-	buttonclick = pygame.image.load("./assets/sprites/Button3.tif")
-	field = pygame.image.load("./assets/sprites/inputbox1.tif")
-	field1 = pygame.image.load("./assets/sprites/inputbox2.tif")
-	knob = pygame.image.load("./assets/sprites/knob1.tif")
-	box = pygame.image.load("./assets/sprites/Button1.tif")
-	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif")
-	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif")
-	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif")
-	border1 = pygame.image.load("./assets/sprites/bar1.tif")
+	#TODO remove use of button
+	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
+	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
+	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
+	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
+	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
+				).convert_alpha()
+	targetoff_img = pygame.image.load("./assets/sprites/mine_off.tif"
+				).convert_alpha()
+	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha()
 
 	fade_pos = fade.get_rect()  # lint:ok
 
@@ -125,9 +122,10 @@ def init():
 	left = False
 	right = False
 	konstspeed = 0.0025
-
+	button_ratio = 7.0
 	fullscreen = False
-	debugscreen = True
+	debugscreen = False
+	debugmode = True
 	dstars = 500
 	isnear = "False"
 	code = ""
@@ -140,13 +138,14 @@ def init():
 	psycomode = False
 	current_game = "default"
 	run = True
-	dtargets = 15
+	dtargets = 5
 	include_music = False
 	morevents = []
 	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
 	musicend = USEREVENT + 100
 	events = []
+	loading_time = 0
 
 	from .player import player as player
 	player = player()
@@ -155,9 +154,11 @@ def init():
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
 	#more complex default settings like creation of stars and targets and so on
-	if debugscreen:
+	if debugmode:
+		#Add custom handler here for when debugmode is activated
 		volume = 0.0
-		fullscreen = False
+		#fullscreen = False
+		pass
 
 	def get_anim_source(num, quantity):
 		animationsourcetmp = []
@@ -182,7 +183,7 @@ def init():
 	saves = []
 	for filename in os.listdir("./saves"):
 		if filename.endswith(".ini"):
-			filename = filename[:-4]
+			filename = unicode(filename[:-4])
 			saves.append(filename)
 
 	if fullscreen:
@@ -197,36 +198,19 @@ def init():
 
 	from . import worlds
 	localmap = {}
-	for a in range(9):
-		world = worlds.world()
+	for a in range(8):
+		world = worlds.world(str(a + 1))
 		world.generate(background, dstars, dtargets)
-		localmap["[" + str(a + 1) + "]"] = world
-
+		localmap[str(a + 1)] = world
+	world = localmap["1"]
 	upd("adjust_screen")
 
 
 def reset():
 
 	"""resets some settings"""
-	global up
-	global down
-	global left
-	global right
-	global player
-	global player_pos
-	global fade_pos
-	global background_pos
-	global rot_dest
-	global move
-	global move_x
-	global move_y
-	global speed
 	global konstspeed
-	global debugscreen
 	global color
-	global timeplay
-	global dstars
-	global dtargets
 
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
@@ -240,7 +224,7 @@ def reset():
 	from . import missions
 	missions.handle("pause")
 
-	if debugscreen:
+	if debugmode:
 		fullscreen = False  # lint:ok
 
 	world.generate(world.background, dstars, dtargets)
@@ -253,13 +237,11 @@ def upd(level):
 		global events
 		events = pygame.fastevent.get()
 		return
-	if level == "screenvalues+vol":  # So 1 counts too
+	if level == "screenvalues":
 		global screenx_current
 		global screeny_current
-		global volume
 		screenx_current = pygame.display.Info().current_w
 		screeny_current = int(screenx_current * 9.0 / 16.0)
-		volume = pygame.mixer.music.get_volume()
 		return
 	if level == "get_saves":
 		global saves
@@ -278,16 +260,15 @@ def upd(level):
 		global no16to9
 
 		draw.adjustscreen()
-		upd("screenvalues+vol")
+		upd("screenvalues")
 
 		konstspeed = 0.0025
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
 		world.adjust_to_screen()
-
 		return
 	print("Something went wrong here")
-	int("test")  # Used to crash the game to see where no option is selected
+	raise Exception
 
 
 def toggle(var, option1, option2):
@@ -362,7 +343,8 @@ class save():
 		self.config.set("main", "fullscreen", str(fullscreen))
 		self.config.set("main", "screenx_current", str(screenx_current))
 		self.config.set("main", "screeny_current", str(screeny_current))
-		self.config.set("main", "debug", str(debugscreen))
+		self.config.set("main", "debugscreen", str(debugscreen))
+		self.config.set("main", "debugmode", str(debugmode))
 		self.config.set("main", "skip", "True")
 		self.config.set("main", "posx", str(player.pos.x))
 		self.config.set("main", "posy", str(player.pos.y))
@@ -378,6 +360,7 @@ def load(name):
 	global screenx_current
 	global screeny_current
 	global debugscreen
+	global debugmode
 	global config
 	global skip
 	global pos_x
@@ -402,14 +385,14 @@ def load(name):
 			fullscreen = config.getboolean("main", "fullscreen")
 			screenx_current = int(config.getfloat("main", "screenx_current"))
 			screeny_current = int(config.getfloat("main", "screeny_current"))
-			debugscreen = config.getboolean("main", "debug")
+			debugscreen = config.getboolean("main", "debugscreen")
+			debugmode = config.getboolean("main", "debugmode")
 			skip = config.getboolean("main", "skip")
 			pos_x = config.getfloat("main", "posy")
 			pos_y = config.getfloat("main", "posx")
 			sounds.music.volume = config.getfloat("main", "volume")
-			highscore = config.getint("main", "highscore")
 			#lint:enable
-		except NoOptionError as test:
+		except SafeConfigParser.NoOptionError as test:
 			print(("Saved game couldn't be loaded completly: " + str(test)))
 		except Exception:
 			print(("Unexpected error:", sys.exc_info()[0]))

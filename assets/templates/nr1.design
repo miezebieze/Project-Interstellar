@@ -1,0 +1,10 @@
+type = button
+#corner = ./assets/sprites/design1.tif
+line = ./assets/sprites/design1.tif
+#line_orientation = vertical or horiontal
+#inner_color = (255,128,128,100)
+#Can create templates if line xor corner is missing
+#line_orientation determines wether the given template is for the left or the top
+#	default is for the top
+#inner_color sets the color inside the button
+#	default is trancparency

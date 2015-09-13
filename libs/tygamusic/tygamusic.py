@@ -124,6 +124,7 @@ shouldplaynextsong (bool)
 		if music has ended
 """
 
+		#print self.volume
 		#Adjust volume to its own volume.
 		pygame.mixer.music.set_volume(self.volume)
 		#Adds a random song to playlist
@@ -137,8 +138,7 @@ shouldplaynextsong (bool)
 				events = pygame.event.get()
 			else:
 				return
-		#Playes next song if the last one has ended
-		#    and it should do so.
+		#Playes next song if the last one has ended.
 		if self.__endevent in events and shouldplaynextsong:
 			self.playlist.pop(0)
 			self._playing = False
@@ -204,7 +204,9 @@ Look up individual options's comments in sourcecode for an in depth explanation.
 
 		if options[0] == "unpause" and len(self.playlist) != 0:
 			#Restarts music and removes previous music if it hasnt been paused yet.
-			self._pauselevel -= 1
+			#the check is needed if someone unpauses more than pauses
+			if self._pauselevel > 0:
+				self._pauselevel -= 1
 			while self._timeplayed[self.playlist[0]] == 0 and len(self.playlist) > 1:
 				self.playlist.pop(0)
 			pygame.mixer.music.load(self._path + self.playlist[0])

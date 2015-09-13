@@ -1,18 +1,22 @@
 from . import settings
 from . import objects
 from . import draw
+from . import menu
 import pygame
+import random
+import math
 """An abstact level for handeling multiple worlds."""
 
 
 class world():
 
-	def __init__(self):
+	def __init__(self, name):
+		self.name = name
 		pass
 
 	def generate(self, background, dstars, dtargets):
 		#initialize a new "world"
-		#TODO: Change loading of things to this class
+
 		#load background image
 		self.background = background
 		self.background_pos = self.background.get_rect()
@@ -29,7 +33,80 @@ class world():
 			tmpstar = objects.stars()
 			self.stars.append(tmpstar)
 		for counter in range(dtargets):
-			self.targets.append(objects.target())
+			tmptarget = objects.target()
+			self.targets.append(tmptarget)
+
+		class warp():
+
+			def __init__(self):
+				self.x_pos = random.random()
+				self.y_pos = random.random()
+				self.screen = settings.screen
+				self.update()
+
+			def update(self):
+				self.img = pygame.image.load("./assets/sprites/station1.tif")
+				self.img = pygame.transform.smoothscale(self.img,
+								(int(settings.screenx_current * 0.1),
+									int(settings.screenx_current * 0.1)
+								))
+				self.pos = self.img.get_rect()
+				self.pos.x = self.x_pos * (settings.world.background_pos.w - self.pos.w)
+				self.pos.y = self.y_pos * (settings.world.background_pos.h - self.pos.h)
+				self.anchorx, self.anchory = self.pos.topleft
+
+			def move(self, playerpos):
+				self.pos.left = self.anchorx - playerpos.x
+				self.pos.top = self.anchory - playerpos.y
+
+			def test(self, playerpos):
+				def testpoint(point):
+					x_sqr = ((point[0] * point[0])
+						- (2.0 * self.pos.centerx * point[0])
+						+ (self.pos.centerx * self.pos.centerx))
+					y_sqr = ((point[1] * point[1])
+						- (2.0 * self.pos.centery * point[1])
+						+ (self.pos.centery * self.pos.centery))
+					if math.sqrt(x_sqr + y_sqr) < self.pos.w / 2.0:
+						return True
+					else:
+						return False
+
+				def test_collide():
+					test = testpoint(playerpos.topleft)
+					test = test or testpoint(playerpos.bottomleft)
+					test = test or testpoint(playerpos.topright)
+					test = test or testpoint(playerpos.bottomright)
+					return test
+				if test_collide():
+					#Warps to the selected world and gets a bit pushed off the station
+					selected_num = menu.choose_world()
+					if selected_num >= 0:
+						settings.world = settings.localmap[selected_num]
+						settings.world.adjust_to_screen()
+					settings.player.up = False
+					settings.player.down = False
+					settings.player.left = False
+					settings.player.right = False
+					settings.up = False
+					settings.down = False
+					settings.left = False
+					settings.right = False
+					while test_collide():
+						if settings.player.pos.center[0] < self.pos.center[0]:
+							settings.player.move_ip(-20, 0)
+						else:
+							settings.player.move_ip(20, 0)
+						if settings.player.pos.center[1] < self.pos.center[1]:
+							settings.player.move_ip(0, -20)
+						else:
+							settings.player.move_ip(0, 20)
+						playerpos = settings.player.pos
+
+			def blit(self):
+				self.screen.blit(self.img, self.pos)
+
+		self.warp1 = warp()
 
 		self.adjust_to_screen()
 
@@ -41,6 +118,9 @@ class world():
 			settings.screenx_current * (settings.fake_size - 1))))
 		self.background_pos.top = int(-(settings.player.rel_y * (
 			settings.screeny_current * (settings.fake_size - 1))))
+
+		self.warp1.move(player_pos)
+		self.warp1.test(player_pos)
 
 		for star in self.stars:
 			star.move(player_pos.left, player_pos.top)
@@ -87,6 +167,7 @@ class world():
 				settings.objects_on_screen += 1
 		for explosion in settings.explosions_disp:
 			explosion.blit()
+		self.warp1.blit()
 
 	def adjust_to_screen(self):
 
@@ -95,7 +176,7 @@ class world():
 		screen_current = (int(tmpx), int(tmpy))
 		background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 		self.background = pygame.transform.smoothscale(background, screen_current)
-		self.background_pos = background.get_rect()
+		self.background_pos = self.background.get_rect()
 
 		tmp = -(settings.player.pos.x * (settings.screenx_current *
 					(settings.fake_size - 1)))
@@ -113,7 +194,9 @@ class world():
 			draw.correcture_pos.bottomleft = (0, settings.screeny)
 
 		for star in self.stars:
-			star.resize(settings.screenx_current / 1920.0)
+			star.update(settings.screenx_current / 1920.0)
 
 		for target in self.targets:
 			target.update()
+
+		self.warp1.update()
