@@ -232,9 +232,10 @@ def pause():
 					settings.save(savename)
 			if event == "Load Game":
 				savegame = savegames()
-				if savegame != "Exit":
+				if savegame is not None:
 					settings.load(savegame)
 					sounds.music.play("unpause")
+					settings.upd("get_saves")
 					run = False
 			if event == "Settings":
 				options()
@@ -347,67 +348,57 @@ def inputpopup(x, y, header):
 
 
 def savegames():
-	"""creates wall with savegames to select"""
+	"""Menu to select a saved game."""
 
-	settings.upd("get_saves")
+	#Loads in values
+	list_of_saves = settings.saves
+	D_saves = len(list_of_saves)
+	currently_selected = 0
 
-	saves = settings.saves
-	screen = settings.screen
-	screenx = settings.screenx_current
-	screeny = settings.screeny_current
-	color = settings.color
-	fade = settings.fade
-	fade_pos = settings.fade_pos
+	#Defines Menu
+	settings_menu = menu_template("load", 0, 255, 255,
+			{"savename": list_of_saves[currently_selected]},
+			[])
 
-	xaxis = []
-	yaxis = []
-	saves_buttons = []
 	run = True
-
-	fade.set_alpha(20)
-
-	for y in range(10):
-		y += 1
-		for x in range(5):
-			x += 1
-			xaxis.append(screenx / 6 * x)
-			yaxis.append(screeny / 11 * y + 50)
-
-	for a in range(len(saves)):
-		tmp = saves[a].replace("\\", "/")
-		#20 and 11 are values for size and ratio and
-		#were found trough testing which looks best
-		saves_buttons.append(menu.disp_elem.button(tmp.decode("utf-8"),
-					0, xaxis[a], 0, yaxis[a],
-					pygame.Rect((0, 0), (screenx, screeny)),
-					tmp.decode("utf-8"), settings.typeface, 20, 11,
-					color, ["./assets/templates/nr1.design"]))
-
-	a = 0
 	while run:
-		settings.upd("get_events")
-		for a in range(len(saves)):
-			saves_buttons[a].update(settings.events)
-		for event in settings.events:
-			if event.type == QUIT:
-				settings.quit()
-			if event.type == KEYDOWN:
-				key = pygame.key.name(event.key)
-				if key == "escape":
-					return "Exit"
-			if event.type == USEREVENT and event.code == "MENU":
-				for a in range(len(saves)):
-					if saves_buttons[a].klicked:
-						pygame.display.flip()
-						pygame.time.delay(200)
-						return saves[a]
 
-		screen.blit(fade, fade_pos)
-		for a in range(len(saves)):
-			saves_buttons[a].blit(screen)
+		#Get all events and handle them
+		events = settings_menu.run()
+		for event in events:
+			#Exits savegame menu
+			if event in ["event.EXIT", "event.QUIT", "Return"]:
+				run = False
+				return None
+			#Sets the current selected savegame to load
+			if event == "Load":
+				return list_of_saves[currently_selected]
+			#Shows next savegame
+			if event == "Next":
+				#Points to an later save
+				currently_selected += 1
+				#Wraps to the beginning to create a not ending loop
+				if currently_selected + 1 > D_saves:
+					currently_selected = currently_selected - D_saves
+				settings_menu = menu_template("load", 0, 255, 255,
+						{"savename": list_of_saves[currently_selected]},
+						[])
+				#Lets the button last longer in klicked mode
+				pygame.time.delay(50)
+			#Shows previous savegame
+			if event == "Previous":
+				#Points to an earlier save
+				currently_selected -= 1
+				#Wraps to the end to create a not ending loop
+				if currently_selected < 0:
+					currently_selected = D_saves - currently_selected - 1
+				settings_menu = menu_template("load", 0, 255, 255,
+						{"savename": list_of_saves[currently_selected]},
+						[])
+				#Lets the button last longer in klicked mode
+				pygame.time.delay(50)
+
 		pygame.display.flip()
-
-	run = True
 
 
 def options():

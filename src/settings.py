@@ -378,8 +378,8 @@ def load(name):
 	if not (saves == []):
 
 		#tries to load and returns values in terminal that couldnt be loaded
+		import ConfigParser
 		try:
-			#from ConfigParser import *
 			from . import sounds
 			#lint:disable
 			fullscreen = config.getboolean("main", "fullscreen")
@@ -392,7 +392,7 @@ def load(name):
 			pos_y = config.getfloat("main", "posx")
 			sounds.music.volume = config.getfloat("main", "volume")
 			#lint:enable
-		except SafeConfigParser.NoOptionError as test:
+		except ConfigParser.NoOptionError as test:
 			print(("Saved game couldn't be loaded completly: " + str(test)))
 		except Exception:
 			print(("Unexpected error:", sys.exc_info()[0]))
