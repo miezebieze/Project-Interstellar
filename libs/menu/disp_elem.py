@@ -329,16 +329,12 @@ class create_outline():
 					self.resources[option] = var
 
 	def create_template(self, pos):
-		corner = None
-		line = None
-		line_orient = None
+		from .creator import convert2list
+		design = self.resources["design"]
+		design = pygame.image.load(design)
 		self.color = None
-		if "corner" in self.resources:
-			corner = pygame.image.load(self.resources["corner"])
-		if "line" in self.resources:
-			line = pygame.image.load(self.resources["line"])
-		if "line_orientation" in self.resources:
-			line_orient = pygame.image.load(self.resources["line_orientation"])
+
+		#gets selected background color
 		if "inner_color" in self.resources:
 			color = convert2list(self.resources["inner_color"])
 			if len(color) == 3:
@@ -347,36 +343,28 @@ class create_outline():
 				self.color = (int(color[0]), int(color[1]), int(color[2]), int(color[3]))
 		else:
 			self.color = (0, 0, 0, 0)
-		if corner is None:
-			if line is None:
-				print("No image given to create design.")
-			else:
-				if line_orient == "vertical":
-					line = pygame.transform.rotate(line, -90)
-				line_rect = line.get_rect()
-				size = line_rect.h
-				#crop the line to the wished string
-				line_string = pygame.Surface((1, size))
-				line_string.blit(line, (0, 0), pygame.Rect(pos, 0, 1, size))
-				line = line_string
-				line_rect = line.get_rect()
-				self.pixels = {}
-				self.pattern = pygame.Surface((1, size))
-				for a in range(size):
-					self.pattern.set_at((0, a), line.get_at((0, a)))
-				corner = pygame.Surface((size, size))
-				for a in range(size):
-					for x in range(size):
-						for y in range(size):
-							if x >= a and y >= a:
-								corner.set_at((x, y), self.pattern.get_at((0, a)))
-		else:
-			if line is None:
-				size = corner.get_height()
-				self.line = pygame.Surface((1, size))
-				for a in range(size):
-					self.line.set_at((0, a), corner.get_at((size - 1, a)))
-		return [line, corner]
+
+		design_rect = design.get_rect()
+		size = design_rect.h
+		#extract the selected collum
+		line_string = pygame.Surface((1, size))
+		line_string.blit(design, (0, 0), pygame.Rect(pos, 0, 1, size))
+		design = line_string
+		design_rect = design.get_rect()
+		self.pixels = {}
+		#create the final surface to blit pattern to
+		self.pattern = pygame.Surface((1, size))
+		#set the pixel colors for the pattern
+		for a in range(size):
+			self.pattern.set_at((0, a), design.get_at((0, a)))
+		#transforms linear pattern into a corner
+		corner = pygame.Surface((size, size))
+		for a in range(size):
+			for x in range(size):
+				for y in range(size):
+					if x >= a and y >= a:
+						corner.set_at((x, y), self.pattern.get_at((0, a)))
+		return [self.pattern, corner]
 
 	def create_box(self, mode, rect):
 		posx = rect.x

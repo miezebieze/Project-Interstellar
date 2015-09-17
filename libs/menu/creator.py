@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame
-import disp_elem
+from . import disp_elem
 
 
 def convert2list(string):
@@ -291,9 +291,9 @@ class create_menu():
 						text = self.vars[text[1:]]
 
 					#Determines wether relation argument is given
-					additional_arguments = 1 if ident > 0 else 0
+					are_additional_arguments = 1 if ident > 0 else 0
 					#Through relation argument there might be another "|"
-					if line.count("|") == 10 + additional_arguments:
+					if line.count("|") == 10 + are_additional_arguments:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							options = self.vars[line[1: line.index("|")].strip()]
