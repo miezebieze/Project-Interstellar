@@ -283,8 +283,13 @@ class slider():
 		self.knob_pos.left = self.pos.left + tmp
 
 		if type(self.options_list) == bool:
-			text = self.name + ": " + str(self.value * 100)[:3] + "%"
-			text = text.replace("0.0", "0").replace(".", "")
+			#adding a "." to the end to ensure at least one is included
+			text = str(self.value * 100)[:3] + "."
+			#removes "." and everything behind it
+			text = text[:text.index(".")]
+			#Adds the description and the % at the end
+			text = self.name + ": " + text + "%"
+			#Turns text into a pygame.Surface
 			self.render_text = self.typeface.render(text, True, self.color)
 			self.is_defined_list = False
 		else:
