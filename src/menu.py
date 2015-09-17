@@ -391,7 +391,7 @@ def savegames():
 				currently_selected -= 1
 				#Wraps to the end to create a not ending loop
 				if currently_selected < 0:
-					currently_selected = D_saves - currently_selected - 1
+					currently_selected = D_saves + currently_selected
 				settings_menu = menu_template("load", 0, 255, 255,
 						{"savename": list_of_saves[currently_selected]},
 						[])
