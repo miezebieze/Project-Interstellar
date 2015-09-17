@@ -48,6 +48,8 @@ class create_menu():
 		self.elems = {"buttons": [], "sliders": [], "surfs": {}}
 
 		ident = 0
+		all_elems = {}
+		elem_id = 1
 
 		with open(filename) as conf_file:
 			for line in conf_file:
@@ -56,7 +58,6 @@ class create_menu():
 					continue
 
 				#This checks for the identation
-				old_ident = ident
 				ident = 0
 				if line[0] == "~":
 					ident = line[:line.index("|") - 1].count("~")  # Counts identation marks
@@ -136,6 +137,8 @@ class create_menu():
 										0
 									)
 									)]
+					all_elems[elem_id] = self.elems["surfs"][text]
+					elem_id += 1
 
 				if line[0] == "*":  # A title is defined in language
 					line = line[2:]
@@ -183,6 +186,8 @@ class create_menu():
 					pos = pygame.Rect((xpos, ypos), (0, 0))
 
 					self.elems["surfs"][text] = [img, pos]
+					all_elems[elem_id] = self.elems["surfs"][text]
+					elem_id += 1
 
 				if line[0] == "@":  # A button is defined in language
 					line = line[2:]
@@ -193,9 +198,9 @@ class create_menu():
 					content = text
 
 					#Determines wether relation argument is given
-					additional_arguments = 1 if ident > 0 else 0
+					are_additional_arguments = 1 if ident > 0 else 0
 					#Through relation argument there might be another "|"
-					if line.count("|") == 5 + additional_arguments:
+					if line.count("|") == 5 + are_additional_arguments:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
@@ -260,24 +265,26 @@ class create_menu():
 					rel_y, abs_y = analyse_num(line, self.vars)
 					#If relative to another button
 					if ident > 0:
-						#Adds absolute x and y value to current button
-						#TODO: the referring element to is not always a button
-						if relation[:3] == "top":
-							abs_y += self.elems["buttons"][-1 * (ident - old_ident)].pos.top
-						if relation[:6] == "bottom":
-							abs_y += self.elems["buttons"][-1 * (ident - old_ident)].pos.bottom
-						if relation[-4:] == "left":
-							abs_x += self.elems["buttons"][-1 * (ident - old_ident)].pos.left
-						if relation[-5:] == "right":
-							abs_x += self.elems["buttons"][-1 * (ident - old_ident)].pos.right
-						#Ignores relative placement
-						rel_x = 0
-						rel_y = 0
+						if type(all_elems[elem_id - 1]) != type(pygame.Surface):
+							#Adds absolute x and y value to current slider
+							if relation[:3] == "top":
+								abs_y += all_elems[elem_id - 1].pos.top
+							if relation[:6] == "bottom":
+								abs_y += all_elems[elem_id - 1].pos.bottom
+							if relation[-4:] == "left":
+								abs_x += all_elems[elem_id - 1].pos.left
+							if relation[-5:] == "right":
+								abs_x += all_elems[elem_id - 1].pos.right
+							#Ignores relative placement
+							rel_x = 0
+							rel_y = 0
 
 					self.elems["buttons"].append(disp_elem.button(text,
 									rel_x, abs_x, rel_y, abs_y, ref,
 									content,
 									typeface, size, ratio, color, design[:3]))
+					all_elems[elem_id] = self.elems["buttons"][-1]
+					elem_id += 1
 					#Centers non-relative buttons so their center is on the
 					#given x and y coordiante
 					if ident == 0:
@@ -291,9 +298,9 @@ class create_menu():
 						text = self.vars[text[1:]]
 
 					#Determines wether relation argument is given
-					are_additional_arguments = 1 if ident > 0 else 0
+					additional_arguments = 1 if ident > 0 else 0
 					#Through relation argument there might be another "|"
-					if line.count("|") == 10 + are_additional_arguments:
+					if line.count("|") == 10 + additional_arguments:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							options = self.vars[line[1: line.index("|")].strip()]
@@ -373,22 +380,25 @@ class create_menu():
 					rel_y, abs_y = analyse_num(line, self.vars)
 
 					if ident > 0:
-						#Adds absolute x and y value to current button
-						if relation[:3] == "top":
-							abs_y += self.elems["sliders"][-1 * (ident - old_ident)].pos.top
-						if relation[:6] == "bottom":
-							abs_y += self.elems["sliders"][-1 * (ident - old_ident)].pos.bottom
-						if relation[-4:] == "left":
-							abs_x += self.elems["sliders"][-1 * (ident - old_ident)].pos.left
-						if relation[-5:] == "right":
-							abs_x += self.elems["sliders"][-1 * (ident - old_ident)].pos.right
-						#Ignores relative placement
-						rel_x = 0
-						rel_y = 0
+						if type(all_elems[elem_id - 1]) != type(pygame.Surface):
+							#Adds absolute x and y value to current slider
+							if relation[:3] == "top":
+								abs_y += all_elems[elem_id - 1].pos.top
+							if relation[:6] == "bottom":
+								abs_y += all_elems[elem_id - 1].pos.bottom
+							if relation[-4:] == "left":
+								abs_x += all_elems[elem_id - 1].pos.left
+							if relation[-5:] == "right":
+								abs_x += all_elems[elem_id - 1].pos.right
+							#Ignores relative placement
+							rel_x = 0
+							rel_y = 0
 
 					self.elems["sliders"].append(disp_elem.slider(text, default_value,
 								size, ratio, typeface, color, img,
 								rel_x, abs_x, rel_y, abs_y, ref, options))
+					all_elems[elem_id] = self.elems["sliders"][-1]
+					elem_id += 1
 					if ident == 0:
 						self.elems["sliders"][-1].center()
 
@@ -396,6 +406,8 @@ class create_menu():
 			self.elems["surfs"]["background"] = [pygame.transform.smoothscale(
 					pygame.image.load(self.vars["background"][0]).convert(),
 					ref.size), pygame.Rect(0, 0, 0, 0)]
+			all_elems[elem_id] = self.elems["surfs"]["background"]
+			elem_id += 1
 
 	def blit(self, screen, events):
 		try:
