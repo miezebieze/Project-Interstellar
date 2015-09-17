@@ -205,12 +205,14 @@ def adjustscreen():
 def status():
 	xsize = int(settings.screenx_current * 0.05)
 	ysize = int(settings.screeny_current * 0.3) + 10
-	bar = pygame.Surface((xsize, ysize))
-	border = pygame.transform.scale(settings.border1, (xsize, ysize))
+	bar = pygame.Surface((xsize, ysize)).convert_alpha()
+	border = pygame.transform.scale(
+				settings.border1, (xsize, ysize)).convert_alpha()
+	border.set_alpha(0)
 	borderpos = border.get_rect()
 	borderpos.bottomright = (settings.screenx_current,
 		settings.screeny_current)
-	pos = bar.fill((62, 186, 23, 10))
+	pos = bar.fill((62, 186, 23, 40))
 	pos.right = settings.screenx_current
 	pos.top = settings.screeny_current - (pos.h / 100.0) * specials.energy
 	settings.screen.blit(bar, pos)
