@@ -210,7 +210,7 @@ def status():
 	borderpos = border.get_rect()
 	borderpos.bottomright = (settings.screenx_current,
 		settings.screeny_current)
-	pos = bar.fill((62, 186, 23))
+	pos = bar.fill((62, 186, 23, 10))
 	pos.right = settings.screenx_current
 	pos.top = settings.screeny_current - (pos.h / 100.0) * specials.energy
 	settings.screen.blit(bar, pos)

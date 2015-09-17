@@ -3,6 +3,7 @@ import pygame
 import random
 import math
 from . import settings
+from . import menu
 from pygame.locals import *
 
 """Classes for creating objects"""
@@ -66,59 +67,6 @@ class stars():
 		self.screeny = settings.screeny_current - self.pos.h
 		self.pointx = self.relative_x * self.screenx
 		self.pointy = self.relative_y * self.screeny
-
-
-class inputfield():
-
-	def __init__(self, x, y, typ, text, color):
-		print "used"
-		"""Creates a new inputfield"""
-		self.font = pygame.font.SysFont(settings.typeface, 30)
-		self.header = text
-		if typ == 1:
-			self.field = settings.field
-		elif typ == 2:
-			self.field = settings.field1
-		self.pos = settings.field.get_rect()
-		self.pos = self.pos.move(x - (self.pos.w / 2.0), y - (self.pos.h / 2.0))
-		self.text = ""
-		self.render_text = settings.modrender(settings.typeface, 30, self.text,
-			True, color,
-			self.pos.size, 9)
-		self.textpos = self.render_text.get_rect()
-		self.textpos.center = self.pos.center
-		self.render_header = settings.modrender(settings.typeface, 30, self.header,
-			True, color,
-			settings.screen.get_rect().size, 0)
-		self.headerpos = self.render_header.get_rect()
-		self.headerpos.center = self.pos.center
-		self.headerpos.y -= 50
-
-	def gettext(self):
-		"""Returns text if return is pressed or removes one if return is pressed"""
-		from . import interface
-		key = interface.getall(False)
-		if key is not None and self.textpos.width < self.pos.width - 18:
-			self.text = self.text + key
-		if key is None:
-			key = interface.getall(True)
-			if key == "return":
-				return self.text
-			if key == "backspace":
-				self.text = self.text[:len(self.text) - 1]
-
-	def blit(self):
-		"""Blits the inputfield"""
-		color = settings.color
-		screen = settings.screen
-		self.render_text = settings.modrender(settings.typeface, 30, self.text,
-			True, color,
-			self.pos.size, 9)
-		self.textpos = self.render_text.get_rect()
-		self.textpos.center = self.pos.center
-		screen.blit(self.render_header, self.headerpos)
-		screen.blit(self.field, self.pos)
-		screen.blit(self.render_text, self.textpos)
 
 
 class bullet():
@@ -194,13 +142,8 @@ class target():
 
 	def update(self):
 		"""Adjusts position according to screen size"""
-		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
-					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
-		self.pos_y = self.pos_yper * float(settings.world.background_pos.h
-					- 20 - self.pos.h) + 10 + self.pos.h / 2.0
-		self.pos_x = self.pos_xper * float(settings.world.background_pos.w
-					- 20 - self.pos.w) + 10 + self.pos.w / 2.0
-		self.pos_y = self.pos_yper * ((settings.screeny_current - self.pos.h) * 2.0)
+		self.pos_x = self.pos_xper * 2 * float(settings.screenx_current - self.pos.w)
+		self.pos_y = self.pos_yper * 2 * float(settings.screeny_current - self.pos.h)
 
 	def move(self, x, y):
 		"""Moves rect according to playerposition"""
@@ -247,3 +190,74 @@ class target():
 				settings.screen.blit(self.image, self.pos)
 				return True
 			return False
+
+
+class warp_station():
+
+	def __init__(self):
+		self.x_pos = random.random()
+		self.y_pos = random.random()
+		self.screen = settings.screen
+		self.update()
+
+	def update(self):
+		self.img = pygame.image.load("./assets/sprites/station1.tif")
+		self.img = pygame.transform.smoothscale(self.img,
+						(int(settings.screenx_current * 0.1),
+							int(settings.screenx_current * 0.1)
+						))
+		self.pos = self.img.get_rect()
+		self.pos.x = self.x_pos * 2 * float(settings.screenx_current - self.pos.w)
+		self.pos.y = self.y_pos * 2 * float(settings.screeny_current - self.pos.h)
+		self.anchorx, self.anchory = self.pos.topleft
+
+	def move(self, playerpos):
+		self.pos.left = self.anchorx - playerpos.x
+		self.pos.top = self.anchory - playerpos.y
+
+	def test(self, playerpos):
+		def testpoint(point):
+			x_sqr = ((point[0] * point[0])
+				- (2.0 * self.pos.centerx * point[0])
+				+ (self.pos.centerx * self.pos.centerx))
+			y_sqr = ((point[1] * point[1])
+				- (2.0 * self.pos.centery * point[1])
+				+ (self.pos.centery * self.pos.centery))
+			if math.sqrt(x_sqr + y_sqr) < self.pos.w / 2.0:
+				return True
+			else:
+				return False
+
+		def test_collide():
+			test = testpoint(playerpos.topleft)
+			test = test or testpoint(playerpos.bottomleft)
+			test = test or testpoint(playerpos.topright)
+			test = test or testpoint(playerpos.bottomright)
+			return test
+		if test_collide():
+			#Warps to the selected world and gets a bit pushed off the station
+			selected_num = menu.choose_world()
+			if selected_num >= 0:
+				settings.world = settings.localmap[selected_num]
+				settings.world.adjust_to_screen()
+			settings.player.up = False
+			settings.player.down = False
+			settings.player.left = False
+			settings.player.right = False
+			settings.up = False
+			settings.down = False
+			settings.left = False
+			settings.right = False
+			while test_collide():
+				if settings.player.pos.center[0] < self.pos.center[0]:
+					settings.player.move_ip(-20, 0)
+				else:
+					settings.player.move_ip(20, 0)
+				if settings.player.pos.center[1] < self.pos.center[1]:
+					settings.player.move_ip(0, -20)
+				else:
+					settings.player.move_ip(0, 20)
+				playerpos = settings.player.pos
+
+	def blit(self):
+		self.screen.blit(self.img, self.pos)
