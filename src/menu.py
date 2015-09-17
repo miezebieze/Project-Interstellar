@@ -297,8 +297,8 @@ def choose_world():
 			pygame.time.wait(128)
 		for elem in world_menu.menu.elems["buttons"]:
 			if elem.name == "world" + str(selected):
-				elem.state = 1
-				#print elem.name
+				elem.state = 2
+				elem.blit(settings.screen)
 		pygame.display.flip()
 
 	pygame.mouse.set_visible(False)
