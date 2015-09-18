@@ -6,7 +6,7 @@ import string
 
 
 def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
+	# local typeface!
 	nofit = True
 	while nofit:
 		tmpfont = pygame.font.SysFont(typeface, size)
@@ -20,7 +20,7 @@ def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
 
 
 def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
+	# local typeface!
 	nofit = True
 	while nofit:
 		tmpfont = pygame.font.SysFont(typeface, size)
@@ -38,46 +38,46 @@ class button():
 	def __init__(self, name, rel_x, x, rel_y, y, ref, content_in, typeface,
 			size, ratio, color, button_designs):
 		"""Initalises with x and y as center point"""
-		#basic font and then everything should be clear
-		#three different instances of create_outline!
-		#this way three images can be generated
+		# basic font and then everything should be clear
+		# three different instances of create_outline!
+		# this way three images can be generated
 
-		#This prepares button for either to contain text or an image
+		# This prepares button for either to contain text or an image
 		self.isimage = False
 		if content_in != name:  # True = Image
 			if type(content_in) == pygame.Surface:  # Surf already exists
 				content = content_in
 				contentpos = content.get_rect()
 				self.isimage = True
-			elif type(content_in) == str:  # Only string is provided, image needs loading
+			elif type(content_in) == str:  # Only string is provided image needs loading
 				content = pygame.image.load(content_in).convert_alpha()
 				contentpos = content.get_rect()
 				self.isimage = True
 		else:  # False = Font/Text
-			#Loads the font
+			# Loads the font
 			self.font = pygame.font.SysFont(typeface, int(size))
 
-			#renders the text and creates a rect
+			# renders the text and creates a rect
 			content = self.font.render(name, True, color)
 			contentpos = content.get_rect()
 
-			#creating emtpy surface that is the size of the desired button
+			# creating emtpy surface that is the size of the desired button
 			tmp_centertext_image = pygame.Surface((contentpos.h * ratio,
 						contentpos.h)).convert_alpha()
 			tmp_centertext_image.fill((0, 0, 0, 0))
 			tmp_center_pos = tmp_centertext_image.get_rect()
 
-			#blitting the text onto the surface
+			# bliting the text onto the surface
 			contentpos.center = tmp_center_pos.center
 			tmp_centertext_image.blit(content, contentpos)
 
-			#Adding image to interface
+			# Adding image to interface
 			content = tmp_centertext_image
 			contentpos = content.get_rect()
-			#saving typeface for later use
+			# saving typeface for later use
 			self.typeface = typeface
 
-		#creating ouline templates
+		# creating ouline templates
 		normal = create_outline(button_designs[0])
 		hover = create_outline(button_designs[0])
 		klick = create_outline(button_designs[0])
@@ -85,20 +85,20 @@ class button():
 		self.state = 0
 		self.name = name
 		self.klicked = False
-		#calcualte absolute position
-		#and define rect
+		# calcualte absolute position
+		# and define rect
 		x = x + rel_x * float(ref.w)
 		y = y + rel_y * float(ref.h)
 		self.pos = pygame.Rect((x, y), contentpos.size)
 		self.move(x, y)
-		#move buttons and create images
-		#also adds content inside button
+		# move buttons and create images
+		# also adds content inside button
 		for num in range(len(self.buttons)):
 			self.buttons[num].create_box(num, self.pos)
-			#defines position in the middle of button
+			# defines position in the middle of button
 			contentpos.centerx = self.buttons[num].pos.centerx - self.buttons[num].pos.x
 			contentpos.centery = self.buttons[num].pos.centery - self.buttons[num].pos.y
-			#blits content centered in button
+			# blits content centered in button
 			self.buttons[num].box.blit(content, contentpos)
 		self.pos.size = self.buttons[0].pos.size
 
@@ -109,17 +109,17 @@ class button():
 
 	def changetext(self, text, color):
 		"""Changes the text inside the button"""
-		#renders the text and creates a rect
+		# renders the text and creates a rect
 		content = self.font.render(text, True, color)
 		contentpos = content.get_rect()
 
-		#creating emtpy surface that is the size of the desired button
+		# creating emtpy surface that is the size of the desired button
 		tmp_centertext_image = pygame.Surface((contentpos.h * ratio,
 					contentpos.h)).convert_alpha()
 		tmp_centertext_image.fill((0, 0, 0, 0))
 		tmp_center_pos = tmp_centertext_image.get_rect()
 
-		#blitting the text onto the surface
+		# bliting the text onto the surface
 		contentpos.center = tmp_center_pos.center
 		tmp_centertext_image.blit(content, contentpos)
 		content = tmp_centertext_image
@@ -134,8 +134,8 @@ class button():
 		self.pos = self.pos.move(x, y)
 
 	def update(self, events):
-		#changes image when hovered over or being clicked
-		#also posts a menu event to show that a button has been clicked
+		# changes image when hovered over or being clicked
+		# also posts a menu event to show that a button has been clicked
 		if self.pos.collidepoint(pygame.mouse.get_pos()) and not self.klicked:
 			self.state = 1
 			for event in events:
@@ -283,13 +283,13 @@ class slider():
 		self.knob_pos.left = self.pos.left + tmp
 
 		if type(self.options_list) == bool:
-			#adding a "." to the end to ensure at least one is included
+			# adding a "." to the end to ensure at least one is included
 			text = str(self.value * 100)[:3] + "."
-			#removes "." and everything behind it
+			# removes "." and everything behind it
 			text = text[:text.index(".")]
-			#Adds the description and the % at the end
+			# Adds the description and the % at the end
 			text = self.name + ": " + text + "%"
-			#Turns text into a pygame.Surface
+			# Turns text into a pygame.Surface
 			self.render_text = self.typeface.render(text, True, self.color)
 			self.is_defined_list = False
 		else:
@@ -339,7 +339,7 @@ class create_outline():
 		design = pygame.image.load(design)
 		self.color = None
 
-		#gets selected background color
+		# gets selected background color
 		if "inner_color" in self.resources:
 			color = convert2list(self.resources["inner_color"])
 			if len(color) == 3:
@@ -351,18 +351,18 @@ class create_outline():
 
 		design_rect = design.get_rect()
 		size = design_rect.h
-		#extract the selected collum
+		# extract the selected collum
 		line_string = pygame.Surface((1, size))
 		line_string.blit(design, (0, 0), pygame.Rect(pos, 0, 1, size))
 		design = line_string
 		design_rect = design.get_rect()
 		self.pixels = {}
-		#create the final surface to blit pattern to
+		# create the final surface to blit pattern to
 		self.pattern = pygame.Surface((1, size))
-		#set the pixel colors for the pattern
+		# set the pixel colors for the pattern
 		for a in range(size):
 			self.pattern.set_at((0, a), design.get_at((0, a)))
-		#transforms linear pattern into a corner
+		# transforms linear pattern into a corner
 		corner = pygame.Surface((size, size))
 		for a in range(size):
 			for x in range(size):
@@ -380,24 +380,24 @@ class create_outline():
 		width += border * 2
 		height += border * 2
 		self.top = pygame.Surface((width, border))
-		#creating top frame line
+		# creating top frame line
 		for pos in range(width):
 			self.top.blit(self.modes[mode][0], pygame.Rect(pos, 0, 0, 0))
-		#blit left top corner
+		# blit left top corner
 		self.top.blit(self.modes[mode][1], pygame.Rect(0, 0, 0, 0))
-		#blit right top corner
+		# blit right top corner
 		self.top.blit(pygame.transform.flip(self.modes[mode][1], True, False),
 					pygame.Rect(width - border, 0, 0, 0))
-		#create bottom line
+		# create bottom line
 		self.bottom = pygame.transform.flip(self.top, False, True)
-		#create left frame line
+		# create left frame line
 		self.left = pygame.Surface((border, height))
 		tmp_line = pygame.transform.rotate(self.modes[mode][0], 90)
 		for pos in range(height):
 			self.left.blit(tmp_line, pygame.Rect(0, pos, 0, 0))
-		#create right frame line
+		# create right frame line
 		self.right = pygame.transform.flip(self.left, True, False)
-		#Merge all together
+		# Merge all together
 		final = pygame.Surface((width, height), pygame.SRCALPHA)
 		final.fill(self.color)
 		final.blit(self.left, pygame.Rect(0, 0, 0, 0))

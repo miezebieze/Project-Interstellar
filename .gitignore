@@ -11,6 +11,9 @@
 #the Ninja project file
 **.nja
 
+#The Flake8 config file
+**tox.ini
+
 #empty folders
 screenshots/*
 assets/sprites/player/*

@@ -20,11 +20,11 @@ class stars():
 		self.image = pygame.image.load("./assets/sprites/star1.tif")
 		imgsize = self.image.get_width()
 
-		#random size between 0 and 100 %
+		# random size between 0 and 100 %
 		self.size = random.randint(0, 100) / 100.0
 		minimum = 0.15
 		maximum = 0.70
-		#determing the depth of the star
+		# determing the depth of the star
 		self.depth = (self.size * (maximum - minimum)
 				) + minimum  # value mapped between .15 and .70
 		self.image = pygame.transform.smoothscale(self.image,
@@ -33,15 +33,15 @@ class stars():
 		self.pos = self.image.get_rect()
 		self.screenx = screenx - self.pos.w
 		self.screeny = screeny - self.pos.h
-		#gives a percentage where star is located
+		# gives a percentage where star is located
 		self.relative_x = random.randint(-100, int(100 * (self.depth))) / 100.0
 		self.relative_y = random.randint(-100, int(100 * (self.depth))) / 100.0
 		self.update(screenx / 1920.0)
 
 	def move(self, x, y):
 		"""Moves the star according to player position"""
-		#note: x and y are the player position
-		#and that screenx and screeny are not actual screen width and height
+		# note: x and y are the player position
+		# and that screenx and screeny are not actual screen width and height
 		self.pos.left = ((self.screenx - x) * self.depth) - self.pointx
 		self.pos.top = ((self.screeny - y) * self.depth) - self.pointy
 
@@ -89,16 +89,16 @@ class bullet():
 
 	def move(self, player_pos):
 		"""Moves the bullet"""
-		#movement to adjust to player position
+		# movement to adjust to player position
 		tmpx = self.start[0] + (self.start[0] - player_pos[0]) - (self.pos.w / 2.0)
 		tmpy = self.start[1] + (self.start[1] - player_pos[1]) - (self.pos.h / 2.0)
-		#movement by acceleration
+		# movement by acceleration
 		self.distance[0] += self.move_x
 		self.distance[1] += self.move_y
-		#overall position
+		# overall position
 		self.pos.center = (self.distance[0] + tmpx, self.distance[1] + tmpy)
 
-		#inscreen detection
+		# inscreen detection
 		if not self.pos.colliderect(settings.screen.get_rect()):
 			self.inscreen = False
 
@@ -175,17 +175,17 @@ class target():
 	def blit(self):
 		"""Blits target and explosion"""
 		if self.gothit:
-			#blit explosion
+			# blit explosion
 			has_finished = self.explosion.state in ["stopped", "paused"]
 			if self.explosion.isFinished() or has_finished:
-				#signal to kill entity
+				# signal to kill entity
 				self.kill_entity = True
 			elif not self.kill_entity:
-				#otherwise show explosion
+				# otherwise show explosion
 				self.explosion.blit(settings.screen, self.pos)
 				return True
 		else:
-			#show target if inscreen
+			# show target if inscreen
 			if self.inscreen:
 				settings.screen.blit(self.image, self.pos)
 				return True
@@ -235,7 +235,7 @@ class warp_station():
 			test = test or testpoint(playerpos.bottomright)
 			return test
 		if test_collide():
-			#Warps to the selected world and gets a bit pushed off the station
+			# Warps to the selected world and gets a bit pushed off the station
 			selected_num = menu.choose_world()
 			if selected_num >= 0:
 				settings.world = settings.localmap[selected_num]

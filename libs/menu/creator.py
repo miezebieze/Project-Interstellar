@@ -57,14 +57,14 @@ class create_menu():
 				if len(line) < 1 or line[0] == "/":
 					continue
 
-				#This checks for the identation
+				# This checks for the identation
 				ident = 0
 				if line[0] == "~":
 					ident = line[:line.index("|") - 1].count("~")  # Counts identation marks
 					line = line[ident:]  # removes identation marks for analysis
 
-				#Here are the diferent types of elements
-				#and comments that can be used
+				# Here are the diferent types of elements
+				# and comments that can be used
 				if line[0] == "&":  # An import of existing variables
 					file2 = line[1:]
 					self.vars.update(create_menu(file2, {}, pygame.Rect(1, 1, 1, 1)).vars)
@@ -77,9 +77,9 @@ class create_menu():
 						self.vars[var[1:]] = float(elem)
 					if var[0] == "#":  # A desing variable
 						elems = convert2list(elem)
-						#this adds non-existing types
-						#(hoverover and klicked)
-						#to the desing if they are missing
+						# this adds non-existing types
+						# (hoverover and klicked)
+						# to the desing if they are missing
 						try:
 							elems[len(elems) - 1] = int(elems[len(elems) - 1])
 							if len(elems) == 2:
@@ -128,15 +128,9 @@ class create_menu():
 
 					self.elems["surfs"][text] = [pygame.image.load(img[0]).convert_alpha(),
 								pygame.Rect(
-									(
-										(ref.w * rel_x) + abs_x,
-										(ref.h * rel_y) + abs_y,
-									),
-									(
-										0,
-										0
-									)
-									)]
+									((ref.w * rel_x) + abs_x,
+										(ref.h * rel_y) + abs_y,),
+									(0, 0))]
 					all_elems[elem_id] = self.elems["surfs"][text]
 					elem_id += 1
 
@@ -197,9 +191,9 @@ class create_menu():
 						text = self.vars[text[1:]]
 					content = text
 
-					#Determines wether relation argument is given
+					# Determines wether relation argument is given
 					are_additional_arguments = 1 if ident > 0 else 0
-					#Through relation argument there might be another "|"
+					# Through relation argument there might be another "|"
 					if line.count("|") == 5 + are_additional_arguments:
 						imagemode = True
 						line = line[line.index("|") + 1:].lstrip()
@@ -250,8 +244,8 @@ class create_menu():
 						quit()
 
 					if ident > 0:
-						#Reads the relation point
-						#(Topleft, Topright, Bottomleft, Bottomright)
+						# Reads the relation point
+						# (Topleft, Topright, Bottomleft, Bottomright)
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							relation = self.vars[line[1: line.index("|")].strip()]
@@ -263,10 +257,10 @@ class create_menu():
 					rel_x, abs_x = analyse_num(line[0: line.index("|")].strip(), self.vars)
 					line = line[line.index("|") + 1:-1].lstrip()
 					rel_y, abs_y = analyse_num(line, self.vars)
-					#If relative to another button
+					# If relative to another button
 					if ident > 0:
 						if type(all_elems[elem_id - 1]) != type(pygame.Surface):
-							#Adds absolute x and y value to current slider
+							# Adds absolute x and y value to current slider
 							if relation[:3] == "top":
 								abs_y += all_elems[elem_id - 1].pos.top
 							if relation[:6] == "bottom":
@@ -275,7 +269,7 @@ class create_menu():
 								abs_x += all_elems[elem_id - 1].pos.left
 							if relation[-5:] == "right":
 								abs_x += all_elems[elem_id - 1].pos.right
-							#Ignores relative placement
+							# Ignores relative placement
 							rel_x = 0
 							rel_y = 0
 
@@ -285,8 +279,8 @@ class create_menu():
 									typeface, size, ratio, color, design[:3]))
 					all_elems[elem_id] = self.elems["buttons"][-1]
 					elem_id += 1
-					#Centers non-relative buttons so their center is on the
-					#given x and y coordiante
+					# Centers non-relative buttons so their center is on the
+					# given x and y coordiante
 					if ident == 0:
 						self.elems["buttons"][-1].center()
 
@@ -297,9 +291,9 @@ class create_menu():
 					if text[0] == "$":
 						text = self.vars[text[1:]]
 
-					#Determines wether relation argument is given
+					# Determines wether relation argument is given
 					additional_arguments = 1 if ident > 0 else 0
-					#Through relation argument there might be another "|"
+					# Through relation argument there might be another "|"
 					if line.count("|") == 10 + additional_arguments:
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
@@ -325,7 +319,6 @@ class create_menu():
 						options = False
 						line = line[line.index("|") + 1:].lstrip()
 						if line.strip()[0] == "$":
-							#print line[1: line.index("|")].strip()
 							default_value = float(self.vars[line[1: line.index("|")].strip()])
 						else:
 							default_value = float(line[: line.index("|")].strip())
@@ -364,8 +357,8 @@ class create_menu():
 						quit()
 
 					if ident > 0:
-						#Reads the relation point
-						#(Topleft, Topright, Bottomleft, Bottomright)
+						# Reads the relation point
+						# (Topleft, Topright, Bottomleft, Bottomright)
 						line = line[line.index("|") + 1:].lstrip()
 						if line[0] == "$":
 							relation = self.vars[line[1: line.index("|")].strip()]
@@ -381,7 +374,7 @@ class create_menu():
 
 					if ident > 0:
 						if type(all_elems[elem_id - 1]) != type(pygame.Surface):
-							#Adds absolute x and y value to current slider
+							# Adds absolute x and y value to current slider
 							if relation[:3] == "top":
 								abs_y += all_elems[elem_id - 1].pos.top
 							if relation[:6] == "bottom":
@@ -390,7 +383,7 @@ class create_menu():
 								abs_x += all_elems[elem_id - 1].pos.left
 							if relation[-5:] == "right":
 								abs_x += all_elems[elem_id - 1].pos.right
-							#Ignores relative placement
+							# Ignores relative placement
 							rel_x = 0
 							rel_y = 0
 

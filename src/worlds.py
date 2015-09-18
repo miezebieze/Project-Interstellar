@@ -12,18 +12,18 @@ class world():
 		pass
 
 	def generate(self, background, dstars, dtargets):
-		#initialize a new "world"
+		# initialize a new "world"
 
-		#load background image
+		# load background image
 		self.background = background
 		self.background_pos = self.background.get_rect()
-		#set background position
+		# set background position
 		self.background_pos.left = int(-(settings.player.rel_x * (
 			settings.screenx_current * (settings.fake_size - 1))))
 		self.background_pos.top = int(-(settings.player.rel_y * (
 			settings.screeny_current * (settings.fake_size - 1))))
 
-		#create targets and stars
+		# create targets and stars
 		self.stars = []
 		self.targets = []
 		for counter in range(dstars):
@@ -75,10 +75,10 @@ class world():
 	def blit(self):
 		"""Blit everything in the world."""
 
-		#blit background
+		# blit background
 		settings.screen.blit(self.background, self.background_pos)
 
-		#Blit all objects
+		# Blit all objects
 		settings.objects_on_screen = 0
 		for star in self.stars:
 			isdisplayed = star.blitstar()

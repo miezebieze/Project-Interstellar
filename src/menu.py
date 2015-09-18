@@ -41,7 +41,7 @@ class menu_template():
 			variables, externals):
 		"""main menu"""
 
-		#import variables
+		# import variables
 		self.screenx = settings.screenx_current
 		self.screeny = settings.screeny_current
 		self.screen = settings.screen
@@ -52,15 +52,15 @@ class menu_template():
 		self.menu_name = menu_name
 		self.fade_step2 = fade_step2
 
-		#set mouse visible
+		# set mouse visible
 		pygame.mouse.set_visible(True)
 
-		#create menu
+		# create menu
 		self.menu = menu.create_menu(
 					"./assets/templates/" + self.menu_name + ".menu",
 					self.variables, pygame.Rect((0, 0), (self.screenx, self.screeny)))
 
-		#create fade effect
+		# create fade effect
 		fade = fade_screen(self.fade_step, self.fade_step2, self.fade_max,
 				self.screenx, self.screeny)
 		self.menu.elems["externals"] = [fade]
@@ -143,7 +143,7 @@ class menu_template():
 def main():
 	"""main menu"""
 
-	#create the planets animation
+	# create the planets animation
 	class create_planet():
 
 		def __init__(self, screenx, screeny):
@@ -166,23 +166,23 @@ def main():
 			self.__init__(screenx, screeny)
 	planet = create_planet(settings.screenx_current, settings.screeny_current)
 
-	#Load menu
+	# Load menu
 	main_menu = menu_template("main", 70, 1, 100, {}, [planet])
 
-	#inserts menu music
+	# inserts menu music
 	sounds.music.queue("$not$menue.ogg", 0)
 	sounds.music.play("stop")
 	sounds.music.play("play", -1)
 
-	#Define loading time on first call
+	# Define loading time on first call
 	if settings.loading_time == 0:
 		settings.loading_time = pygame.time.get_ticks()
 	run = True
 
-	#Menu loop
+	# Menu loop
 	while run:
 
-		#Calling events and checking through events
+		# Calling events and checking through events
 		events = main_menu.run()
 		for event in events:
 			if event == "event.CONTINUE":
@@ -309,8 +309,8 @@ def choose_world():
 
 def inputpopup(x, y, header):
 	"""Method for having an inputfield or selecting savegame"""
-	#as said takes and input and returns a string or returns
-	#savegame if header is saying so
+	# as said takes and input and returns a string or returns
+	# savegame if header is saying so
 
 	screen = settings.screen
 	fade = settings.fade
@@ -350,12 +350,12 @@ def inputpopup(x, y, header):
 def savegames():
 	"""Menu to select a saved game."""
 
-	#Loads in values
+	# Loads in values
 	list_of_saves = settings.saves
 	D_saves = len(list_of_saves)
 	currently_selected = 0
 
-	#Defines Menu
+	# Defines Menu
 	settings_menu = menu_template("load", 0, 255, 255,
 			{"savename": list_of_saves[currently_selected]},
 			[])
@@ -363,39 +363,39 @@ def savegames():
 	run = True
 	while run:
 
-		#Get all events and handle them
+		# Get all events and handle them
 		events = settings_menu.run()
 		for event in events:
-			#Exits savegame menu
+			# Exits savegame menu
 			if event in ["event.EXIT", "event.QUIT", "Return"]:
 				run = False
 				return None
-			#Sets the current selected savegame to load
+			# Sets the current selected savegame to load
 			if event == "Load":
 				return list_of_saves[currently_selected]
-			#Shows next savegame
+			# Shows next savegame
 			if event == "Next":
-				#Points to an later save
+				# Points to an later save
 				currently_selected += 1
-				#Wraps to the beginning to create a not ending loop
+				# Wraps to the beginning to create a not ending loop
 				if currently_selected + 1 > D_saves:
 					currently_selected = currently_selected - D_saves
 				settings_menu = menu_template("load", 0, 255, 255,
 						{"savename": list_of_saves[currently_selected]},
 						[])
-				#Lets the button last longer in klicked mode
+				# Lets the button last longer in klicked mode
 				pygame.time.delay(50)
-			#Shows previous savegame
+			# Shows previous savegame
 			if event == "Previous":
-				#Points to an earlier save
+				# Points to an earlier save
 				currently_selected -= 1
-				#Wraps to the end to create a not ending loop
+				# Wraps to the end to create a not ending loop
 				if currently_selected < 0:
 					currently_selected = D_saves + currently_selected
 				settings_menu = menu_template("load", 0, 255, 255,
 						{"savename": list_of_saves[currently_selected]},
 						[])
-				#Lets the button last longer in klicked mode
+				# Lets the button last longer in klicked mode
 				pygame.time.delay(50)
 
 		pygame.display.flip()
@@ -405,9 +405,9 @@ def options():
 	"""The settings menu"""
 
 	button_size = menu.IO.read("./assets/templates/default.vars", "size")
-	#a conversion method between selector
-	#and actual text size
-	#found by trial and error
+	# a conversion method between selector
+	# and actual text size
+	# found by trial and error
 	button_size = int(float(button_size) - 10) / 5
 
 	settings_menu = menu_template("settings", 0, 0, 255,
@@ -436,17 +436,17 @@ def options():
 				settings.fullscreen = bool(event)
 			if event == "Button Size":
 				button_size = int(event)
-				#a conversion method between selector
-				#and actual text size
-				#found by trial and error
+				# a conversion method between selector
+				# and actual text size
+				# found by trial and error
 				menu.IO.write("./assets/templates/default.vars", "size",
 						10 + (5 * button_size))
 
 		sounds.music.update(False, False)
 		pygame.display.flip()
 
-	#explanation of the 10 + (5 * …) is written in
-	#the Button Size handler in events loop
+	# explanation of the 10 + (5 * …) is written in
+	# the Button Size handler in events loop
 	menu.IO.write("./assets/templates/default.vars", "size",
 			10 + (5 * button_size))
 	menu.IO.write("./assets/templates/default.vars", "ratio", 1100)

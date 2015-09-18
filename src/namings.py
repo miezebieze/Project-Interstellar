@@ -26,9 +26,9 @@ def run():
 
 	settings.upd("screenvalues")
 
-	#load the credits.txt and assign place
+	# load the credits.txt and assign place
 	with open("./assets/lang/credits.txt") as credits_file:
-		#find the longest line to optimize font size
+		# find the longest line to optimize font size
 		biggest = 1000
 		for line in credits_file:
 			line = line[:-1]
@@ -45,13 +45,13 @@ def run():
 				line, True, color,
 				screen.get_rect().size, 0)
 			line_pos = line.get_rect()
-			#Distance from line to line is 5 pixel more than height
+			# Distance from line to line is 5 pixel more than height
 			line_pos.top = ((line_pos.h + 5) * itera) + settings.screeny_current
 			line_pos.left = (settings.screenx_current / 2) - (line_pos.w / 2.0)
 			lines.append(line)
 			lines_pos.append(line_pos)
 
-	#diplays content of credits.txt
+	# diplays content of credits.txt
 	while not lines_pos[len(lines_pos) - 1].top <= -80:
 		settings.upd("get_events")
 		for event in settings.events:

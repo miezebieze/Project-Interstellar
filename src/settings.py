@@ -30,7 +30,7 @@ def init():
 	global screeny_current  # current y pixels
 	global fade  # a black surface
 	global fade_pos  # position of the black surface
-	global fake_size  # the ratio of screenx_current and the size of the background
+	global fake_size  # the ratio of screenx_current and size of the background
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
@@ -73,12 +73,12 @@ def init():
 	global seed  # the environments seed
 	global button_ratio  # The ratio from height to length of buttons
 
-	#for this operation os.urandom is used
+	# for this operation os.urandom is used
 	seed_size = 16
 	seed = random.randint(10 ** (seed_size - 1), (10 ** seed_size) - 1)
 	random.seed(seed)
 
-	#set up screen
+	# set up screen
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
@@ -89,13 +89,13 @@ def init():
 	screenx_current = screenx
 	screeny_current = int(screenx_current * 9.0 / 16.0)
 
-	#create empty folders if needed
+	# create empty folders if needed
 	if not os.path.exists("./assets/sprites/player/"):
 		os.makedirs("./assets/sprites/player/")
 	if not os.path.exists("./screenshots/"):
 		os.makedirs("./screenshots/")
 
-	#load images and convert them to the fatest blittable format
+	# load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
 	fade = pygame.Surface((screenx, screeny))
 	#TODO remove use of button
@@ -111,7 +111,7 @@ def init():
 
 	fade_pos = fade.get_rect()  # lint:ok
 
-	#define some konstants or default values
+	# define some konstants or default values
 	clock = pygame.time.Clock()
 	typeface = "monospace"
 	stdfont = pygame.font.SysFont(typeface, 15)
@@ -153,11 +153,11 @@ def init():
 	pygame.display.set_caption("Project Interstellar " + version)
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
-	#more complex default settings like creation of stars and targets and so on
+	# more complex default settings like creation of stars and targets and so on
 	if debugmode:
-		#Add custom handler here for when debugmode is activated
+		# Add custom handler here for when debugmode is activated
 		volume = 0.0
-		#fullscreen = False
+		# fullscreen = False
 		pass
 
 	def get_anim_source(num, quantity):
@@ -249,7 +249,7 @@ def upd(level):
 		for filename in os.listdir("./saves"):
 			if filename.endswith(".ini"):
 				filename = filename[:-4]
-				if not filename in ("default"):
+				if filename not in ("default"):
 					saves.append(filename)
 		return
 	if level == "adjust_screen":
@@ -272,7 +272,7 @@ def upd(level):
 
 
 def toggle(var, option1, option2):
-	#toggles between option1 and 2 and retunr var, saves some space
+	# toggles between option1 and 2 and retunr var, saves some space
 	if var == option1:
 		var = "yep"
 	if var == option2:
@@ -283,7 +283,7 @@ def toggle(var, option1, option2):
 
 
 def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
+	# local typeface!
 	nofit = True
 	while nofit:
 		tmpfont = pygame.font.SysFont(typeface, size)
@@ -297,7 +297,7 @@ def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
 
 
 def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
+	# local typeface!
 	nofit = True
 	while nofit:
 		tmpfont = pygame.font.SysFont(typeface, size)
@@ -325,7 +325,7 @@ class save():
 		if len(saves) >= 50:
 			return False
 
-		#removes invalid characters
+		# removes invalid characters
 		if "/" in name:
 			name = name.replace("/", "\\")
 		if "%" in name:
@@ -333,13 +333,13 @@ class save():
 
 		current_game = name
 
-		#handles the configparser object
+		# handles the configparser object
 		self.config = SafeConfigParser()
 		self.config.read("./saves/" + name + ".ini")
 		if not os.path.isfile("./saves/" + name + ".ini"):
 			self.config.add_section("main")
 
-		#sets values
+		# sets values
 		self.config.set("main", "fullscreen", str(fullscreen))
 		self.config.set("main", "screenx_current", str(screenx_current))
 		self.config.set("main", "screeny_current", str(screeny_current))
@@ -349,7 +349,7 @@ class save():
 		self.config.set("main", "posx", str(player.pos.x))
 		self.config.set("main", "posy", str(player.pos.y))
 		self.config.set("main", "volume", str(volume))
-		#and writes them
+		# and writes them
 		with open("./saves/" + name + ".ini", "w") as tmp:
 			self.config.write(tmp)
 
@@ -377,7 +377,7 @@ def load(name):
 			config.read("./saves/" + a + ".ini")
 	if not (saves == []):
 
-		#tries to load and returns values in terminal that couldnt be loaded
+		# tries to load and returns values in terminal that couldnt be loaded
 		import ConfigParser
 		try:
 			from . import sounds
