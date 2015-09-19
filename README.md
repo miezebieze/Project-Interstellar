@@ -1,23 +1,21 @@
-![main_picture](https://lh3.googleusercontent.com/-ZjA1FSivXNw/VSaOqy8nSRI/AAAAAAAAAB4/_nW122LgHr0/s701-no/all.tiff)
+![Logo](https://lh3.googleusercontent.com/-ZjA1FSivXNw/VSaOqy8nSRI/AAAAAAAAAB4/_nW122LgHr0/s701-no/all.tiff "Logo")
 
 <h2>Project Interstellar is a 2d space-adventure game</h2>
-<h4>developed  in and with : Python, Pygame, subversion and Ninja-IDE. Currently pre-alpha status.</h4>
+<h4>developed  in and with : Python, Pygame, Git/Github and Ninja-IDE. Currently pre-alpha status.</h4>
 
 Version 0.3.x
 
 How to Run the Game
 -------------------
 <br>This is just a developement version so you need
-the programming language Python version 2.x:</br>
-https://www.python.org/downloads/
-<br>And the physics and graphics engine pygame:</br>
-http://www.pygame.org/download.shtml
+the programming language [Python version 2.x .](https://www.python.org/downloads/release/python-2710/)</br>
+<br>And the physics and graphics engine [Pygame.](http://www.pygame.org/download.shtml)</br>
 <br>Both have a good guide how to install them otherwise google is your friend.</br>
 <h5>Windows:</h5>
 In normal case double clicking Run.py should start it. If this does not work google for "How to start a .py file".
 <br></br>
 <h5>Debian based systems:</h5>
-Double click on Run.sh. If this does not work make sure it has its executable bit set. Do this by opening a treminal in this folder or navigating there with a "normal" terminal and then copy-paste this command: chmod u+x ./Run.sh
+Double click on Run.sh. If this does not work make sure it has its executable bit set. Do this by opening a terminal in this folder or navigating there with a "normal" terminal and then copy-paste this command: chmod u+x ./Run.sh
 <br></br>
 <h5>Other:</h5>
 Google for: "how to run python files in" and add you OS
@@ -25,18 +23,20 @@ Google for: "how to run python files in" and add you OS
 
 How to play
 -----------
-To play, simply run the "Run.py" file located in the base directory
+<br>Use WASD for movement (arrowkeys work too)</br>
+<br>F or space will shoot a bullet</br>
+<br>When on full power use C to shoot in eight directions</br>
+<br>Pressing Y makes you faster while X slower</br>
+<br>Use escape to pause the game</br>
+<br>Can you get below my 295294ms?</br>
+<br></br>
 
 Features
 --------
 <ul>
-<li>wasd or arrowkeys for movement</li>
 <li>f12 for screenshot</li>
 <li>f6 to change music</li>
 <li>esc to exit</li>
-<li>f or space to shoot</li>
-<li>y to move faster</li>
-<li>c when power bar is filled up will shoot in 8 directions</li>
 <li>many hidden features</li>
 </ul>
 
@@ -86,7 +86,7 @@ File / Code information
 
 Contact Information
 -------------------
-You can contact me on the homepage: http://www.pygame.org/project-Project+Interstellar-2943-.html
+You can contact me on the [homepage](http://www.pygame.org/project-Project+Interstellar-2943-.html)
 or via email: max12354678910@gmail.com
 		(subject: Project_interstellar)
 

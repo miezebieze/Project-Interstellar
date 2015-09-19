@@ -12,7 +12,8 @@ from pygame.locals import *
 
 
 def init():
-	midi_in.init()
+	if settings.debugmode:
+		midi_in.init()
 
 """Handles user input"""
 
@@ -22,7 +23,8 @@ def handle():
 	# handles user input
 	# i think nothing to explain here
 
-	midi_in.do()
+	if settings.debugmode:
+		midi_in.do()
 
 	for event in settings.events:
 		if event.type == QUIT:

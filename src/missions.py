@@ -46,9 +46,9 @@ def handle(usage):
 
 		points = settings.player.timeplay
 		color = settings.color
-		texttime = font.render("Your time: " + str(points) + "ms", 1, color)
-		tmp = str(points / 15.0)[:6]
-		texttt = font.render("You needed " + tmp + "ms per target", 1, color)
+		texttime = font.render("Your time: " + str(points) + "ms", True, color)
+		tmp = str(points / (settings.dtargets * 8.0))[:6]
+		texttt = font.render("You needed " + tmp + "ms per target", True, color)
 		textrect = texttime.get_rect()
 		textrectpertarget = texttt.get_rect()
 		textrect.center = settings.screen.get_rect().center
