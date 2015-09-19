@@ -37,8 +37,10 @@ def handle(usage):
 
 		settings.save(settings.current_game)
 
-		fade = settings.fade
-		fade_pos = settings.fade_pos
+		fade = pygame.Surface((settings.screenx_current, settings.screeny_current))
+		fade.fill((0, 0, 0))
+		fade.set_alpha(0)
+		fade_pos = fade.get_rect()
 
 		font = pygame.font.SysFont(settings.typeface, 50)
 

@@ -28,21 +28,13 @@ def init():
 	global aspect_ratio  # aspect ratio
 	global screenx_current  # current x pixels
 	global screeny_current  # current y pixels
-	global fade  # a black surface
-	global fade_pos  # position of the black surface
 	global fake_size  # the ratio of screenx_current and size of the background
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
 	global debugmode  # Enables debugmode
 	global isnear  # easteregg
-	global button  # image for the button
-	global buttonover  # = when hovered over
-	global buttonclick  # = when clicked
 	global field  # image for the inputfield
-	global field1  # other image for inputfield
-	global knob  # knob image
-	global box  # button image
 	global bullet_img  # image for the bullet
 	global targeton_img  # surf for target whenlight turned on
 	global targetoff_img  # surf for target when turned off
@@ -60,18 +52,16 @@ def init():
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
 	global dtargets  # amount of targets
-	global include_music
-	global morevents
-	global infinitevents
-	global musicend
-	global border1
+	global morevents  # custom event logger
+	global infinitevents  # A event logger which retriggers as long as condition
+	global musicend  # custom event number to show that music ended
+	global border1  # A box to hold the status information about energy level
 	global world  # a placeholder for the world class
 	global objects_on_screen  # entitys currently blitted to screen
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
 	global loading_time  # time until first blit
 	global seed  # the environments seed
-	global button_ratio  # The ratio from height to length of buttons
 
 	# for this operation os.urandom is used
 	seed_size = 16
@@ -97,11 +87,7 @@ def init():
 
 	# load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
-	fade = pygame.Surface((screenx, screeny))
-	#TODO remove use of button
-	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
 	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
-	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
 	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
 	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
 				).convert_alpha()
@@ -109,20 +95,17 @@ def init():
 				).convert_alpha()
 	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha()
 
-	fade_pos = fade.get_rect()  # lint:ok
-
 	# define some konstants or default values
 	clock = pygame.time.Clock()
 	typeface = "monospace"
 	stdfont = pygame.font.SysFont(typeface, 15)
 
-	version = "0.3.2.8 dev"
+	version = "0.3.2.9 dev"
 	up = False
 	down = False
 	left = False
 	right = False
 	konstspeed = 0.0025
-	button_ratio = 7.0
 	fullscreen = False
 	debugscreen = False
 	debugmode = True
@@ -139,7 +122,6 @@ def init():
 	current_game = "default"
 	run = True
 	dtargets = 5
-	include_music = False
 	morevents = []
 	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
@@ -216,7 +198,6 @@ def reset():
 	pygame.mouse.set_visible(False)
 
 	player.reset()
-	fade_pos = fade.get_rect()  # lint:ok
 
 	konstspeed = 0.0025
 	color = (255, 255, 10)

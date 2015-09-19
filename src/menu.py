@@ -200,6 +200,7 @@ def main():
 				settings.quit()
 		pygame.display.flip()
 	sounds.music.play("next", 0)
+	pygame.mouse.set_visible(False)
 
 
 def pause():
@@ -237,6 +238,8 @@ def pause():
 					sounds.music.play("unpause")
 					settings.upd("get_saves")
 					run = False
+				else:
+					pygame.mouse.set_visible(True)
 			if event == "Settings":
 				options()
 				pause_menu.update()
@@ -244,6 +247,7 @@ def pause():
 				main()
 				run = False
 		pygame.display.flip()
+	pygame.mouse.set_visible(False)
 
 
 def choose_world():
@@ -313,8 +317,9 @@ def inputpopup(x, y, header):
 	# savegame if header is saying so
 
 	screen = settings.screen
-	fade = settings.fade
-	fade_pos = settings.fade_pos
+	fade = pygame.Surface((settings.screenx_current, settings.screeny_current))
+	fade.fill((0, 0, 0, 255))
+	fade_pos = fade.get_rect()
 
 	infield1 = menu.disp_elem.input_field(x, y, header,
 					settings.typeface, settings.color, settings.field)
@@ -399,6 +404,7 @@ def savegames():
 				pygame.time.delay(50)
 
 		pygame.display.flip()
+	pygame.mouse.set_visible(False)
 
 
 def options():
@@ -451,3 +457,4 @@ def options():
 			10 + (5 * button_size))
 	menu.IO.write("./assets/templates/default.vars", "ratio", 1100)
 	settings.upd("adjust_screen")
+	pygame.mouse.set_visible(False)

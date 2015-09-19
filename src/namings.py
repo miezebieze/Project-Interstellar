@@ -15,8 +15,10 @@ def run():
 	lines = []
 	lines_pos = []
 	itera = -1
-	fade = settings.fade
-	fade_pos = settings.fade_pos
+	fade = pygame.Surface((settings.screenx_current, settings.screeny_current))
+	fade.fill((0, 0, 0))
+	fade.set_alpha(0)
+	fade_pos = fade.get_rect()
 	pygame.mouse.set_visible(False)
 
 	fade.set_alpha(255)
