@@ -75,6 +75,10 @@ def handle():
 			if key == "c":
 				specials.fire = True
 			if settings.debugmode:
+				if key == "r":
+					settings.world.adjust_to_screen()
+				if key == "q":
+					settings.init()
 				if key == "p":
 					settings.psycomode = settings.toggle(settings.psycomode, True, False)
 				if key == "q":

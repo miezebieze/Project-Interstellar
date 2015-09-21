@@ -201,6 +201,7 @@ class warp_station():
 		self.update()
 
 	def update(self):
+		"""Adjusts to screen size"""
 		self.img = pygame.image.load("./assets/sprites/station1.tif")
 		self.img = pygame.transform.smoothscale(self.img,
 						(int(settings.screenx_current * 0.1),

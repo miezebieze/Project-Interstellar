@@ -198,6 +198,7 @@ def main():
 					settings.load(savegame)
 					sounds.music.play("next", 0)
 					settings.upd("get_saves")
+					settings.upd("adjust_screen")
 					run = False
 				else:
 					pygame.mouse.set_visible(True)
@@ -247,6 +248,7 @@ def pause():
 					settings.load(savegame)
 					sounds.music.play("unpause")
 					settings.upd("get_saves")
+					settings.upd("adjust_screen")
 					run = False
 				else:
 					pygame.mouse.set_visible(True)
@@ -261,7 +263,7 @@ def pause():
 
 
 def choose_world():
-	"""pausing menu"""
+	"""Selecting warp to move to."""
 
 	sounds.music.play("pause")
 	pygame.mouse.set_visible(True)
