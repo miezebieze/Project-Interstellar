@@ -192,6 +192,15 @@ def main():
 				settings.reset()
 				sounds.music.play("next")
 				run = False
+			if event == "Load Game":
+				savegame = savegames()
+				if savegame is not None:
+					settings.load(savegame)
+					sounds.music.play("next", 0)
+					settings.upd("get_saves")
+					run = False
+				else:
+					pygame.mouse.set_visible(True)
 			if event == "Settings":
 				options()
 				main_menu.update()
