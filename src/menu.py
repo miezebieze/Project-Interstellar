@@ -39,7 +39,7 @@ class menu_template():
 
 	def __init__(self, menu_name, fade_step, fade_step2, fade_max,
 			variables, externals):
-		"""main menu"""
+		"""Initialize menu"""
 
 		# import variables
 		self.screenx = settings.screenx_current
@@ -220,10 +220,7 @@ def pause():
 	sounds.music.play("pause")
 	pygame.mouse.set_visible(True)
 
-	background = settings.screen.copy()
 	pause_menu = menu_template("pause", 5, 5, 150, {}, [])
-	pause_menu.menu.elems["surfs"]["background"] = [background,
-						pygame.Rect(0, 0, 0, 0)]
 
 	run = True
 
