@@ -40,8 +40,6 @@ def ingame():
 
 	screen = settings.screen
 
-	adjustscreen()
-
 	settings.world.blit()
 
 	status()
@@ -53,7 +51,8 @@ def ingame():
 	drawworldname()
 
 	if no16to9:
-		screen.blit(correcture, correcture_pos)
+		pass
+		#screen.blit(correcture, correcture_pos)
 
 	pygame.display.flip()
 
@@ -182,24 +181,6 @@ def drawworldname():
 			pos = name.get_rect()
 			pos.centerx = settings.screenx_current / 2
 			settings.screen.blit(name, pos)
-
-
-def adjustscreen():
-	"""Changes to fullscreen and back"""
-	# changes resolution and so on when fullscreen is toggled
-	global fullscreenold
-
-	screenx = settings.screenx
-	screeny = settings.screeny
-	fullscreen = settings.fullscreen
-	fullscreenold = settings.fullscreenold
-
-	if fullscreenold != fullscreen:
-		if fullscreen:
-			pygame.display.set_mode((screenx, screeny), pygame.FULLSCREEN)
-		if not fullscreen:
-			pygame.display.set_mode((screenx / 2, screeny / 2))
-		settings.fullscreenold = fullscreen
 
 
 def status():

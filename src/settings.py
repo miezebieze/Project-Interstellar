@@ -234,13 +234,20 @@ def upd(level):
 					saves.append(filename)
 		return
 	if level == "adjust_screen":
-		from . import draw
 		global background
 		global background_pos
 		global konstspeed
 		global no16to9
+		global fullscreenold
+		global fullscreen
 
-		draw.adjustscreen()
+		if fullscreenold != fullscreen:
+			if fullscreen:
+				pygame.display.set_mode((screenx, screeny), pygame.FULLSCREEN)
+			if not fullscreen:
+				pygame.display.set_mode((screenx / 2, screeny / 2))
+			fullscreenold = fullscreen
+
 		upd("screenvalues")
 
 		konstspeed = 0.0025
