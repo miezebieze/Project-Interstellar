@@ -19,7 +19,7 @@ class CreateQueue():
 	"""Initizalize a new Playlist-like object.
 
 usage:
-object = CreateQueue(self, path, exceptbegin, endevent=USEREVENT+100)
+object = CreateQueue(path, exceptbegin, endevent=USEREVENT+100)
 
 path (string)
 	is the path tygamusic should search for availible music.
@@ -44,27 +44,23 @@ self.files (list)
 	A list of all files for possible playback.
 self.playlist (list)
 	A list containing the filenames of the songs.
-	If self.update() is called without its shouldplaynextsong option
-	explicitly set to False the next song of this list will be played
-	if music has ended.
 self.volume (float)
 	A value from 0 to 1 for playback volume.
 	Volume gets updated if self.update is called.
 
-These are
+These are internal values that should not be modified unless
+	you are 100% sure what you do.
 
 self._endeventnum (int)
 	An int used for defining the event when music playback has stopped.
 	Changing this after creating the object has no effect.
 self._path (str)
-	This contains the path to from where music should be loaded
-	Changing this in an created object may cause errors
-	except you know what you're doing exactly.
+	This contains the path to from where music should be loaded.
 self._pauselevel (int)
-	An int representing how many songs have ben paused
+	An int representing how many songs have been paused
 	while an other song was already paused.
 self._playing (bool)
-	Determines wether a song currently loaded (aka "playing")
+	Determines wether a song is currently loaded (aka "playing")
 self._timeplayed (dict)
 	A dictionary with entrys looking like this:
 	self._timeplayed[filename] = current_playing_pos
@@ -137,7 +133,7 @@ shouldplaynextsong (bool)
 				events = pygame.event.get()
 			else:
 				return
-		# Playes next song if the last one has ended.
+		# Playes next song if the previous one has ended.
 		if self.__endevent in events and shouldplaynextsong:
 			self.playlist.pop(0)
 			self._playing = False
@@ -149,8 +145,8 @@ shouldplaynextsong (bool)
 Usage:
 self.play(operation, *options)
 Operations:
-"play" (needs amount of replays additionally)
-"next" (needs amount of replays additionally)
+"play" (amount of replays can be defined optionally)
+"next" (amount of replays can be defined optionally)
 "loop"
 "pause"
 "unpause"
