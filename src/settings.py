@@ -109,7 +109,7 @@ def init():
 	konstspeed = 0.0025
 	fullscreen = False
 	debugscreen = False
-	debugmode = True
+	debugmode = False
 	dstars = 500
 	isnear = "False"
 	code = ""
