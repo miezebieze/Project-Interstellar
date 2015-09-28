@@ -270,34 +270,6 @@ def toggle(var, option1, option2):
 	return var
 
 
-def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
-	# local typeface!
-	nofit = True
-	while nofit:
-		tmpfont = pygame.font.SysFont(typeface, size)
-		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
-		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
-		if size <= 5:
-			nofit = False
-		else:
-			size -= 1
-	return tmpfont.render(text, antialias, color)
-
-
-def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
-	# local typeface!
-	nofit = True
-	while nofit:
-		tmpfont = pygame.font.SysFont(typeface, size)
-		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
-		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
-		if size <= 5:
-			nofit = False
-		else:
-			size -= 1
-	return size
-
-
 class save():
 
 	def __init__(self, name):

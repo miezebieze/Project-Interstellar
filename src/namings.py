@@ -3,6 +3,26 @@ import pygame
 from pygame.locals import *
 
 
+def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
+	size = getmaxsize(typeface, size, text, maxsize, borderoff)
+	tmpfont = pygame.font.SysFont(typeface, size)
+	return tmpfont.render(text, antialias, color)
+
+
+def getmaxsize(typeface, size, text, maxsize, borderoff):
+	# local typeface!
+	nofit = True
+	while nofit:
+		tmpfont = pygame.font.SysFont(typeface, size)
+		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
+		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
+		if size <= 5:
+			nofit = False
+		else:
+			size -= 1
+	return size
+
+
 def run():
 	"""Displayes the credits"""
 	from . import settings
@@ -34,7 +54,7 @@ def run():
 		biggest = 1000
 		for line in credits_file:
 			line = line[:-1]
-			size = settings.getmaxsize(settings.typeface, 50,
+			size = getmaxsize(settings.typeface, 50,
 				line, True, color,
 				screen.get_rect().size, 0)
 			if biggest > size:
@@ -43,7 +63,7 @@ def run():
 		for line in credits_file:
 			itera += 1
 			line = line[:-1]
-			line = settings.modrender(settings.typeface, biggest,
+			line = modrender(settings.typeface, biggest,
 				line, True, color,
 				screen.get_rect().size, 0)
 			line_pos = line.get_rect()
