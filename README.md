@@ -3,7 +3,7 @@
 <h2>Project Interstellar is a 2d space-adventure game</h2>
 <h4>developed  in and with : Python, Pygame, Git/Github and Ninja-IDE. Currently pre-alpha status.</h4>
 
-Version 0.3.x
+Version 0.3.3
 
 How to Run the Game
 -------------------
@@ -47,42 +47,47 @@ Simply paste your music into the ./assets/music folder to be included in the gam
 
 File / Code information
 -----------------------
-(Codelines ver:0.3.2.7)
+(Codelines ver:0.3.3)
 
-| File | Code | Non-code | Total |
-| ---: | :--: | :---------------------: | :---: |
-| Run.py | 39 | 14 | 53 |
-| tygamusic.py | 218 | 80 | 298 |
-| chat.py | 4 | 5 | 9 |
-| draw.py | 222 | 55 | 277 |
-| interface.py | 93 | 17 | 110 |
-| main.py | 44 | 34 | 78 |
-| menu.py | 287 | 68 | 355 |
-| midi_in.py | 57 | 13 | 70 |
-| missions.py | 52 | 19 | 71 |
-| movement.py | 139 | 29 | 168 |
-| namings.py | 57 | 16 | 73 |
-| objects.py | 287 | 54 | 341 |
-| settings.py | 381 | 78 | 459 |
-| sounds.py | 7 | 4 | 11 |
-| specials.py | 70 | 15 | 85 |
+| File                | Code | Non-code | Total |
+| --------------------------: | :-: | :-: | :-: |
+| Run.py                      |  39 |  14 |  53 |
+| libs/menu/creator.py        | 351 |  84 | 435 |
+| libs/menu/disp_elem.py      | 324 |  88 | 412 |
+| libs/menu/IO.py             |  30 |   6 |  36 |
+| libs/tygamusic/tygamusic.py | 218 |  80 | 298 |
+| src/chat.py                 |   4 |   5 |   9 |
+| src/draw.py                 | 160 |  42 | 202 |
+| src/interface.py            | 108 |  17 | 125 |
+| src/main.py                 |  46 |  30 |  76 |
+| src/menu.py                 | 317 | 116 | 487 |
+| src/midi_in.py              |  71 |  19 |  90 |
+| src/missions.py             |  55 |  19 |  74 |
+| src/movement.py             |  14 |   9 |  23 |
+| src/namings.py              |  74 |  24 |  98 |
+| src/objects.py              | 214 |  51 | 265 |
+| src/player.py               | 153 |  45 | 198 |
+| src/settings.py             | 317 |  17 | 394 |
+| src/sounds.py               |   7 |   5 |  12 |
+| src/specials.py             |  67 |  14 |  81 |
+| src/worlds.py               | 101 |  32 | 133 |
 | | | |
-| <strong>Total</strong> | <strong>2220</strong> | <strong>501</strong> | <strong>2721</strong> |
+| <strong>Total</strong> | <strong>2723</strong> | <strong>730</strong> | <strong>3462</strong> |
 
 <strong>Top3 code only:</strong><ul>
-<li>settings.py 381</li>
-<li>menu.py     287, 68</li>
-<li>objects.py  287, 54</li></ul>
+<li>libs/menu/creator.py           351</li>
+<li>libs/menu/disp_elem.py         324</li>
+<li>src/menu.py & src/settings.py  317</li></ul>
 
 <strong>Top3  Commented or empty lines:</strong><ul>
-<li>tygamusic   80</li>
-<li>settings.py 78</li>
-<li>menu.py     68</li></ul>
+<li>menu.py               116</li>
+<li>libs/menu/disp_elem.py 88</li>
+<li>libs/menu/creator.py   84</li></ul>
 
 <strong>Top3 Total:</strong><ul>
-<li>settings.py 459</li>
-<li>menu.py     355</li>
-<li>objects.py  341</li></ul>
+<li>src/menu.py            487</li>
+<li>libs/menu/creator.py   435</li>
+<li>libs/menu/disp_elem.py 412</li></ul>
 
 Contact Information
 -------------------
