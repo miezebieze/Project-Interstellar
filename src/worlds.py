@@ -115,10 +115,13 @@ class world():
 		draw.no16to9 = False
 		if settings.aspect_ratio != 16.0 / 9:
 			draw.no16to9 = True
-			delta_screeny = settings.screeny - settings.screeny_current
-			draw.correcture = pygame.Surface((settings.screenx, delta_screeny))
+			delta_screeny = (settings.screeny_current
+					- (settings.screenx_current * 9.0 / 16))
+			draw.correcture = pygame.Surface((settings.screenx_current, delta_screeny)
+						).convert_alpha()
 			draw.correcture_pos = draw.correcture.fill((0, 0, 0))
-			draw.correcture_pos.bottomleft = (0, settings.screeny)
+			draw.correcture.set_alpha(255)
+			draw.correcture_pos.topleft = (0, (settings.screenx_current * 9.0 / 16))
 
 		for star in self.stars:
 			star.update(settings.screenx_current / 1920.0)

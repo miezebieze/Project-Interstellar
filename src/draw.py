@@ -27,32 +27,31 @@ def init():
 	if settings.aspect_ratio != 16.0 / 9:
 		# makes a black stripe if not 16 to 9
 		no16to9 = True
-		delta_screeny = settings.screeny - settings.screeny_current
-		correcture = pygame.Surface((settings.screenx, delta_screeny))
+		delta_screeny = (settings.screeny_current
+				- (settings.screenx_current * 9.0 / 16))
+		correcture = pygame.Surface((settings.screenx_current, delta_screeny)
+					).convert_alpha()
 		correcture_pos = correcture.fill((0, 0, 0))
 		correcture.set_alpha(255)
-		correcture_pos.bottomleft = (0, settings.screeny)
+		correcture_pos.topleft = (0, (settings.screenx_current * 9.0 / 16))
 
 
 def ingame():
 	"""Draws everything while game runs"""
 	# nothing to explain here i guess
 
-	screen = settings.screen
-
 	settings.world.blit()
 
 	status()
 
-	settings.player.blit(screen)
+	settings.player.blit(settings.screen)
 	debug()
 	drawsongname()
 	drawtargetsum()
 	drawworldname()
 
 	if no16to9:
-		pass
-		#screen.blit(correcture, correcture_pos)
+		settings.screen.blit(correcture, correcture_pos)
 
 	pygame.display.flip()
 
@@ -192,9 +191,11 @@ def status():
 	border.set_alpha(0)
 	borderpos = border.get_rect()
 	borderpos.bottomright = (settings.screenx_current,
-		settings.screeny_current)
+		settings.screeny_current - correcture_pos.h)
 	pos = bar.fill((62, 186, 23, 40))
 	pos.right = settings.screenx_current
-	pos.top = settings.screeny_current - (pos.h / 100.0) * specials.energy
+	pos.top = (settings.screeny_current
+		- (pos.h / 100.0) * specials.energy
+		- correcture_pos.h)
 	settings.screen.blit(bar, pos)
 	settings.screen.blit(border, borderpos)

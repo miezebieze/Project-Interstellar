@@ -34,6 +34,7 @@ def init():
 	global debugscreen  # determines wether to show debug info
 	global debugmode  # Enables debugmode
 	global isnear  # easteregg
+	global background  # background image
 	global field  # image for the inputfield
 	global bullet_img  # image for the bullet
 	global targeton_img  # surf for target whenlight turned on
@@ -77,7 +78,7 @@ def init():
 	pygame.display.set_mode((1, 1))
 	aspect_ratio = screenx / float(screeny)
 	screenx_current = screenx
-	screeny_current = int(screenx_current * 9.0 / 16.0)
+	screeny_current = screeny
 
 	# create empty folders if needed
 	if not os.path.exists("./assets/sprites/player/"):
@@ -187,6 +188,16 @@ def init():
 	world = localmap["1"]
 	upd("adjust_screen")
 
+	#scales images so they fill screen especially when not 16/9 ar
+	if aspect_ratio > 16.0 / 9:
+		ratio = screenx_current / float(background.get_size()[1])
+		pygame.transform.smoothscale(background,
+					(screenx_current, screeny_current * ratio))
+	elif aspect_ratio < 16.0 / 9:
+		ratio = screeny_current / float(background.get_size()[0])
+		pygame.transform.smoothscale(background,
+					(screenx_current * ratio, screeny_current))
+
 
 def reset():
 
@@ -221,8 +232,10 @@ def upd(level):
 	if level == "screenvalues":
 		global screenx_current
 		global screeny_current
+		global aspect_ratio
 		screenx_current = pygame.display.Info().current_w
-		screeny_current = int(screenx_current * 9.0 / 16.0)
+		screeny_current = pygame.display.Info().current_h
+		aspect_ratio = screenx_current / float(screeny_current)
 		return
 	if level == "get_saves":
 		global saves
@@ -237,7 +250,6 @@ def upd(level):
 		global background
 		global background_pos
 		global konstspeed
-		global no16to9
 		global fullscreenold
 		global fullscreen
 
@@ -254,6 +266,17 @@ def upd(level):
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
 		world.adjust_to_screen()
+
+		#scales images so they fill screen especially when not 16/9 ar
+		if aspect_ratio > 16.0 / 9:
+			ratio = screenx_current / float(background.get_size()[1])
+			pygame.transform.smoothscale(background,
+						(screenx_current, int(screeny_current * ratio)))
+		elif aspect_ratio < 16.0 / 9:
+			ratio = screeny_current / float(background.get_size()[0])
+			pygame.transform.smoothscale(background,
+						(int(screenx_current * ratio), screeny_current))
+
 		return
 	print("Something went wrong here")
 	raise Exception
