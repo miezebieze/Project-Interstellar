@@ -5,8 +5,8 @@
 **.pyo
 **.pyc
 
-#custom pattern to make ignored files without addig new rule
-**IGNORE*.*
+#Custom ignored files
+**~.*
 
 #empty folders
 screenshots/*

@@ -6,6 +6,7 @@ from . import settings
 def init():
 	global music
 
-	music = tygamusic.CreateQueue("./assets/music/", "$not$", settings.musicend)
+	music = tygamusic.CreateQueue("./assets/music/", "$not$",
+				settings.variables.musicend)
 	music.update(False, False)
-	music.volume = 0
+	music.volume = settings.variables.volume

@@ -21,7 +21,11 @@ def handle(usage):
 		oldtime = pygame.time.get_ticks()
 		newtime = pygame.time.get_ticks()
 
-	if len(settings.world.targets) == 0:
+	alltargets = 0
+	for world in settings.localmap:
+		alltargets += len(settings.localmap[world].targets)
+
+	if alltargets == 0:
 		from . import draw
 		from . import movement
 
@@ -33,16 +37,18 @@ def handle(usage):
 
 		settings.save(settings.current_game)
 
-		fade = settings.fade
-		fade_pos = settings.fade_pos
+		fade = pygame.Surface((settings.screenx_current, settings.screeny_current))
+		fade.fill((0, 0, 0))
+		fade.set_alpha(0)
+		fade_pos = fade.get_rect()
 
 		font = pygame.font.SysFont(settings.typeface, 50)
 
 		points = settings.player.timeplay
 		color = settings.color
-		texttime = font.render("Your time: " + str(points) + "ms", 1, color)
-		tmp = str(points / 15.0)[:6]
-		texttt = font.render("You needed " + tmp + "ms per target", 1, color)
+		texttime = font.render("Your time: " + str(points) + "ms", True, color)
+		tmp = str(points / (settings.dtargets * 8.0))[:6]
+		texttt = font.render("You needed " + tmp + "ms per target", True, color)
 		textrect = texttime.get_rect()
 		textrectpertarget = texttt.get_rect()
 		textrect.center = settings.screen.get_rect().center

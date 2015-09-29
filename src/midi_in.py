@@ -14,7 +14,7 @@ def init():
 	global connected
 	get_device()
 	try:
-	        device = pygame.midi.Input(device_id)
+		device = pygame.midi.Input(device_id)
 		get_input()
 		connected = True
 	except NameError:
@@ -40,9 +40,10 @@ def get_device():
 
 
 def get_input():
-	for event in settings.events:
+	variables = settings.variables
+	for event in variables.events:
 		if event.type == QUIT:
-			settings.quit()
+			variables.quit()
 		if event.type == pygame.midi.MIDIIN:
 			if event.data2 > 0:
 				pressed = True
@@ -51,21 +52,21 @@ def get_input():
 
 			key = event.data1
 			if key == 70 and pressed:
-				settings.psycomode = settings.toggle(settings.psycomode, True, False)
+				variables.psycomode = variables.toggle(variables.psycomode, True, False)
 			if key == 68 and pressed:
-				settings.infinitevents["roundfire"] = (
-					settings.toggle(settings.infinitevents["roundfire"], True, False))
+				variables.infinitevents["roundfire"] = (
+					variables.toggle(variables.infinitevents["roundfire"], True, False))
 			if key == 67 and pressed:
-				settings.morevents.append("Remove")
+				variables.morevents.append("Remove")
 			if key == 69 and pressed:
-				settings.morevents.append("Add")
+				variables.morevents.append("Add")
 			if key == 66 and pressed:
-				settings.morevents.append("Circle")
+				variables.morevents.append("Circle")
 			if key == 96 and pressed:
-				settings.morevents.append("Changedir")
+				variables.morevents.append("Changedir")
 			if key == 61:
-				settings.infinitevents["fire1"] = (
-					settings.toggle(settings.infinitevents["fire1"], True, False))
+				variables.infinitevents["fire1"] = (
+					variables.toggle(settings.infinitevents["fire1"], True, False))
 	if device.poll():
 		midi_actions = device.read(10)
 		midi_events = pygame.midi.midis2events(midi_actions, device_id)
@@ -78,12 +79,12 @@ def quit():
 	try:
 		del device
 	except:
-		#I know, no device connected…
+		# I know, no device connected…
 		pass
 
 
 def do():
 
 	global connected
-	if settings.debugscreen and connected:
+	if settings.varariables.debugmode and connected:
 		get_input()

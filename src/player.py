@@ -2,24 +2,22 @@
 import pygame
 import math
 from ConfigParser import SafeConfigParser
+from . import settings
 
 
 class player():
 
 	def __init__(self):
-		global settings
-		from . import settings  # lint:ok
-		self.img = pygame.surface.Surface  # Ship image (redunant
-					#see self.new_ship()
+		global variables
+		self.variables = settings.variables
 		self.speed = 15  # Speed of player (redunant see self.new_ship())
-
 		self.rotation = 0  # Current player rotation
 		self.new_ship("Player1")
 		self.pos = self.img.get_rect()  # Absolute player position
 		self.rot_dest = 0  # Where the player should turn
 		self.should_move = False  # Determines wether player should move
 		self.move_x = 0  # Delta pixel per tick (x)
-		self.move_y = 0  # Delta pixel per tick (x)
+		self.move_y = 0  # Delta pixel per tick (y)
 		self.rel_x = 0  # relative x position
 		self.rel_y = 0  # relative y position
 		self.timeplay = 0  # Time player has played
@@ -35,7 +33,7 @@ class player():
 			name + "_up", name + "_upri", name + "_ri", name + "_dori",
 			name + "_do", name + "_dole", name + "_le", name + "_uple"]
 
-		#generates new images in ./assets/sprites/player
+		# generates new images in ./assets/sprites/player
 		for nameoffile in names:
 			self.playerup = pygame.image.load("./assets/sprites/ships/" +
 			name + ".tif")
@@ -43,7 +41,7 @@ class player():
 			nameoffile = folder + nameoffile + ".png"
 			pygame.image.save(pygame.transform.rotate(self.playerup, angle), nameoffile)
 
-		#loads images into ram
+		# loads images into ram
 		self.playerupri = pygame.image.load(folder + name + "_upri.png")
 		self.playerri = pygame.image.load(folder + name + "_ri.png")
 		self.playerdori = pygame.image.load(folder + name + "_dori.png")
@@ -72,11 +70,20 @@ class player():
 		if self.rotation == 315:
 			self.img = self.playeruple
 
-	def move(self):
+	def move_ip(self, addx, addy):
 		#lint:disable
-		konstspeed = settings.konstspeed
-		windowwidth = settings.screenx_current
-		windowheight = settings.screeny_current
+		self.rel_x = (self.pos.x + addx) / float(self.variables.screenx_current)
+		self.rel_y = (self.pos.y + addy) / float(self.variables.screeny_current)
+		self.pos.top = int(self.rel_y * self.variables.screeny_current)
+		self.pos.left = int(self.rel_x * self.variables.screenx_current)
+		#lint:enable
+
+	def move(self):
+		"""Handle the movement and collisions"""
+		#lint:disable
+		konstspeed = self.variables.konstspeed
+		windowwidth = self.variables.screenx_current
+		windowheight = self.variables.screeny_current
 		#lint:enable
 
 		if self.rotation > 360:
@@ -84,7 +91,7 @@ class player():
 		if self.rotation < 0:
 			self.rotation += 360
 
-		#handles rotation and gives signal to update player image/surface
+		# handles rotation and gives signal to update player image/surface
 		if self.rotation != self.rot_dest:
 			self.update = True
 			if self.rot_dest > self.rotation:
@@ -98,14 +105,14 @@ class player():
 				if (self.rot_dest - self.rotation) <= -180:
 					self.rotation += 5.625
 
-		#this part is responsible for the movement of the player
-		#this calculates speed in y and x direction
+		# this part is responsible for the movement of the player
+		# this calculates speed in y and x direction
 		self.move_x = self.speedboost * konstspeed * math.degrees(math.sin(
 			(math.radians(self.rotation))))
 		self.move_y = self.speedboost * -konstspeed * math.degrees(math.cos(
 			(math.radians(self.rotation))))
 
-		#this actually moves the rect and ensures that you stay in screen
+		# this actually moves the rect and ensures that you stay in screen
 		if self.should_move:
 			self.rel_x += float(self.move_x * self.speed) / (windowwidth)
 			self.rel_y += float(self.move_y * self.speed) / (windowheight)
@@ -122,15 +129,15 @@ class player():
 			self.pos.top = int(self.rel_y * windowheight)
 			self.pos.left = int(self.rel_x * windowwidth)
 
-#lint:disable
-			#Somehow a double check is needed…
-			if self.pos.bottom >= settings.screeny_current:
-				self.pos.bottom += settings.screeny_current - self.pos.bottom
-			if self.pos.right >= settings.screenx_current:
-				self.pos.right += settings.screenx_current - self.pos.right
-#lint:enable
+			#lint:disable
+			# Somehow a double check is needed…
+			if self.pos.bottom >= self.variables.screeny_current:
+				self.pos.bottom += self.variables.screeny_current - self.pos.bottom
+			if self.pos.right >= self.variables.screenx_current:
+				self.pos.right += self.variables.screenx_current - self.pos.right
+			#lint:enable
 
-		#updates player image if neccesary
+		# updates player image if neccesary
 		if self.update:
 			self.update = False
 			self.select_picture()
@@ -138,9 +145,9 @@ class player():
 	def select_angle(self, up, down, left, right):
 
 		self.should_move = False
-		#sets the direction depending of input
+		# sets the direction depending of input
 		if not (up == down and left == right):
-			#diagonal moves
+			# diagonal moves
 			if up and left and not down and not right:
 				self.should_move = True
 				self.rot_dest = 315
@@ -153,7 +160,7 @@ class player():
 			if down and right and not up and not left:
 				self.should_move = True
 				self.rot_dest = 135
-			#moving in y != x
+			# moving in y != x
 			if up and not down:
 				if left == right:
 					self.should_move = True

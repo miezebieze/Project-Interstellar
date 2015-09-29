@@ -34,9 +34,9 @@ def update():
 			tmp = objects.bullet(tmpangle, settings.player.pos)
 			settings.bullets.append(tmp)
 
-	#shoots in 8 direction and the one youre looking constantly
+	# shoots in 8 direction and the one youre looking constantly
 	if settings.psycomode:
-		tmp = objects.bullet(settings.rotation, settings.player.pos)
+		tmp = objects.bullet(settings.player.rotation, settings.player.pos)
 		settings.bullets.append(tmp)
 		for tmpangle in range(8):
 			tmpangle *= 45
@@ -50,7 +50,6 @@ def update():
 					tmp = objects.bullet(tmpangle, settings.player.pos)
 					settings.bullets.append(tmp)
 			if event == "Add":
-				#lint:disable
 				if amount < 20:
 					amount += 1
 				else:
@@ -77,5 +76,5 @@ def update():
 				if direction != "Clock":
 					tmpan = 360 - tmpan
 				tmp = objects.bullet(a * diffangle + tmpan, settings.player.pos)
-				#lint:enable
 				settings.bullets.append(tmp)
+	#lint:enable

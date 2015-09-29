@@ -11,7 +11,8 @@ from pygame.locals import *
 
 def init():
 	"""Some variable initializing"""
-	#nothing to explain here
+	# nothing to explain here
+	global variables
 	global fullscreenold
 	global playerup
 	global alpha
@@ -20,69 +21,62 @@ def init():
 	global correcture_pos
 	global show
 
+	variables = settings.variables
 	alpha = 0
-	settings.fullscreenold = settings.fullscreen
+	variables.fullscreenold = variables.fullscreen
 	no16to9 = False
 	show = 0
-	if settings.aspect_ratio != 16.0 / 9:
-		#makes a black stripe if not 16 to 9
+	if variables.aspect_ratio != 16.0 / 9:
+		# makes a black stripe if not 16 to 9
 		no16to9 = True
-		delta_screeny = settings.screeny - settings.screeny_current
-		correcture = pygame.Surface((settings.screenx, delta_screeny))
+		delta_screeny = (variables.screeny_current
+				- (variables.screenx_current * 9.0 / 16))
+		correcture = pygame.Surface((variables.screenx_current, delta_screeny)
+					).convert_alpha()
 		correcture_pos = correcture.fill((0, 0, 0))
 		correcture.set_alpha(255)
-		correcture_pos.bottomleft = (0, settings.screeny)
+		correcture_pos.topleft = (0, (variables.screenx_current * 9.0 / 16))
 
 
 def ingame():
 	"""Draws everything while game runs"""
-	#nothing to explain here i guess
+	# nothing to explain here i guess
 
-	screen = settings.screen
-	screenx = settings.screenx_current
-
-	texttargets = str(len(settings.world.targets)) + " / " + str(settings.dtargets)
-	textsurf = settings.stdfont.render(texttargets, 1, settings.color)
-	textrect = textsurf.get_rect()
-	textrect.right = screenx
-	textrect.top = 40
-
-	adjustscreen()
-
-	settings.world.blit()
+	variables.world.blit()
 
 	status()
 
-	settings.player.blit(screen)
+	variables.player.blit(variables.screen)
 	debug()
 	drawsongname()
-	screen.blit(textsurf, textrect)
+	drawtargetsum()
+	drawworldname()
 
 	if no16to9:
-		screen.blit(correcture, correcture_pos)
+		variables.screen.blit(correcture, correcture_pos)
 
 	pygame.display.flip()
 
 
 def debug():
 	"""shows debug info on screen"""
-	#nothing to explain here too?
+	# nothing to explain here too?
 
-	debugscreen = settings.debugscreen
-	rot_dest = settings.player.rot_dest
-	rotation = settings.player.rotation
-	font = settings.stdfont
-	player_pos = settings.player.pos
-	screen = settings.screen
-	speed = settings.player.speed
-	move = settings.player.should_move
-	move_x = settings.player.move_x * speed
-	move_y = settings.player.move_y * speed
-	pos_x = settings.player.rel_x
-	pos_y = settings.player.rel_y
-	clock = settings.clock
-	objects_on_screen = settings.objects_on_screen
-	color = settings.color
+	debugscreen = variables.debugscreen
+	rot_dest = variables.player.rot_dest
+	rotation = variables.player.rotation
+	font = variables.stdfont
+	player_pos = variables.player.pos
+	screen = variables.screen
+	speed = variables.player.speed
+	move = variables.player.should_move
+	move_x = variables.player.move_x * speed
+	move_y = variables.player.move_y * speed
+	pos_x = variables.player.rel_x
+	pos_y = variables.player.rel_y
+	clock = variables.clock
+	objects_on_screen = variables.objects_on_screen
+	color = variables.color
 
 	if pos_x >= 0.9 and pos_y >= 0.9:
 		isnear = "True"
@@ -94,7 +88,7 @@ def debug():
 		speed = "(" + str(round(move_x, 3)) + ", " + str(round(move_y, 3)) + ")"
 		pos = ("(" + str(pos_x) + ", " + str(pos_y) + ")")
 		fps = str(math.floor(clock.get_fps()))
-		time = "time scince start: " + str(settings.player.timeplay)
+		time = "time scince start: " + str(variables.player.timeplay)
 		pixpos = "(" + str(player_pos.left) + ", " + str(player_pos.top) + ")"
 		entitys = "Entitys: " + str(objects_on_screen)
 
@@ -119,6 +113,29 @@ def debug():
 		screen.blit(textentitys, (0, 160))
 
 
+def drawtargetsum():
+
+	textlocaltargets = (str(len(variables.world.targets))
+			+ " / "
+			+ str(variables.dtargets))
+	text1surf = variables.stdfont.render(textlocaltargets, 1, variables.color)
+	text1rect = text1surf.get_rect()
+	text1rect.right = variables.screenx_current
+	text1rect.top = 40
+
+	alltargets = 0
+	for world in variables.localmap:
+		alltargets += len(variables.localmap[world].targets)
+
+	textglobaltargets = str(alltargets) + " / " + str(variables.dtargets * 8)
+	text2surf = variables.stdfont.render(textglobaltargets, 1, variables.color)
+	text2rect = text2surf.get_rect()
+	text2rect.right = variables.screenx_current
+	text2rect.top = 60
+	variables.screen.blit(text1surf, text1rect)
+	variables.screen.blit(text2surf, text2rect)
+
+
 def drawsongname():
 	"""shows the songname if new song is played"""
 	global show
@@ -127,19 +144,19 @@ def drawsongname():
 	global musics
 	global alpha
 
-	screenx = settings.screenx_current
-	screen = settings.screen
-	typeface = settings.typeface
+	screenx = variables.screenx_current
+	screen = variables.screen
+	typeface = variables.typeface
 
-	for event in settings.events:
+	for event in variables.events:
 		if pygame.mixer.music.get_pos() < 4000 and sounds.music.volume != 0:
 			show = 40 * 8
 			font = pygame.font.SysFont(typeface, 15)
 			song = sounds.music.playlist[0].replace("_", " ")[:-4]
-			#To all of you:
-			#USE BACKGROUND COLOR
-			#cant apply alpha otherwise (took hours to figure out)
-			songname = font.render(song, True, settings.color, (0, 0, 5))
+			# To all of you:
+			# USE BACKGROUND COLOR
+			# cant apply alpha otherwise (took hours to figure out)
+			songname = font.render(song, True, variables.color, (0, 0, 5))
 			font_pos = songname.get_rect()
 			font_pos.right = screenx - 10
 			font_pos.top = 10
@@ -148,41 +165,39 @@ def drawsongname():
 			show -= 1 if show > 0 else False
 			if show <= 40 * 4 and alpha > 0:
 				alpha -= 1.6
-
-			songname.set_alpha(int(alpha))
+			try:
+				songname.set_alpha(int(alpha))
+			except:
+				pass
+				# Timing error is not important
 
 	if pygame.mixer.music.get_volume() != 0.0 and show != 0:
 		screen.blit(songname, font_pos)
 
 
-def adjustscreen():
-	"""Changes to fullscreen and back"""
-	#changes resolution and so on when fullscreen is toggled
-	global fullscreenold
-
-	screenx = settings.screenx
-	screeny = settings.screeny
-	fullscreen = settings.fullscreen
-	fullscreenold = settings.fullscreenold
-
-	if fullscreenold != fullscreen:
-		if fullscreen:
-			pygame.display.set_mode((screenx, screeny), pygame.FULLSCREEN)
-		if not fullscreen:
-			pygame.display.set_mode((screenx / 2, screeny / 2))
-		settings.fullscreenold = fullscreen
+def drawworldname():
+			font = pygame.font.SysFont(variables.typeface, 50)
+			name = font.render("World: " + str(variables.world.name),
+					True, variables.color)
+			pos = name.get_rect()
+			pos.centerx = variables.screenx_current / 2
+			variables.screen.blit(name, pos)
 
 
 def status():
-	xsize = int(settings.screenx_current * 0.05)
-	ysize = int(settings.screeny_current * 0.3) + 10
-	bar = pygame.Surface((xsize, ysize))
-	border = pygame.transform.scale(settings.border1, (xsize, ysize))
+	xsize = int(variables.screenx_current * 0.05)
+	ysize = int(variables.screeny_current * 0.3) + 10
+	bar = pygame.Surface((xsize, ysize)).convert_alpha()
+	border = pygame.transform.scale(variables.border1, (xsize, ysize)
+				).convert_alpha()
+	border.set_alpha(0)
 	borderpos = border.get_rect()
-	borderpos.bottomright = (settings.screenx_current,
-		settings.screeny_current)
-	pos = bar.fill((62, 186, 23))
-	pos.right = settings.screenx_current
-	pos.top = settings.screeny_current - (pos.h / 100.0) * specials.energy
-	settings.screen.blit(bar, pos)
-	settings.screen.blit(border, borderpos)
+	borderpos.bottomright = (variables.screenx_current,
+		variables.screeny_current - correcture_pos.h)
+	pos = bar.fill((62, 186, 23, 40))
+	pos.right = variables.screenx_current
+	pos.top = (variables.screeny_current
+		- (pos.h / 100.0) * specials.energy
+		- correcture_pos.h)
+	variables.screen.blit(bar, pos)
+	variables.screen.blit(border, borderpos)
