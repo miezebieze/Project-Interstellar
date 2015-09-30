@@ -307,24 +307,25 @@ def choose_world():
 				settings.quit()
 			if event[0:5] == "world":
 				selected = event[5]
-			if event[1] in ["1", "2", "3", "4", "6", "7", "8", "9"]:
-				#maps keys to worlds
-				selected = int(event[1])
-				if selected == 1:
-					selected = 6
-				elif selected == 2:
-					selected = 7
-				elif selected == 3:
-					selected = 8
-				elif selected == 6:
-					selected = 5
-				elif selected == 7:
-					selected = 1
-				elif selected == 8:
-					selected = 2
-				elif selected == 9:
-					selected = 3
-				selected = str(selected)
+			if len(event) > 1:
+				if event[1] in ["1", "2", "3", "4", "6", "7", "8", "9"]:
+					#maps keys to worlds
+					selected = int(event[1])
+					if selected == 1:
+						selected = 6
+					elif selected == 2:
+						selected = 7
+					elif selected == 3:
+						selected = 8
+					elif selected == 6:
+						selected = 5
+					elif selected == 7:
+						selected = 1
+					elif selected == 8:
+						selected = 2
+					elif selected == 9:
+						selected = 3
+					selected = str(selected)
 		for elem in world_menu.menu.elems["buttons"]:
 			if elem.name == "world" + str(selected):
 				elem.state = 2

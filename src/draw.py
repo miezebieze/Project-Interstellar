@@ -183,6 +183,7 @@ def drawworldname():
 
 
 def status():
+	correcture_pos = pygame.Rect(0, 0, 0, 0)
 	xsize = int(settings.screenx_current * 0.05)
 	ysize = int(settings.screeny_current * 0.3) + 10
 	bar = pygame.Surface((xsize, ysize)).convert_alpha()
