@@ -34,6 +34,8 @@ def init():
 		correcture_pos = correcture.fill((0, 0, 0))
 		correcture.set_alpha(255)
 		correcture_pos.topleft = (0, (settings.screenx_current * 9.0 / 16))
+	else:
+		correcture_pos = pygame.Rect(0, settings.screeny_current, 0, 0)
 
 
 def ingame():
@@ -183,7 +185,7 @@ def drawworldname():
 
 
 def status():
-	correcture_pos = pygame.Rect(0, 0, 0, 0)
+	"""Draws the ships energy in the lower right corner."""
 	xsize = int(settings.screenx_current * 0.05)
 	ysize = int(settings.screeny_current * 0.3) + 10
 	bar = pygame.Surface((xsize, ysize)).convert_alpha()
