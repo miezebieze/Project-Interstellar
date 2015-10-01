@@ -55,8 +55,7 @@ def run():
 		for line in credits_file:
 			line = line[:-1]
 			size = getmaxsize(settings.typeface, 50,
-				line, True, color,
-				screen.get_rect().size, 0)
+				line, screen.get_rect().size, 0)
 			if biggest > size:
 				biggest = size
 	with open("./assets/lang/credits.txt") as credits_file:
