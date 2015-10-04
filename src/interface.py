@@ -12,17 +12,19 @@ from pygame.locals import *
 
 
 def init():
-	midi_in.init()
+	if settings.debugmode:
+		midi_in.init()
 
 """Handles user input"""
 
 
 def handle():
 
-	#handles user input
-	#i think nothing to explain here
+	# handles user input
+	# i think nothing to explain here
 
-	midi_in.do()
+	if settings.debugmode:
+		midi_in.do()
 
 	for event in settings.events:
 		if event.type == QUIT:
@@ -63,16 +65,20 @@ def handle():
 				settings.left = True
 			if key == "d" or key == "right":
 				settings.right = True
-			if key == "o" and settings.player.pos.x >= 0.9 \
-					and settings.player.pos.y >= 0.9:
-				pygame.mixer.music.load("./assets/music/$not$ard_tatort.ogg")
-				pygame.mixer.music.play(1, 0.0)
+			if key == "o":
+				if settings.player.pos.x >= 0.9 and settings.player.pos.y >= 0.9:
+					pygame.mixer.music.load("./assets/music/$not$ard_tatort.ogg")
+					pygame.mixer.music.play(1, 0.0)
 			if key == "f" or key == "space":
 				tmp = objects.bullet(settings.player.rotation, settings.player.pos)
 				settings.bullets.append(tmp)
 			if key == "c":
 				specials.fire = True
 			if settings.debugmode:
+				if key == "r":
+					settings.world.adjust_to_screen()
+				if key == "q":
+					settings.init()
 				if key == "p":
 					settings.psycomode = settings.toggle(settings.psycomode, True, False)
 				if key == "q":
@@ -89,7 +95,7 @@ def handle():
 								settings.dstars, settings.dtargets)
 				if key == "h":
 					for target in settings.world.targets:
-						print target.pos
+						print((target.pos))
 				if len(key) == 3 and settings.debugmode:
 					if key[0] == "[" and key[2] == "]":
 						num = int(key[1])

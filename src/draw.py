@@ -11,7 +11,7 @@ from pygame.locals import *
 
 def init():
 	"""Some variable initializing"""
-	#nothing to explain here
+	# nothing to explain here
 	global fullscreenold
 	global playerup
 	global alpha
@@ -25,42 +25,42 @@ def init():
 	no16to9 = False
 	show = 0
 	if settings.aspect_ratio != 16.0 / 9:
-		#makes a black stripe if not 16 to 9
+		# makes a black stripe if not 16 to 9
 		no16to9 = True
-		delta_screeny = settings.screeny - settings.screeny_current
-		correcture = pygame.Surface((settings.screenx, delta_screeny))
+		delta_screeny = (settings.screeny_current
+				- (settings.screenx_current * 9.0 / 16))
+		correcture = pygame.Surface((settings.screenx_current, delta_screeny)
+					).convert_alpha()
 		correcture_pos = correcture.fill((0, 0, 0))
 		correcture.set_alpha(255)
-		correcture_pos.bottomleft = (0, settings.screeny)
+		correcture_pos.topleft = (0, (settings.screenx_current * 9.0 / 16))
+	else:
+		correcture_pos = pygame.Rect(0, settings.screeny_current, 0, 0)
 
 
 def ingame():
 	"""Draws everything while game runs"""
-	#nothing to explain here i guess
-
-	screen = settings.screen
-
-	adjustscreen()
+	# nothing to explain here i guess
 
 	settings.world.blit()
 
 	status()
 
-	settings.player.blit(screen)
+	settings.player.blit(settings.screen)
 	debug()
 	drawsongname()
 	drawtargetsum()
 	drawworldname()
 
 	if no16to9:
-		screen.blit(correcture, correcture_pos)
+		settings.screen.blit(correcture, correcture_pos)
 
 	pygame.display.flip()
 
 
 def debug():
 	"""shows debug info on screen"""
-	#nothing to explain here too?
+	# nothing to explain here too?
 
 	debugscreen = settings.debugscreen
 	rot_dest = settings.player.rot_dest
@@ -153,9 +153,9 @@ def drawsongname():
 			show = 40 * 8
 			font = pygame.font.SysFont(typeface, 15)
 			song = sounds.music.playlist[0].replace("_", " ")[:-4]
-			#To all of you:
-			#USE BACKGROUND COLOR
-			#cant apply alpha otherwise (took hours to figure out)
+			# To all of you:
+			# USE BACKGROUND COLOR
+			# cant apply alpha otherwise (took hours to figure out)
 			songname = font.render(song, True, settings.color, (0, 0, 5))
 			font_pos = songname.get_rect()
 			font_pos.right = screenx - 10
@@ -169,7 +169,7 @@ def drawsongname():
 				songname.set_alpha(int(alpha))
 			except:
 				pass
-				#Timing error is not important
+				# Timing error is not important
 
 	if pygame.mixer.music.get_volume() != 0.0 and show != 0:
 		screen.blit(songname, font_pos)
@@ -184,34 +184,21 @@ def drawworldname():
 			settings.screen.blit(name, pos)
 
 
-def adjustscreen():
-	"""Changes to fullscreen and back"""
-	#changes resolution and so on when fullscreen is toggled
-	global fullscreenold
-
-	screenx = settings.screenx
-	screeny = settings.screeny
-	fullscreen = settings.fullscreen
-	fullscreenold = settings.fullscreenold
-
-	if fullscreenold != fullscreen:
-		if fullscreen:
-			pygame.display.set_mode((screenx, screeny), pygame.FULLSCREEN)
-		if not fullscreen:
-			pygame.display.set_mode((screenx / 2, screeny / 2))
-		settings.fullscreenold = fullscreen
-
-
 def status():
+	"""Draws the ships energy in the lower right corner."""
 	xsize = int(settings.screenx_current * 0.05)
 	ysize = int(settings.screeny_current * 0.3) + 10
-	bar = pygame.Surface((xsize, ysize))
-	border = pygame.transform.scale(settings.border1, (xsize, ysize))
+	bar = pygame.Surface((xsize, ysize)).convert_alpha()
+	border = pygame.transform.scale(settings.border1, (xsize, ysize)
+				).convert_alpha()
+	border.set_alpha(0)
 	borderpos = border.get_rect()
 	borderpos.bottomright = (settings.screenx_current,
-		settings.screeny_current)
-	pos = bar.fill((62, 186, 23))
+		settings.screeny_current - correcture_pos.h)
+	pos = bar.fill((62, 186, 23, 40))
 	pos.right = settings.screenx_current
-	pos.top = settings.screeny_current - (pos.h / 100.0) * specials.energy
+	pos.top = (settings.screeny_current
+		- (pos.h / 100.0) * specials.energy
+		- correcture_pos.h)
 	settings.screen.blit(bar, pos)
 	settings.screen.blit(border, borderpos)

@@ -28,21 +28,14 @@ def init():
 	global aspect_ratio  # aspect ratio
 	global screenx_current  # current x pixels
 	global screeny_current  # current y pixels
-	global fade  # a black surface
-	global fade_pos  # position of the black surface
-	global fake_size  # the ratio of screenx_current and the size of the background
+	global fake_size  # the ratio of screenx_current and size of the background
 	global bullets  # list of all bullets
 	global dstars  # amount of stars
 	global debugscreen  # determines wether to show debug info
 	global debugmode  # Enables debugmode
 	global isnear  # easteregg
-	global button  # image for the button
-	global buttonover  # = when hovered over
-	global buttonclick  # = when clicked
+	global background  # background image
 	global field  # image for the inputfield
-	global field1  # other image for inputfield
-	global knob  # knob image
-	global box  # button image
 	global bullet_img  # image for the bullet
 	global targeton_img  # surf for target whenlight turned on
 	global targetoff_img  # surf for target when turned off
@@ -60,25 +53,23 @@ def init():
 	global explosions_disp  # list of showing explosions
 	global run  # boolean for main loop
 	global dtargets  # amount of targets
-	global include_music
-	global morevents
-	global infinitevents
-	global musicend
-	global border1
+	global morevents  # custom event logger
+	global infinitevents  # A event logger which retriggers as long as condition
+	global musicend  # custom event number to show that music ended
+	global border1  # A box to hold the status information about energy level
 	global world  # a placeholder for the world class
 	global objects_on_screen  # entitys currently blitted to screen
 	global player  # abstract player class
 	global localmap  # A dict of the local worlds
 	global loading_time  # time until first blit
 	global seed  # the environments seed
-	global button_ratio  # The ratio from height to length of buttons
 
-	#for this operation os.urandom is used
+	# for this operation os.urandom is used
 	seed_size = 16
 	seed = random.randint(10 ** (seed_size - 1), (10 ** seed_size) - 1)
 	random.seed(seed)
 
-	#set up screen
+	# set up screen
 	pygame.event.set_grab(False)
 	pygame.mouse.set_visible(False)
 
@@ -87,21 +78,17 @@ def init():
 	pygame.display.set_mode((1, 1))
 	aspect_ratio = screenx / float(screeny)
 	screenx_current = screenx
-	screeny_current = int(screenx_current * 9.0 / 16.0)
+	screeny_current = screeny
 
-	#create empty folders if needed
+	# create empty folders if needed
 	if not os.path.exists("./assets/sprites/player/"):
 		os.makedirs("./assets/sprites/player/")
 	if not os.path.exists("./screenshots/"):
 		os.makedirs("./screenshots/")
 
-	#load images and convert them to the fatest blittable format
+	# load images and convert them to the fatest blittable format
 	background = pygame.image.load("./assets/sprites/Background2.tif").convert()
-	fade = pygame.Surface((screenx, screeny))
-	#TODO remove use of button
-	button = pygame.image.load("./assets/sprites/Button1.tif").convert_alpha()
 	field = pygame.image.load("./assets/sprites/inputbox1.tif").convert_alpha()
-	field1 = pygame.image.load("./assets/sprites/inputbox2.tif").convert_alpha()
 	bullet_img = pygame.image.load("./assets/sprites/Bullet.tif").convert_alpha()
 	targeton_img = pygame.image.load("./assets/sprites/mine_on.tif"
 				).convert_alpha()
@@ -109,23 +96,20 @@ def init():
 				).convert_alpha()
 	border1 = pygame.image.load("./assets/sprites/bar1.tif").convert_alpha()
 
-	fade_pos = fade.get_rect()  # lint:ok
-
-	#define some konstants or default values
+	# define some konstants or default values
 	clock = pygame.time.Clock()
 	typeface = "monospace"
 	stdfont = pygame.font.SysFont(typeface, 15)
 
-	version = "0.3.2.8 dev"
+	version = "0.3.3"
 	up = False
 	down = False
 	left = False
 	right = False
 	konstspeed = 0.0025
-	button_ratio = 7.0
 	fullscreen = False
 	debugscreen = False
-	debugmode = True
+	debugmode = False
 	dstars = 500
 	isnear = "False"
 	code = ""
@@ -139,7 +123,6 @@ def init():
 	current_game = "default"
 	run = True
 	dtargets = 5
-	include_music = False
 	morevents = []
 	bullets = []
 	infinitevents = {"fire1": False, "roundfire": False}
@@ -153,11 +136,11 @@ def init():
 	pygame.display.set_caption("Project Interstellar " + version)
 	pygame.display.set_icon(pygame.image.load("./assets/sprites/logo.png"))
 
-	#more complex default settings like creation of stars and targets and so on
+	# more complex default settings like creation of stars and targets and so on
 	if debugmode:
-		#Add custom handler here for when debugmode is activated
+		# Add custom handler here for when debugmode is activated
 		volume = 0.0
-		#fullscreen = False
+		# fullscreen = False
 		pass
 
 	def get_anim_source(num, quantity):
@@ -183,7 +166,7 @@ def init():
 	saves = []
 	for filename in os.listdir("./saves"):
 		if filename.endswith(".ini"):
-			filename = unicode(filename[:-4])
+			filename = filename[:-4].decode("utf-8")
 			saves.append(filename)
 
 	if fullscreen:
@@ -205,6 +188,16 @@ def init():
 	world = localmap["1"]
 	upd("adjust_screen")
 
+	#scales images so they fill screen especially when not 16/9 ar
+	if aspect_ratio > 16.0 / 9:
+		ratio = screenx_current / float(background.get_size()[1])
+		pygame.transform.smoothscale(background,
+					(screenx_current, screeny_current * ratio))
+	elif aspect_ratio < 16.0 / 9:
+		ratio = screeny_current / float(background.get_size()[0])
+		pygame.transform.smoothscale(background,
+					(screenx_current * ratio, screeny_current))
+
 
 def reset():
 
@@ -216,7 +209,6 @@ def reset():
 	pygame.mouse.set_visible(False)
 
 	player.reset()
-	fade_pos = fade.get_rect()  # lint:ok
 
 	konstspeed = 0.0025
 	color = (255, 255, 10)
@@ -240,8 +232,10 @@ def upd(level):
 	if level == "screenvalues":
 		global screenx_current
 		global screeny_current
+		global aspect_ratio
 		screenx_current = pygame.display.Info().current_w
-		screeny_current = int(screenx_current * 9.0 / 16.0)
+		screeny_current = pygame.display.Info().current_h
+		aspect_ratio = screenx_current / float(screeny_current)
 		return
 	if level == "get_saves":
 		global saves
@@ -249,30 +243,47 @@ def upd(level):
 		for filename in os.listdir("./saves"):
 			if filename.endswith(".ini"):
 				filename = filename[:-4]
-				if not filename in ("default"):
+				if filename not in ("default"):
 					saves.append(filename)
 		return
 	if level == "adjust_screen":
-		from . import draw
 		global background
 		global background_pos
 		global konstspeed
-		global no16to9
+		global fullscreenold
+		global fullscreen
 
-		draw.adjustscreen()
+		if fullscreenold != fullscreen:
+			if fullscreen:
+				pygame.display.set_mode((screenx, screeny), pygame.FULLSCREEN)
+			if not fullscreen:
+				pygame.display.set_mode((screenx / 2, screeny / 2))
+			fullscreenold = fullscreen
+
 		upd("screenvalues")
 
 		konstspeed = 0.0025
 		konstspeed = konstspeed * (screenx_current / 1920.0)
 
 		world.adjust_to_screen()
+
+		#scales images so they fill screen especially when not 16/9 ar
+		if aspect_ratio > 16.0 / 9:
+			ratio = screenx_current / float(background.get_size()[1])
+			pygame.transform.smoothscale(background,
+						(screenx_current, int(screeny_current * ratio)))
+		elif aspect_ratio < 16.0 / 9:
+			ratio = screeny_current / float(background.get_size()[0])
+			pygame.transform.smoothscale(background,
+						(int(screenx_current * ratio), screeny_current))
+
 		return
 	print("Something went wrong here")
 	raise Exception
 
 
 def toggle(var, option1, option2):
-	#toggles between option1 and 2 and retunr var, saves some space
+	# toggles between option1 and 2 and retunr var, saves some space
 	if var == option1:
 		var = "yep"
 	if var == option2:
@@ -280,34 +291,6 @@ def toggle(var, option1, option2):
 	if var == "yep":
 		var = option2
 	return var
-
-
-def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
-	nofit = True
-	while nofit:
-		tmpfont = pygame.font.SysFont(typeface, size)
-		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
-		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
-		if size <= 5:
-			nofit = False
-		else:
-			size -= 1
-	return tmpfont.render(text, antialias, color)
-
-
-def getmaxsize(typeface, size, text, antialias, color, maxsize, borderoff):
-	#local typeface!
-	nofit = True
-	while nofit:
-		tmpfont = pygame.font.SysFont(typeface, size)
-		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
-		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
-		if size <= 5:
-			nofit = False
-		else:
-			size -= 1
-	return size
 
 
 class save():
@@ -325,7 +308,7 @@ class save():
 		if len(saves) >= 50:
 			return False
 
-		#removes invalid characters
+		# removes invalid characters
 		if "/" in name:
 			name = name.replace("/", "\\")
 		if "%" in name:
@@ -333,13 +316,13 @@ class save():
 
 		current_game = name
 
-		#handles the configparser object
+		# handles the configparser object
 		self.config = SafeConfigParser()
 		self.config.read("./saves/" + name + ".ini")
 		if not os.path.isfile("./saves/" + name + ".ini"):
 			self.config.add_section("main")
 
-		#sets values
+		# sets values
 		self.config.set("main", "fullscreen", str(fullscreen))
 		self.config.set("main", "screenx_current", str(screenx_current))
 		self.config.set("main", "screeny_current", str(screeny_current))
@@ -349,7 +332,7 @@ class save():
 		self.config.set("main", "posx", str(player.pos.x))
 		self.config.set("main", "posy", str(player.pos.y))
 		self.config.set("main", "volume", str(volume))
-		#and writes them
+		# and writes them
 		with open("./saves/" + name + ".ini", "w") as tmp:
 			self.config.write(tmp)
 
@@ -377,9 +360,9 @@ def load(name):
 			config.read("./saves/" + a + ".ini")
 	if not (saves == []):
 
-		#tries to load and returns values in terminal that couldnt be loaded
+		# tries to load and returns values in terminal that couldnt be loaded
+		import ConfigParser
 		try:
-			#from ConfigParser import *
 			from . import sounds
 			#lint:disable
 			fullscreen = config.getboolean("main", "fullscreen")
@@ -392,7 +375,7 @@ def load(name):
 			pos_y = config.getfloat("main", "posx")
 			sounds.music.volume = config.getfloat("main", "volume")
 			#lint:enable
-		except SafeConfigParser.NoOptionError as test:
+		except ConfigParser.NoOptionError as test:
 			print(("Saved game couldn't be loaded completly: " + str(test)))
 		except Exception:
 			print(("Unexpected error:", sys.exc_info()[0]))

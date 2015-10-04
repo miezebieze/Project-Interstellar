@@ -3,6 +3,26 @@ import pygame
 from pygame.locals import *
 
 
+def modrender(typeface, size, text, antialias, color, maxsize, borderoff):
+	size = getmaxsize(typeface, size, text, maxsize, borderoff)
+	tmpfont = pygame.font.SysFont(typeface, size)
+	return tmpfont.render(text, antialias, color)
+
+
+def getmaxsize(typeface, size, text, maxsize, borderoff):
+	# local typeface!
+	nofit = True
+	while nofit:
+		tmpfont = pygame.font.SysFont(typeface, size)
+		bool1 = tmpfont.size(text)[0] < maxsize[0] - (2 * borderoff)
+		nofit = not (bool1 and tmpfont.size(text)[1] < maxsize[1] - (2 * borderoff))
+		if size <= 5:
+			nofit = False
+		else:
+			size -= 1
+	return size
+
+
 def run():
 	"""Displayes the credits"""
 	from . import settings
@@ -15,8 +35,10 @@ def run():
 	lines = []
 	lines_pos = []
 	itera = -1
-	fade = settings.fade
-	fade_pos = settings.fade_pos
+	fade = pygame.Surface((settings.screenx_current, settings.screeny_current))
+	fade.fill((0, 0, 0))
+	fade.set_alpha(0)
+	fade_pos = fade.get_rect()
 	pygame.mouse.set_visible(False)
 
 	fade.set_alpha(255)
@@ -26,32 +48,31 @@ def run():
 
 	settings.upd("screenvalues")
 
-	#load the credits.txt and assign place
+	# load the credits.txt and assign place
 	with open("./assets/lang/credits.txt") as credits_file:
-		#find the longest line to optimize font size
+		# find the longest line to optimize font size
 		biggest = 1000
 		for line in credits_file:
 			line = line[:-1]
-			size = settings.getmaxsize(settings.typeface, 50,
-				line, True, color,
-				screen.get_rect().size, 0)
+			size = getmaxsize(settings.typeface, 50,
+				line, screen.get_rect().size, 0)
 			if biggest > size:
 				biggest = size
 	with open("./assets/lang/credits.txt") as credits_file:
 		for line in credits_file:
 			itera += 1
 			line = line[:-1]
-			line = settings.modrender(settings.typeface, biggest,
+			line = modrender(settings.typeface, biggest,
 				line, True, color,
 				screen.get_rect().size, 0)
 			line_pos = line.get_rect()
-			#Distance from line to line is 5 pixel more than height
+			# Distance from line to line is 5 pixel more than height
 			line_pos.top = ((line_pos.h + 5) * itera) + settings.screeny_current
 			line_pos.left = (settings.screenx_current / 2) - (line_pos.w / 2.0)
 			lines.append(line)
 			lines_pos.append(line_pos)
 
-	#diplays content of credits.txt
+	# diplays content of credits.txt
 	while not lines_pos[len(lines_pos) - 1].top <= -80:
 		settings.upd("get_events")
 		for event in settings.events:

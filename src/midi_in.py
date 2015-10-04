@@ -78,7 +78,7 @@ def quit():
 	try:
 		del device
 	except:
-		#I know, no device connected…
+		# I know, no device connected…
 		pass
 
 

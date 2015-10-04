@@ -1,4 +1,5 @@
 &./assets/templates/default.vars
+<#background = (./assets/sprites/Background1.tif)
 
 *|Pause    |35          |$typeface|$color      |$half + 0|%12   +   0|
 @|Continue |$size|$ratio|$typeface|$color|$box1|$half + 0|%40  +   0|
