@@ -239,6 +239,7 @@ def pause():
 						"Save Game")
 				if savename != "Exit":
 					settings.save(savename)
+				settings.upd("get_saves")
 			if event == "Load Game":
 				savegame = savegames()
 				if savegame is not None:
