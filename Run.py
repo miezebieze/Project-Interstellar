@@ -18,9 +18,11 @@ try:
 	# Checks for correct version
 	if pygame.version.ver < "1.9.1":
 		raise SystemExit("Old Pygame version: " + pygame.version.ver)
-	if sys.version[:5] < "2.7.6":
-		raise SystemExit("Outdated Python version: " + sys.version[:5])
-	if sys.version[:5] >= "3.0.0":
+	required = "2.7.6"
+	for i in range(len(required)):
+		if sys.version_info[i] < required.split('.')[i]:
+			raise SystemExit("Outdated Python version: %s; required: %s" % (sys.version.split()[0], required))
+	if sys.version[:1] >= "3":
 		raise SystemExit("No support for Python3")
 
 	# Run the game
