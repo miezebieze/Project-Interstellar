@@ -238,7 +238,9 @@ def pause():
 						settings.screeny_current / 2,
 						"Save Game")
 				if savename != "Exit":
-					settings.save(savename)
+					#TODO: this is ugly
+					saver = settings.data()
+					saver.save(savename)
 				settings.upd("get_saves")
 			if event == "Load Game":
 				savegame = savegames()

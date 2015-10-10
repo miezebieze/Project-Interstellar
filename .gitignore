@@ -11,3 +11,6 @@
 #empty folders
 screenshots/*
 assets/sprites/player/*
+
+#symlinks in testing folder
+src/tests/settings.py

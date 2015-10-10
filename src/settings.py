@@ -8,6 +8,7 @@ import shutil
 import sys
 import traceback
 import random
+import json
 
 
 def init():
@@ -101,7 +102,7 @@ def init():
 	typeface = "monospace"
 	stdfont = pygame.font.SysFont(typeface, 15)
 
-	version = "0.3.3"
+	version = "0.3.3.1 dev"
 	up = False
 	down = False
 	left = False
@@ -293,20 +294,15 @@ def toggle(var, option1, option2):
 	return var
 
 
-class save():
+class data():
 
-	def __init__(self, name):
+	def __init__(self):
 		"""create a new savegame"""
-		global saves
-		global current_game
+		pass
+
+	def save(self, name):
 
 		name = name.encode("utf-8")
-		self.name = name
-
-		upd("get_saves")
-
-		if len(saves) >= 50:
-			return False
 
 		# removes invalid characters
 		if "/" in name:
@@ -314,74 +310,65 @@ class save():
 		if "%" in name:
 			name = name.replace("%", "")
 
-		current_game = name
+		data = {"Fullscreen": fullscreen,
+			"screenx_current": screenx_current,
+			"screeny_current": screeny_current,
+			"debugmode": debugmode,
+			"debugscreen": debugscreen,
+			"player.pos.x": player.pos.x,
+			"player.pos.y": player.pos.y,
+			"volume": volume,
+			"player.timeplay": player.timeplay
+			}
 
-		# handles the configparser object
-		self.config = SafeConfigParser()
-		self.config.read("./saves/" + name + ".ini")
-		if not os.path.isfile("./saves/" + name + ".ini"):
-			self.config.add_section("main")
+		file_obj = open("./saves/" + name + ".json", "w")
+		json.dump(data, file_obj, indent=12)
 
-		# sets values
-		self.config.set("main", "fullscreen", str(fullscreen))
-		self.config.set("main", "screenx_current", str(screenx_current))
-		self.config.set("main", "screeny_current", str(screeny_current))
-		self.config.set("main", "debugscreen", str(debugscreen))
-		self.config.set("main", "debugmode", str(debugmode))
-		self.config.set("main", "skip", "True")
-		self.config.set("main", "posx", str(player.pos.x))
-		self.config.set("main", "posy", str(player.pos.y))
-		self.config.set("main", "volume", str(volume))
-		# and writes them
-		with open("./saves/" + name + ".ini", "w") as tmp:
-			self.config.write(tmp)
+	def load(name):
+		"""Load savegame"""
+		global fullscreen
+		global screenx_current
+		global screeny_current
+		global debugscreen
+		global debugmode
+		global config
+		global skip
+		global pos_x
+		global pos_y
+		global volume
+		global saves
+		global screen
 
+		upd("get_saves")
 
-def load(name):
-	"""Load savegame"""
-	global fullscreen
-	global screenx_current
-	global screeny_current
-	global debugscreen
-	global debugmode
-	global config
-	global skip
-	global pos_x
-	global pos_y
-	global volume
-	global saves
-	global screen
+		config = SafeConfigParser()
+		for a in saves:
+			if a == name.encode("utf-8"):
+				config.read("./saves/" + a + ".ini")
+		if not (saves == []):
 
-	upd("get_saves")
+			# tries to load and returns values in terminal that couldnt be loaded
+			import ConfigParser
+			try:
+				from . import sounds
+				#lint:disable
+				fullscreen = config.getboolean("main", "fullscreen")
+				screenx_current = int(config.getfloat("main", "screenx_current"))
+				screeny_current = int(config.getfloat("main", "screeny_current"))
+				debugscreen = config.getboolean("main", "debugscreen")
+				debugmode = config.getboolean("main", "debugmode")
+				skip = config.getboolean("main", "skip")
+				pos_x = config.getfloat("main", "posy")
+				pos_y = config.getfloat("main", "posx")
+				sounds.music.volume = config.getfloat("main", "volume")
+				#lint:enable
+			except ConfigParser.NoOptionError as test:
+				print(("Saved game couldn't be loaded completly: " + str(test)))
+			except Exception:
+				print(("Unexpected error:", sys.exc_info()[0]))
+				print((traceback.format_exc()))
 
-	config = SafeConfigParser()
-	for a in saves:
-		if a == name.encode("utf-8"):
-			config.read("./saves/" + a + ".ini")
-	if not (saves == []):
-
-		# tries to load and returns values in terminal that couldnt be loaded
-		import ConfigParser
-		try:
-			from . import sounds
-			#lint:disable
-			fullscreen = config.getboolean("main", "fullscreen")
-			screenx_current = int(config.getfloat("main", "screenx_current"))
-			screeny_current = int(config.getfloat("main", "screeny_current"))
-			debugscreen = config.getboolean("main", "debugscreen")
-			debugmode = config.getboolean("main", "debugmode")
-			skip = config.getboolean("main", "skip")
-			pos_x = config.getfloat("main", "posy")
-			pos_y = config.getfloat("main", "posx")
-			sounds.music.volume = config.getfloat("main", "volume")
-			#lint:enable
-		except ConfigParser.NoOptionError as test:
-			print(("Saved game couldn't be loaded completly: " + str(test)))
-		except Exception:
-			print(("Unexpected error:", sys.exc_info()[0]))
-			print((traceback.format_exc()))
-
-	screen = pygame.display.set_mode((screenx_current, screeny_current))
+		screen = pygame.display.set_mode((screenx_current, screeny_current))
 
 
 def quit():
